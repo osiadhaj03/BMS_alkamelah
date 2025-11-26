@@ -63,6 +63,22 @@ return [
             ]) : [],
         ],
 
+        'old_bms' => [
+            'driver' => 'mysql',
+            'host' => '145.223.98.97',
+            'port' => '3306',
+            'database' => 'bms',
+            'username' => 'bms',
+            'password' => 'bms2025',
+            'unix_socket' => '',
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+        ],
+
         'mariadb' => [
             'driver' => 'mariadb',
             'url' => env('DB_URL'),
