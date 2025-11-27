@@ -15,14 +15,25 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class PublisherResource extends Resource
 {
     protected static ?string $model = Publisher::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingOffice;
 
-    protected static ?string $recordTitleAttribute = 'Publisher';
+    protected static string|UnitEnum|null $navigationGroup = 'إدارة البيانات';
+
+    protected static ?int $navigationSort = 2;
+
+    protected static ?string $navigationLabel = 'دور النشر';
+
+    protected static ?string $modelLabel = 'دار نشر';
+
+    protected static ?string $pluralModelLabel = 'دور النشر';
+
+    protected static ?string $recordTitleAttribute = 'name';
 
     public static function form(Schema $schema): Schema
     {

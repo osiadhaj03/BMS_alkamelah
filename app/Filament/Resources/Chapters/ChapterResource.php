@@ -15,14 +15,25 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class ChapterResource extends Resource
 {
     protected static ?string $model = Chapter::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBookmark;
 
-    protected static ?string $recordTitleAttribute = 'Chapter';
+    protected static string|UnitEnum|null $navigationGroup = 'إدارة المحتوى';
+
+    protected static ?int $navigationSort = 3;
+
+    protected static ?string $navigationLabel = 'الأبواب';
+
+    protected static ?string $modelLabel = 'باب';
+
+    protected static ?string $pluralModelLabel = 'الأبواب';
+
+    protected static ?string $recordTitleAttribute = 'title';
 
     public static function form(Schema $schema): Schema
     {

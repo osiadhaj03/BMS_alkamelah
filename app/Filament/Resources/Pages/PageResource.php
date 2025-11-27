@@ -15,14 +15,25 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class PageResource extends Resource
 {
     protected static ?string $model = Page::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentText;
 
-    protected static ?string $recordTitleAttribute = 'Page';
+    protected static string|UnitEnum|null $navigationGroup = 'إدارة المحتوى';
+
+    protected static ?int $navigationSort = 5;
+
+    protected static ?string $navigationLabel = 'الصفحات';
+
+    protected static ?string $modelLabel = 'صفحة';
+
+    protected static ?string $pluralModelLabel = 'الصفحات';
+
+    protected static ?string $recordTitleAttribute = 'page_number';
 
     public static function form(Schema $schema): Schema
     {
