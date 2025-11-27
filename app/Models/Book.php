@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Book extends Model
 {
@@ -89,9 +90,9 @@ class Book extends Model
         return $this->belongsTo(Section::class, 'ososa');
     }
 
-    public function extractedMetadata(): HasMany
+    public function extractedMetadata(): HasOne
     {
-        return $this->hasMany(BookExtractedMetadata::class);
+        return $this->hasOne(BookExtractedMetadata::class);
     }
 
     // Accessors
