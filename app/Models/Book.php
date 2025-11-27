@@ -35,6 +35,7 @@ class Book extends Model
         'author_role',
         'edition_info',
         'additional_notes',
+        'ososa',
     ];
 
     protected $casts = [
@@ -43,6 +44,10 @@ class Book extends Model
         'volumes_count' => 'integer',
         'volume_count' => 'integer',
         'page_count' => 'integer',
+        'edition_DATA' => 'integer',
+        'edition' => 'integer',
+        'edition_number' => 'integer',
+        'ososa' => 'integer',
     ];
 
     // العلاقات
@@ -77,6 +82,16 @@ class Book extends Model
     public function pages(): HasMany
     {
         return $this->hasMany(Page::class)->orderBy('page_number');
+    }
+
+    public function ososaSection(): BelongsTo
+    {
+        return $this->belongsTo(Section::class, 'ososa');
+    }
+
+    public function extractedMetadata(): HasMany
+    {
+        return $this->hasMany(BookExtractedMetadata::class);
     }
 
     // Accessors
