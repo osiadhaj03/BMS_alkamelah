@@ -30,9 +30,17 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => '#2C6E4A',      // أخضر (اللون الأساسي)
+                'secondary' => '#161E29',   // لون داكن جداً
+                'accent' => '#192126',      // لون داكن
+                'danger' => '#BA4749',      // أحمر/وردي
+                'success' => '#2C6E4A',     // أخضر للنجاح
+                'warning' => '#BA4749',     // أحمر للتحذير
+                'info' => '#192126',        // داكن للمعلومات
             ])
             ->brandName('نظام إدارة المكتبة')
+            ->darkMode(true)
+            ->maxContentWidth('full')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
