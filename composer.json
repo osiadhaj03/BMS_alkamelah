@@ -8,6 +8,7 @@
     "require": {
         "php": "^8.2",
         "andreia/filament-ui-switcher": "^1.0",
+        "aymanalhattami/filament-slim-scrollbar": "*",
         "bezhansalleh/filament-shield": "^4.0",
         "filament/filament": "^4.2",
         "filament/spatie-laravel-media-library-plugin": "^4.2",
