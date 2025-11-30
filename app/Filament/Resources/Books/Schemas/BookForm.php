@@ -2,12 +2,24 @@
 
 namespace App\Filament\Resources\Books\Schemas;
 
+use App\Models\Author;
+use App\Models\BookSection;
+use App\Models\Publisher;
+use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Tabs;
+use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Str;
 
 class BookForm
 {
@@ -15,75 +27,546 @@ class BookForm
     {
         return $schema
             ->components([
-                TextInput::make('shamela_id')
-                    ->default(null),
-                TextInput::make('title')
-                    ->required(),
-                Textarea::make('description')
-                    ->default(null)
-                    ->columnSpanFull(),
-                TextInput::make('slug')
-                    ->required(),
-                FileUpload::make('cover_image')
-                    ->image(),
-                TextInput::make('pages_count')
-                    ->numeric()
-                    ->default(null),
-                TextInput::make('volumes_count')
-                    ->numeric()
-                    ->default(1),
-                Select::make('status')
-                    ->options(['draft' => 'Draft', 'review' => 'Review', 'published' => 'Published', 'archived' => 'Archived'])
-                    ->default('draft')
-                    ->required(),
-                Select::make('visibility')
-                    ->options(['public' => 'Public', 'private' => 'Private', 'restricted' => 'Restricted'])
-                    ->default('public')
-                    ->required(),
-                TextInput::make('source_url')
-                    ->url()
-                    ->default(null),
-                TextInput::make('book_section_id')
-                    ->numeric()
-                    ->default(null),
-                Select::make('publisher_id')
-                    ->relationship('publisher', 'name')
-                    ->default(null),
-                TextInput::make('edition_DATA')
-                    ->numeric()
-                    ->default(null),
-                TextInput::make('edition')
-                    ->numeric()
-                    ->default(null),
-                TextInput::make('edition_number')
-                    ->numeric()
-                    ->default(null),
-                Toggle::make('has_original_pagination'),
-                TextInput::make('publication_year')
-                    ->default(null),
-                TextInput::make('publication_place')
-                    ->default(null),
-                TextInput::make('volume_count')
-                    ->numeric()
-                    ->default(1),
-                TextInput::make('page_count')
-                    ->numeric()
-                    ->default(null),
-                TextInput::make('isbn')
-                    ->default(null),
-                TextInput::make('author_death_year')
-                    ->default(null),
-                TextInput::make('author_role')
-                    ->default('مؤلف'),
-                Textarea::make('edition_info')
-                    ->default(null)
-                    ->columnSpanFull(),
-                Textarea::make('additional_notes')
-                    ->default(null)
-                    ->columnSpanFull(),
-                TextInput::make('ososa')
-                    ->numeric()
-                    ->default(null),
+                Tabs::make('BookTabs')
+                    ->tabs([
+                        // Tab 1: Basic Book Information
+                        Tab::make('معلومات الكتاب')
+                            ->icon('heroicon-o-book-open')
+                            ->schema([
+                                self::getBasicInfoSection(),
+                                self::getBookPropertiesSection(),
+                                self::getCoverImageSection(),
+                            ]),
+
+                        // Tab 2: Categories and Authors
+                        Tab::make('الأقسام والمؤلفون')
+                            ->icon('heroicon-o-tag')
+                            ->schema([
+                                self::getBookSectionSelect(),
+                                self::getAuthorsRepeater(),
+                            ]),
+
+                        // Tab 3: Volumes and Chapters
+                        Tab::make('الأجزاء والفصول')
+                            ->icon('heroicon-o-folder-open')
+                            ->schema([
+                                self::getVolumesRepeater(),
+                            ]),
+                    ])
+                    ->columnSpanFull()
+                    ->persistTabInQueryString(),
             ]);
+    }
+
+    private static function getBasicInfoSection(): Section
+    {
+        return Section::make('المعلومات الأساسية')
+            ->description('أدخل العنوان والوصف والمعرف الفريد للكتاب')
+            ->icon('heroicon-o-identification')
+            ->schema([
+                Grid::make(2)->schema([
+                    TextInput::make('title')
+                        ->label('العنوان')
+                        ->required()
+                        ->maxLength(255)
+                        ->live(onBlur: true)
+                        ->afterStateUpdated(function ($state, callable $set) {
+                            if ($state) {
+                                $set('slug', Str::slug($state));
+                            }
+                        })
+                        ->columnSpan(2),
+                ]),
+                
+                Textarea::make('description')
+                    ->label('الوصف')
+                    ->rows(4)
+                    ->maxLength(1000)
+                    ->columnSpanFull(),
+
+                Grid::make(3)->schema([
+                    TextInput::make('slug')
+                        ->label('المعرف')
+                        ->required()
+                        ->maxLength(255)
+                        ->unique(ignoreRecord: true)
+                        ->rules(['alpha_dash'])
+                        ->suffixAction(
+                            Action::make('generateSlug')
+                                ->icon('heroicon-m-sparkles')
+                                ->tooltip('توليد تلقائي من العنوان')
+                                ->action(function (callable $set, callable $get) {
+                                    if ($get('title')) {
+                                        $set('slug', Str::slug($get('title')));
+                                    }
+                                })
+                        ),
+                    
+                    TextInput::make('edition')
+                        ->label('رقم الطبعة')
+                        ->numeric()
+                        ->placeholder('1'),
+                    
+                    TextInput::make('edition_DATA')
+                        ->label('سنة الطباعة')
+                        ->numeric()
+                        ->placeholder('2025'),
+                ]),
+            ])
+            ->collapsible();
+    }
+
+    private static function getBookPropertiesSection(): Section
+    {
+        return Section::make('خصائص الكتاب')
+            ->description('الخصائص الفيزيائية والرقمية للكتاب ومعلومات النشر')
+            ->icon('heroicon-o-book-open')
+            ->schema([
+                Grid::make(2)->schema([
+                    Select::make('publisher_id')
+                        ->label('الناشر')
+                        ->relationship('publisher', 'name')
+                        ->searchable()
+                        ->preload()
+                        ->createOptionForm(self::getPublisherForm())
+                        ->createOptionAction(function (Action $action) {
+                            return $action
+                                ->modalHeading('إضافة ناشر جديد')
+                                ->modalSubmitActionLabel('إضافة الناشر')
+                                ->modalWidth('lg');
+                        }),
+                    
+                    TextInput::make('source_url')
+                        ->label('رابط المصدر')
+                        ->url()
+                        ->placeholder('https://example.com'),
+                ]),
+                
+                Grid::make(4)->schema([
+                    Select::make('visibility')
+                        ->label('الرؤية')
+                        ->options([
+                            'public' => 'عام',
+                            'private' => 'خاص',
+                        ])
+                        ->required()
+                        ->default('public'),
+                    
+                    Select::make('status')
+                        ->label('الحالة')
+                        ->options([
+                            'draft' => 'مسودة',
+                            'published' => 'منشور',
+                            'archived' => 'مؤرشف',
+                        ])
+                        ->required()
+                        ->default('draft'),
+                ]),
+            ])
+            ->collapsible();
+    }
+
+    private static function getCoverImageSection(): Section
+    {
+        return Section::make('صورة الغلاف')
+            ->description('ارفع صورة غلاف عالية الجودة للكتاب')
+            ->icon('heroicon-o-photo')
+            ->schema([
+                FileUpload::make('cover_image')
+                    ->label('صورة الغلاف')
+                    ->image()
+                    ->imageEditor()
+                    ->imageEditorAspectRatios([
+                        '3:4',
+                        '2:3',
+                    ])
+                    ->maxSize(5120)
+                    ->directory('books/covers')
+                    ->visibility('public')
+                    ->helperText('حجم أقصى: 5 ميجابايت. النسب المفضلة: 3:4 أو 2:3')
+                    ->columnSpanFull(),
+            ])
+            ->collapsible();
+    }
+
+    private static function getBookSectionSelect(): Select
+    {
+        return Select::make('book_section_id')
+            ->relationship('bookSection', 'name')
+            ->label('قسم الكتاب')
+            ->searchable()
+            ->preload()
+            ->createOptionForm(self::getBookSectionForm())
+            ->createOptionAction(function (Action $action) {
+                return $action
+                    ->modalHeading('إضافة قسم جديد')
+                    ->modalSubmitActionLabel('إضافة القسم')
+                    ->modalWidth('lg');
+            })
+            ->required();
+    }
+
+    private static function getAuthorsRepeater(): Repeater
+    {
+        return Repeater::make('authorBooks')
+            ->label('المؤلفون ودورهم')
+            ->relationship('authorBooks')
+            ->schema([
+                Grid::make(4)->schema([
+                    Select::make('author_id')
+                        ->label('المؤلف')
+                        ->relationship('author', 'full_name')
+                        ->searchable(['full_name'])
+                        ->preload()
+                        ->getOptionLabelFromRecordUsing(fn ($record) => $record->full_name)
+                        ->createOptionForm(self::getAuthorForm())
+                        ->createOptionAction(function (Action $action) {
+                            return $action
+                                ->modalHeading('إضافة مؤلف جديد')
+                                ->modalSubmitActionLabel('إضافة المؤلف')
+                                ->modalWidth('xl');
+                        })
+                        ->required()
+                        ->columnSpan(2),
+                    
+                    Select::make('role')
+                        ->label('الدور')
+                        ->options([
+                            'author' => 'مؤلف',
+                            'co_author' => 'مؤلف مشارك',
+                            'editor' => 'محرر',
+                            'translator' => 'مترجم',
+                            'reviewer' => 'مراجع',
+                            'commentator' => 'معلق',
+                        ])
+                        ->required()
+                        ->default('author')
+                        ->columnSpan(1),
+                    
+                    Select::make('is_main')
+                        ->label('مؤلف رئيسي')
+                        ->options([
+                            true => 'نعم',
+                            false => 'لا'
+                        ])
+                        ->helperText('حدد المؤلف الرئيسي للكتاب')
+                        ->default(true)
+                        ->columnSpan(1),
+                ]),
+                
+                TextInput::make('display_order')
+                    ->label('ترتيب العرض')
+                    ->numeric()
+                    ->default(0)
+                    ->helperText('ترتيب ظهور المؤلف في قائمة المؤلفين'),
+            ])
+            ->addActionLabel('إضافة مؤلف')
+            ->reorderableWithButtons()
+            ->collapsible()
+            ->itemLabel(fn (array $state): ?string => self::getAuthorItemLabel($state))
+            ->defaultItems(1)
+            ->minItems(1)
+            ->columnSpanFull();
+    }
+
+    private static function getVolumesRepeater(): Repeater
+    {
+        return Repeater::make('volumes')
+            ->label('مجلدات الكتاب')
+            ->relationship('volumes')
+            ->schema([
+                Grid::make(2)->schema([
+                    TextInput::make('number')
+                        ->label('رقم المجلد')
+                        ->required()
+                        ->numeric()
+                        ->minValue(1)
+                        ->default(1),
+                    
+                    TextInput::make('title')
+                        ->label('عنوان المجلد')
+                        ->maxLength(255)
+                        ->placeholder('مثال: الجزء الأول'),
+                ]),
+                
+                Textarea::make('description')
+                    ->label('وصف المجلد')
+                    ->rows(2)
+                    ->columnSpanFull(),
+
+                self::getChaptersRepeater(),
+            ])
+            ->addActionLabel('إضافة مجلد جديد')
+            ->reorderableWithButtons()
+            ->collapsible()
+            ->itemLabel(fn (array $state): ?string => 
+                'مجلد ' . ($state['number'] ?? 'جديد') . 
+                ($state['title'] ? ' - ' . $state['title'] : '')
+            )
+            ->maxItems(100)
+            ->defaultItems(1)
+            ->columnSpanFull();
+    }
+
+    private static function getChaptersRepeater(): Repeater
+    {
+        return Repeater::make('chapters')
+            ->label('فصول هذا المجلد')
+            ->relationship('chapters')
+            ->schema([
+                TextInput::make('title')
+                    ->label('عنوان الفصل')
+                    ->required()
+                    ->maxLength(255)
+                    ->placeholder('مثال: المقدمة')
+                    ->columnSpanFull(),
+                
+                // Add pages within chapter
+                self::getPagesRepeater('صفحات هذا الفصل'),
+            ])
+            ->addActionLabel('إضافة فصل جديد')
+            ->reorderableWithButtons()
+            ->collapsible()
+            ->itemLabel(fn (array $state): ?string => 
+                ($state['title'] ?? 'فصل جديد')
+            )
+            ->maxItems(200)
+            ->defaultItems(0);
+    }
+
+    private static function getPagesRepeater(string $label = 'الصفحات'): Repeater
+    {
+        return Repeater::make('pages')
+            ->label($label)
+            ->relationship('pages')
+            ->schema([
+                Grid::make(3)->schema([
+                    TextInput::make('page_number')
+                        ->label('رقم الصفحة')
+                        ->required()
+                        ->numeric()
+                        ->minValue(1)
+                        ->placeholder('1')
+                        ->helperText('رقم الصفحة في الكتاب المطبوع'),
+                    
+                    TextInput::make('page_order')
+                        ->label('ترتيب الصفحة')
+                        ->numeric()
+                        ->minValue(0)
+                        ->default(0)
+                        ->placeholder('0')
+                        ->helperText('ترتيب ظهور الصفحة'),
+                    
+                    Toggle::make('is_indexed')
+                        ->label('مفهرسة')
+                        ->default(false)
+                        ->helperText('هل تم فهرسة الصفحة في البحث؟'),
+                ]),
+                
+                RichEditor::make('content')
+                    ->label('محتوى الصفحة')
+                    ->required()
+                    ->toolbarButtons([
+                        'bold',
+                        'italic',
+                        'underline',
+                        'strike',
+                        'bulletList',
+                        'orderedList',
+                        'h2',
+                        'h3',
+                        'redo',
+                        'undo',
+                    ])
+                    ->placeholder('أدخل محتوى الصفحة هنا...')
+                    ->columnSpanFull(),
+                
+                Textarea::make('notes')
+                    ->label('ملاحظات')
+                    ->rows(2)
+                    ->placeholder('ملاحظات إضافية عن الصفحة (اختياري)')
+                    ->columnSpanFull(),
+            ])
+            ->addActionLabel('إضافة صفحة جديدة')
+            ->reorderableWithButtons()
+            ->collapsible()
+            ->collapsed()
+            ->itemLabel(fn (array $state): ?string => 
+                'صفحة ' . ($state['page_number'] ?? 'جديدة') . 
+                (isset($state['content']) && strlen($state['content']) > 50 
+                    ? ' - ' . Str::limit(strip_tags($state['content']), 30) 
+                    : '')
+            )
+            ->maxItems(500)
+            ->defaultItems(0)
+            ->columnSpanFull();
+    }
+
+    private static function getAuthorForm(): array
+    {
+        return [
+            TextInput::make('full_name')
+                ->label('الاسم الكامل')
+                ->required()
+                ->maxLength(255)
+                ->columnSpanFull(),
+
+            FileUpload::make('image')
+                ->label('صورة المؤلف')
+                ->image()
+                ->directory('authors')
+                ->visibility('public')
+                ->columnSpanFull(),
+
+            Grid::make(2)->schema([
+                Select::make('madhhab')
+                    ->label('المذهب')
+                    ->options([
+                        'المذهب الحنفي' => 'المذهب الحنفي',
+                        'المذهب المالكي' => 'المذهب المالكي',
+                        'المذهب الشافعي' => 'المذهب الشافعي',
+                        'المذهب الحنبلي' => 'المذهب الحنبلي',
+                        'آخرون' => 'آخرون',
+                    ])
+                    ->placeholder('اختر المذهب'),
+                
+                Select::make('is_living')
+                    ->label('حالة المؤلف')
+                    ->options([
+                        true => 'على قيد الحياة',
+                        false => 'متوفى',
+                    ])
+                    ->default(true)
+                    ->live(),
+            ]),
+
+            Textarea::make('biography')
+                ->label('السيرة الذاتية')
+                ->rows(4)
+                ->columnSpanFull(),
+            
+            Grid::make(2)->schema([
+                Select::make('birth_year_type')
+                    ->label('نوع تقويم الميلاد')
+                    ->options([
+                        'gregorian' => 'ميلادي',
+                        'hijri' => 'هجري',
+                    ])
+                    ->default('gregorian')
+                    ->live(),
+                
+                TextInput::make('birth_year')
+                    ->label(fn ($get) => $get('birth_year_type') === 'hijri' ? 'سنة الميلاد (هجري)' : 'سنة الميلاد (ميلادي)')
+                    ->numeric()
+                    ->minValue(1)
+                    ->maxValue(fn ($get) => $get('birth_year_type') === 'hijri' ? 1500 : date('Y')),
+            ]),
+            
+            Grid::make(2)->schema([
+                Select::make('death_year_type')
+                    ->label('نوع تقويم الوفاة')
+                    ->options([
+                        'gregorian' => 'ميلادي',
+                        'hijri' => 'هجري',
+                    ])
+                    ->default('gregorian')
+                    ->live()
+                    ->visible(fn ($get) => !$get('is_living')),
+                
+                TextInput::make('death_year')
+                    ->label(fn ($get) => $get('death_year_type') === 'hijri' ? 'سنة الوفاة (هجري)' : 'سنة الوفاة (ميلادي)')
+                    ->numeric()
+                    ->minValue(1)
+                    ->maxValue(fn ($get) => $get('death_year_type') === 'hijri' ? 1500 : date('Y'))
+                    ->visible(fn ($get) => !$get('is_living'))
+                    ->nullable(),
+            ]),
+        ];
+    }
+
+    private static function getPublisherForm(): array
+    {
+        return [
+            TextInput::make('name')
+                ->label('اسم الناشر')
+                ->required()
+                ->maxLength(255),
+            
+            TextInput::make('address')
+                ->label('العنوان')
+                ->maxLength(255),
+            
+            TextInput::make('phone')
+                ->label('رقم الهاتف')
+                ->tel()
+                ->maxLength(20),
+            
+            TextInput::make('email')
+                ->label('البريد الإلكتروني')
+                ->email()
+                ->maxLength(255),
+            
+            TextInput::make('website_url')
+                ->label('الموقع الإلكتروني')
+                ->url()
+                ->maxLength(255),
+            
+            Textarea::make('description')
+                ->label('وصف الناشر')
+                ->rows(3)
+                ->maxLength(1000)
+                ->columnSpanFull(),
+            
+            FileUpload::make('image')
+                ->label('صورة الناشر')
+                ->image()
+                ->imageEditor()
+                ->maxSize(2048)
+                ->directory('publishers')
+                ->visibility('public')
+                ->columnSpanFull(),
+        ];
+    }
+
+    private static function getBookSectionForm(): array
+    {
+        return [
+            TextInput::make('name')
+                ->label('اسم القسم')
+                ->required()
+                ->maxLength(255),
+            
+            TextInput::make('slug')
+                ->label('الرابط الثابت')
+                ->maxLength(255)
+                ->unique(ignoreRecord: true)
+                ->rules(['alpha_dash']),
+            
+            Textarea::make('description')
+                ->label('وصف القسم')
+                ->rows(3)
+                ->columnSpanFull(),
+        ];
+    }
+
+    private static function getAuthorItemLabel(array $state): ?string
+    {
+        if (!isset($state['author_id'])) {
+            return 'مؤلف جديد';
+        }
+        
+        $author = Author::find($state['author_id']);
+        $role = $state['role'] ?? 'author';
+        
+        $roleLabels = [
+            'author' => 'مؤلف',
+            'co_author' => 'مؤلف مشارك',
+            'editor' => 'محرر',
+            'translator' => 'مترجم',
+            'reviewer' => 'مراجع',
+            'commentator' => 'معلق',
+        ];
+        
+        return ($author ? $author->full_name : 'غير محدد') . ' - ' . ($roleLabels[$role] ?? $role);
     }
 }
