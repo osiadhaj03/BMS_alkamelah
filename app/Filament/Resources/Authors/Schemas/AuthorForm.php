@@ -2,13 +2,12 @@
 
 namespace App\Filament\Resources\Authors\Schemas;
 
-use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class AuthorForm
@@ -82,7 +81,7 @@ class AuthorForm
                             ->default(0)
                             ->required()
                             ->native(false)
-                            ->reactive(),
+                            ->live(),
 
                         Grid::make(2)
                             ->schema([
