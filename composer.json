@@ -14,6 +14,7 @@
         "filament/spatie-laravel-settings-plugin": "^4.2",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
+        "naturalgroove/laravel-filament-rich-editor-source-ai": "^1.0",
         "resma/filament-awin-theme": "^1.1"
     },
     "require-dev": {

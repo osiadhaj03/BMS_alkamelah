@@ -2,8 +2,11 @@
 
 namespace App\Filament\Resources\Authors\Schemas;
 
+use Filament\Infolists\Components\Grid;
+use Filament\Infolists\Components\Group;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\ImageEntry;
+use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 
@@ -13,29 +16,86 @@ class AuthorInfolist
     {
         return $schema
             ->components([
-                TextEntry::make('full_name'),
-                TextEntry::make('biography')
-                    ->placeholder('-')
-                    ->columnSpanFull(),
-                ImageEntry::make('image')
-                    ->placeholder('-'),
-                TextEntry::make('madhhab')
-                    ->badge()
-                    ->placeholder('-'),
-                IconEntry::make('is_living')
-                    ->boolean(),
-                TextEntry::make('birth_date')
-                    ->date()
-                    ->placeholder('-'),
-                TextEntry::make('death_date')
-                    ->date()
-                    ->placeholder('-'),
-                TextEntry::make('created_at')
-                    ->dateTime()
-                    ->placeholder('-'),
-                TextEntry::make('updated_at')
-                    ->dateTime()
-                    ->placeholder('-'),
+                Section::make('المعلومات الأساسية')
+                    ->icon('heroicon-o-user')
+                    ->schema([
+                        Grid::make(3)
+                            ->schema([
+                                Group::make([
+                                    ImageEntry::make('image')
+                                        ->label('صورة المؤلف')
+                                        ->circular()
+                                        ->size(150)
+                                        ->placeholder('لا توجد صورة'),
+                                ])->columnSpan(1),
+
+                                Group::make([
+                                    TextEntry::make('full_name')
+                                        ->label('الاسم الكامل')
+                                        ->size(TextEntry\TextEntrySize::Large)
+                                        ->weight('bold'),
+
+                                    TextEntry::make('madhhab')
+                                        ->label('المذهب')
+                                        ->badge()
+                                        ->color('primary')
+                                        ->placeholder('غير محدد'),
+
+                                    IconEntry::make('is_living')
+                                        ->label('على قيد الحياة')
+                                        ->boolean()
+                                        ->trueIcon('heroicon-o-check-circle')
+                                        ->falseIcon('heroicon-o-x-circle')
+                                        ->trueColor('success')
+                                        ->falseColor('danger'),
+                                ])->columnSpan(2),
+                            ]),
+
+                        TextEntry::make('biography')
+                            ->label('السيرة الذاتية')
+                            ->html()
+                            ->prose()
+                            ->placeholder('لا توجد سيرة ذاتية')
+                            ->columnSpanFull(),
+                    ]),
+
+                Section::make('التواريخ')
+                    ->icon('heroicon-o-calendar')
+                    ->schema([
+                        Grid::make(2)
+                            ->schema([
+                                TextEntry::make('birth_date')
+                                    ->label('تاريخ الولادة')
+                                    ->icon('heroicon-o-calendar')
+                                    ->placeholder('غير معروف'),
+
+                                TextEntry::make('death_date')
+                                    ->label('تاريخ الوفاة')
+                                    ->icon('heroicon-o-calendar')
+                                    ->placeholder('غير معروف')
+                                    ->visible(fn ($record) => !$record->is_living),
+                            ]),
+                    ])
+                    ->collapsible(),
+
+                Section::make('معلومات النظام')
+                    ->icon('heroicon-o-cog')
+                    ->schema([
+                        Grid::make(2)
+                            ->schema([
+                                TextEntry::make('created_at')
+                                    ->label('تاريخ الإنشاء')
+                                    ->dateTime('Y-m-d H:i')
+                                    ->icon('heroicon-o-clock'),
+
+                                TextEntry::make('updated_at')
+                                    ->label('آخر تحديث')
+                                    ->dateTime('Y-m-d H:i')
+                                    ->icon('heroicon-o-arrow-path'),
+                            ]),
+                    ])
+                    ->collapsible()
+                    ->collapsed(),
             ]);
     }
 }
