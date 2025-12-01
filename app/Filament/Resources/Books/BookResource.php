@@ -10,17 +10,15 @@ use App\Filament\Resources\Books\Schemas\BookForm;
 use App\Filament\Resources\Books\Schemas\BookInfolist;
 use App\Filament\Resources\Books\Tables\BooksTable;
 use App\Models\Book;
-use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 
 class BookResource extends Resource
 {
     protected static ?string $model = Book::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBookOpen;
+    protected static ?string $navigationIcon = 'heroicon-o-book-open';
 
     protected static ?string $navigationGroup = 'إدارة المحتوى';
 
@@ -63,6 +61,44 @@ class BookResource extends Resource
             'create' => CreateBook::route('/create'),
             'view' => ViewBook::route('/{record}'),
             'edit' => EditBook::route('/{record}/edit'),
+        ];
+    }
+
+    /**
+     * Optimize queries to avoid N+1 Query Problem
+     */
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return parent::getEloquentQuery()
+            ->withCount(['volumes', 'pages'])
+            ->with([
+                'bookSection',
+                'publisher',
+                'authorBooks' => function ($query) {
+                    $query->with('author')->orderBy('display_order');
+                }
+            ]);
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['title', 'description', 'slug'];
+    }
+
+    public static function getGlobalSearchResultDetails($record): array
+    {
+        $mainAuthor = $record->authorBooks->where('is_main', true)->first()
+            ?? $record->authorBooks->first();
+        
+        return [
+            'المؤلف' => $mainAuthor?->author?->full_name ?? 'غير محدد',
+            'القسم' => $record->bookSection?->name ?? 'غير محدد',
+            'الناشر' => $record->publisher?->name ?? 'غير محدد',
         ];
     }
 }
