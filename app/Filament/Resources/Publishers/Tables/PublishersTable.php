@@ -19,8 +19,6 @@ class PublishersTable
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('slug')
-                    ->searchable(),
                 TextColumn::make('address')
                     ->searchable(),
                 TextColumn::make('email')

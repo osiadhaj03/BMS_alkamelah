@@ -14,8 +14,6 @@ class AuthorInfolist
         return $schema
             ->components([
                 TextEntry::make('full_name'),
-                TextEntry::make('slug')
-                    ->placeholder('-'),
                 TextEntry::make('biography')
                     ->placeholder('-')
                     ->columnSpanFull(),
@@ -26,17 +24,6 @@ class AuthorInfolist
                     ->placeholder('-'),
                 IconEntry::make('is_living')
                     ->boolean(),
-                TextEntry::make('birth_year_type')
-                    ->badge(),
-                TextEntry::make('birth_year')
-                    ->numeric()
-                    ->placeholder('-'),
-                TextEntry::make('death_year_type')
-                    ->badge()
-                    ->placeholder('-'),
-                TextEntry::make('death_year')
-                    ->numeric()
-                    ->placeholder('-'),
                 TextEntry::make('birth_date')
                     ->date()
                     ->placeholder('-'),
@@ -48,8 +35,6 @@ class AuthorInfolist
                     ->placeholder('-'),
                 TextEntry::make('updated_at')
                     ->dateTime()
-                    ->placeholder('-'),
-                TextEntry::make('author_role')
                     ->placeholder('-'),
             ]);
     }

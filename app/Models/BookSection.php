@@ -2,81 +2,98 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class BookSection extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'name',
         'description',
         'parent_id',
         'sort_order',
         'is_active',
-        'slug',
         'logo_path',
-        'icon_type',
-        'icon_url',
-        'icon_name',
-        'icon_color',
-        'icon_size',
-        'icon_custom_size',
-        'icon_library',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
         'sort_order' => 'integer',
-        'icon_custom_size' => 'integer',
     ];
 
-    // العلاقات
-
+    /**
+     * القسم الأب
+     */
     public function parent(): BelongsTo
     {
         return $this->belongsTo(BookSection::class, 'parent_id');
     }
 
+    /**
+     * الأقسام الفرعية
+     */
     public function children(): HasMany
     {
-        return $this->hasMany(BookSection::class, 'parent_id')->orderBy('sort_order');
+        return $this->hasMany(BookSection::class, 'parent_id');
     }
 
+    /**
+     * جميع الأقسام الفرعية (متداخلة)
+     */
+    public function allChildren(): HasMany
+    {
+        return $this->children()->with('allChildren');
+    }
+
+    /**
+     * الكتب في هذا القسم
+     */
     public function books(): HasMany
     {
         return $this->hasMany(Book::class);
     }
 
-    // Accessors
-
-    public function getBooksCountAttribute(): int
+    /**
+     * البيانات المستخرجة المطابقة
+     */
+    public function extractedMetadata(): HasMany
     {
-        return $this->books()->count();
+        return $this->hasMany(BookExtractedMetadata::class, 'matched_section_id');
     }
 
-    public function getFullPathAttribute(): string
+    /**
+     * التحقق من أن القسم رئيسي (ليس له أب)
+     */
+    public function isRoot(): bool
     {
-        $path = [$this->name];
-        $parent = $this->parent;
-        
-        while ($parent) {
-            array_unshift($path, $parent->name);
-            $parent = $parent->parent;
-        }
-        
-        return implode(' > ', $path);
+        return is_null($this->parent_id);
     }
 
-    // Scopes
-
+    /**
+     * Scope للأقسام النشطة
+     */
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
     }
 
+    /**
+     * Scope للأقسام الرئيسية
+     */
     public function scopeRoots($query)
     {
         return $query->whereNull('parent_id');
+    }
+
+    /**
+     * Scope للترتيب
+     */
+    public function scopeOrdered($query)
+    {
+        return $query->orderBy('sort_order');
     }
 }

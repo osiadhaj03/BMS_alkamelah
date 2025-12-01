@@ -36,21 +36,6 @@ class ChapterForm
                 TextInput::make('page_end')
                     ->numeric()
                     ->default(null),
-                TextInput::make('estimated_reading_time')
-                    ->numeric()
-                    ->default(null),
-                TextInput::make('internal_index_start')
-                    ->numeric()
-                    ->default(null),
-                TextInput::make('internal_index_end')
-                    ->numeric()
-                    ->default(null),
-                TextInput::make('start_page_internal_index')
-                    ->numeric()
-                    ->default(null),
-                TextInput::make('end_page_internal_index')
-                    ->numeric()
-                    ->default(null),
             ]);
     }
 }

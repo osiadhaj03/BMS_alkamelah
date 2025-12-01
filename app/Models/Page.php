@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Page extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'book_id',
         'volume_id',
@@ -16,60 +19,111 @@ class Page extends Model
         'part',
         'content',
         'original_page_number',
-        'word_count',
         'html_content',
-        'printed_missing',
-        'formatted_content',
     ];
 
     protected $casts = [
         'page_number' => 'integer',
         'original_page_number' => 'integer',
-        'word_count' => 'integer',
-        'printed_missing' => 'boolean',
     ];
 
-    // العلاقات
-
+    /**
+     * الكتاب
+     */
     public function book(): BelongsTo
     {
         return $this->belongsTo(Book::class);
     }
 
+    /**
+     * المجلد
+     */
     public function volume(): BelongsTo
     {
         return $this->belongsTo(Volume::class);
     }
 
+    /**
+     * الفصل
+     */
     public function chapter(): BelongsTo
     {
         return $this->belongsTo(Chapter::class);
     }
 
-    // Accessors
-
+    /**
+     * الحصول على المحتوى للعرض
+     */
     public function getDisplayContentAttribute(): string
     {
-        return $this->formatted_content ?? $this->html_content ?? $this->content ?? '';
+        return $this->html_content ?? $this->content ?? '';
     }
 
-    public function getPageLabelAttribute(): string
+    /**
+     * الحصول على رقم الصفحة للعرض
+     */
+    public function getDisplayPageNumberAttribute(): string
     {
-        if ($this->part) {
-            return "ج{$this->part} ص{$this->page_number}";
+        if ($this->original_page_number) {
+            return "{$this->page_number} (أصلي: {$this->original_page_number})";
         }
-        return "ص{$this->page_number}";
+        return (string) $this->page_number;
     }
 
-    // Scopes
-
-    public function scopeWithContent($query)
+    /**
+     * التحقق من وجود محتوى HTML
+     */
+    public function hasHtmlContent(): bool
     {
-        return $query->whereNotNull('content')->where('content', '!=', '');
+        return !empty($this->html_content);
     }
 
-    public function scopeMissing($query)
+    /**
+     * التحقق من وجود ترقيم أصلي
+     */
+    public function hasOriginalPageNumber(): bool
     {
-        return $query->where('printed_missing', true);
+        return !is_null($this->original_page_number);
+    }
+
+    /**
+     * Scope للبحث في المحتوى
+     */
+    public function scopeSearch($query, string $term)
+    {
+        return $query->where(function ($q) use ($term) {
+            $q->where('content', 'LIKE', "%{$term}%")
+              ->orWhere('html_content', 'LIKE', "%{$term}%");
+        });
+    }
+
+    /**
+     * Scope حسب الجزء
+     */
+    public function scopeByPart($query, string $part)
+    {
+        return $query->where('part', $part);
+    }
+
+    /**
+     * الحصول على الصفحة التالية
+     */
+    public function getNextPage(): ?Page
+    {
+        return static::where('book_id', $this->book_id)
+            ->where('page_number', '>', $this->page_number)
+            ->orderBy('page_number')
+            ->first();
+    }
+
+    /**
+     * الحصول على الصفحة السابقة
+     */
+    public function getPreviousPage(): ?Page
+    {
+        return static::where('book_id', $this->book_id)
+            ->where('page_number', '<', $this->page_number)
+            ->orderBy('page_number', 'desc')
+            ->first();
     }
 }

@@ -23,8 +23,6 @@ class BookSectionInfolist
                     ->numeric(),
                 IconEntry::make('is_active')
                     ->boolean(),
-                TextEntry::make('slug')
-                    ->placeholder('-'),
                 TextEntry::make('created_at')
                     ->dateTime()
                     ->placeholder('-'),
@@ -32,23 +30,6 @@ class BookSectionInfolist
                     ->dateTime()
                     ->placeholder('-'),
                 TextEntry::make('logo_path')
-                    ->placeholder('-'),
-                TextEntry::make('icon_type')
-                    ->badge()
-                    ->placeholder('-'),
-                TextEntry::make('icon_url')
-                    ->placeholder('-'),
-                TextEntry::make('icon_name')
-                    ->placeholder('-'),
-                TextEntry::make('icon_color')
-                    ->placeholder('-'),
-                TextEntry::make('icon_size')
-                    ->badge(),
-                TextEntry::make('icon_custom_size')
-                    ->numeric()
-                    ->placeholder('-'),
-                TextEntry::make('icon_library')
-                    ->badge()
                     ->placeholder('-'),
             ]);
     }

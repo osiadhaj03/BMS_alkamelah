@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Chapter extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'volume_id',
         'book_id',
@@ -17,11 +20,6 @@ class Chapter extends Model
         'order',
         'page_start',
         'page_end',
-        'estimated_reading_time',
-        'internal_index_start',
-        'internal_index_end',
-        'start_page_internal_index',
-        'end_page_internal_index',
     ];
 
     protected $casts = [
@@ -29,38 +27,99 @@ class Chapter extends Model
         'order' => 'integer',
         'page_start' => 'integer',
         'page_end' => 'integer',
-        'estimated_reading_time' => 'integer',
     ];
 
-    // العلاقات
-
+    /**
+     * الكتاب
+     */
     public function book(): BelongsTo
     {
         return $this->belongsTo(Book::class);
     }
 
+    /**
+     * المجلد
+     */
     public function volume(): BelongsTo
     {
         return $this->belongsTo(Volume::class);
     }
 
+    /**
+     * الفصل الأب
+     */
     public function parent(): BelongsTo
     {
         return $this->belongsTo(Chapter::class, 'parent_id');
     }
 
+    /**
+     * الفصول الفرعية
+     */
     public function children(): HasMany
     {
         return $this->hasMany(Chapter::class, 'parent_id')->orderBy('order');
     }
 
+    /**
+     * جميع الفصول الفرعية (متداخلة)
+     */
+    public function allChildren(): HasMany
+    {
+        return $this->children()->with('allChildren');
+    }
+
+    /**
+     * الصفحات في هذا الفصل
+     */
     public function pages(): HasMany
     {
         return $this->hasMany(Page::class)->orderBy('page_number');
     }
 
-    // Accessors
+    /**
+     * التحقق من أن الفصل رئيسي (ليس له أب)
+     */
+    public function isRoot(): bool
+    {
+        return is_null($this->parent_id);
+    }
 
+    /**
+     * التحقق من وجود فصول فرعية
+     */
+    public function hasChildren(): bool
+    {
+        return $this->children()->exists();
+    }
+
+    /**
+     * Scope للفصول الرئيسية
+     */
+    public function scopeRoots($query)
+    {
+        return $query->whereNull('parent_id');
+    }
+
+    /**
+     * Scope حسب المستوى
+     */
+    public function scopeByLevel($query, int $level)
+    {
+        return $query->where('level', $level);
+    }
+
+    /**
+     * Scope للترتيب
+     */
+    public function scopeOrdered($query)
+    {
+        return $query->orderBy('order');
+    }
+
+    /**
+     * الحصول على عدد الصفحات
+     */
     public function getPagesCountAttribute(): int
     {
         if ($this->page_start && $this->page_end) {
@@ -69,29 +128,19 @@ class Chapter extends Model
         return $this->pages()->count();
     }
 
-    public function getReadingTimeAttribute(): string
+    /**
+     * الحصول على المسار الكامل للفصل
+     */
+    public function getFullPathAttribute(): string
     {
-        if ($this->estimated_reading_time) {
-            $hours = floor($this->estimated_reading_time / 60);
-            $minutes = $this->estimated_reading_time % 60;
-            
-            if ($hours > 0) {
-                return "{$hours} ساعة و {$minutes} دقيقة";
-            }
-            return "{$minutes} دقيقة";
+        $path = [$this->title];
+        $parent = $this->parent;
+        
+        while ($parent) {
+            array_unshift($path, $parent->title);
+            $parent = $parent->parent;
         }
-        return 'غير محدد';
-    }
-
-    // Scopes
-
-    public function scopeRoots($query)
-    {
-        return $query->whereNull('parent_id');
-    }
-
-    public function scopeByLevel($query, int $level)
-    {
-        return $query->where('level', $level);
+        
+        return implode(' > ', $path);
     }
 }

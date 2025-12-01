@@ -2,37 +2,45 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Author extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'full_name',
-        'slug',
         'biography',
         'image',
         'madhhab',
         'is_living',
-        'birth_year_type',
-        'birth_year',
-        'death_year_type',
-        'death_year',
         'birth_date',
         'death_date',
-        'author_role',
     ];
 
     protected $casts = [
-        'is_living' => 'boolean',
-        'birth_year' => 'integer',
-        'death_year' => 'integer',
         'birth_date' => 'date',
         'death_date' => 'date',
+        'is_living' => 'boolean',
     ];
 
-    // العلاقات
+    /**
+     * المذاهب المتاحة
+     */
+    const MADHAHIB = [
+        'المذهب الحنفي' => 'المذهب الحنفي',
+        'المذهب المالكي' => 'المذهب المالكي',
+        'المذهب الشافعي' => 'المذهب الشافعي',
+        'المذهب الحنبلي' => 'المذهب الحنبلي',
+        'آخرون' => 'آخرون',
+    ];
 
+    /**
+     * العلاقة مع الكتب (many-to-many)
+     */
     public function books(): BelongsToMany
     {
         return $this->belongsToMany(Book::class, 'author_book')
@@ -40,39 +48,83 @@ class Author extends Model
             ->withTimestamps();
     }
 
-    // Accessors
-
-    public function getBooksCountAttribute(): int
+    /**
+     * الكتب كمؤلف رئيسي
+     */
+    public function mainBooks(): BelongsToMany
     {
-        return $this->books()->count();
+        return $this->books()->wherePivot('is_main', true);
     }
 
-    public function getLifespanAttribute(): ?string
+    /**
+     * الكتب كمؤلف
+     */
+    public function authoredBooks(): BelongsToMany
     {
-        if ($this->is_living) {
-            return $this->birth_year ? "ولد {$this->birth_year}" : 'معاصر';
-        }
-        
-        if ($this->birth_year && $this->death_year) {
-            return "{$this->birth_year} - {$this->death_year}";
-        }
-        
-        if ($this->death_year) {
-            return "ت {$this->death_year}";
-        }
-        
-        return null;
+        return $this->books()->wherePivot('role', 'author');
     }
 
-    // Scopes
+    /**
+     * الكتب كمترجم
+     */
+    public function translatedBooks(): BelongsToMany
+    {
+        return $this->books()->wherePivot('role', 'translator');
+    }
 
+    /**
+     * الكتب كمحقق
+     */
+    public function editedBooks(): BelongsToMany
+    {
+        return $this->books()->wherePivot('role', 'editor');
+    }
+
+    /**
+     * البيانات المستخرجة المطابقة كمؤلف
+     */
+    public function extractedMetadataAsAuthor(): HasMany
+    {
+        return $this->hasMany(BookExtractedMetadata::class, 'matched_author_id');
+    }
+
+    /**
+     * البيانات المستخرجة المطابقة كمحقق
+     */
+    public function extractedMetadataAsTahqeeq(): HasMany
+    {
+        return $this->hasMany(BookExtractedMetadata::class, 'matched_tahqeeq_author_id');
+    }
+
+    /**
+     * Scope للمؤلفين الأحياء
+     */
     public function scopeLiving($query)
     {
         return $query->where('is_living', true);
     }
 
+    /**
+     * Scope للمؤلفين المتوفين
+     */
     public function scopeDeceased($query)
     {
         return $query->where('is_living', false);
+    }
+
+    /**
+     * Scope حسب المذهب
+     */
+    public function scopeByMadhhab($query, string $madhhab)
+    {
+        return $query->where('madhhab', $madhhab);
+    }
+
+    /**
+     * الحصول على عدد الكتب
+     */
+    public function getBooksCountAttribute(): int
+    {
+        return $this->books()->count();
     }
 }

@@ -25,8 +25,6 @@ class BookSectionsTable
                     ->sortable(),
                 IconColumn::make('is_active')
                     ->boolean(),
-                TextColumn::make('slug')
-                    ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -37,21 +35,6 @@ class BookSectionsTable
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('logo_path')
                     ->searchable(),
-                TextColumn::make('icon_type')
-                    ->badge(),
-                TextColumn::make('icon_url')
-                    ->searchable(),
-                TextColumn::make('icon_name')
-                    ->searchable(),
-                TextColumn::make('icon_color')
-                    ->searchable(),
-                TextColumn::make('icon_size')
-                    ->badge(),
-                TextColumn::make('icon_custom_size')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('icon_library')
-                    ->badge(),
             ])
             ->filters([
                 //

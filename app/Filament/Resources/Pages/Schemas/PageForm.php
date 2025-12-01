@@ -5,7 +5,6 @@ namespace App\Filament\Resources\Pages\Schemas;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 
 class PageForm
@@ -36,14 +35,7 @@ class PageForm
                 TextInput::make('original_page_number')
                     ->numeric()
                     ->default(null),
-                TextInput::make('word_count')
-                    ->numeric()
-                    ->default(null),
                 Textarea::make('html_content')
-                    ->default(null)
-                    ->columnSpanFull(),
-                Toggle::make('printed_missing'),
-                Textarea::make('formatted_content')
                     ->default(null)
                     ->columnSpanFull(),
             ]);

@@ -15,25 +15,14 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use UnitEnum;
 
 class VolumeResource extends Resource
 {
     protected static ?string $model = Volume::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArchiveBox;
+    //protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static string|UnitEnum|null $navigationGroup = 'إدارة المحتوى';
-
-    protected static ?int $navigationSort = 2;
-
-    protected static ?string $navigationLabel = 'المجلدات';
-
-    protected static ?string $modelLabel = 'مجلد';
-
-    protected static ?string $pluralModelLabel = 'المجلدات';
-
-    protected static ?string $recordTitleAttribute = 'title';
+    protected static ?string $recordTitleAttribute = 'Volume';
 
     public static function form(Schema $schema): Schema
     {

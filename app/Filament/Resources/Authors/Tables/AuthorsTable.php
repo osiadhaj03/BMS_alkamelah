@@ -19,23 +19,11 @@ class AuthorsTable
             ->columns([
                 TextColumn::make('full_name')
                     ->searchable(),
-                TextColumn::make('slug')
-                    ->searchable(),
                 ImageColumn::make('image'),
                 TextColumn::make('madhhab')
                     ->badge(),
                 IconColumn::make('is_living')
                     ->boolean(),
-                TextColumn::make('birth_year_type')
-                    ->badge(),
-                TextColumn::make('birth_year')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('death_year_type')
-                    ->badge(),
-                TextColumn::make('death_year')
-                    ->numeric()
-                    ->sortable(),
                 TextColumn::make('birth_date')
                     ->date()
                     ->sortable(),
@@ -50,8 +38,6 @@ class AuthorsTable
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('author_role')
-                    ->searchable(),
             ])
             ->filters([
                 //

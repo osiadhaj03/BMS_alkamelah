@@ -15,25 +15,14 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use UnitEnum;
 
 class AuthorResource extends Resource
 {
     protected static ?string $model = Author::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPencil;
+    //protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static string|UnitEnum|null $navigationGroup = 'إدارة البيانات';
-
-    protected static ?int $navigationSort = 1;
-
-    protected static ?string $navigationLabel = 'المؤلفون';
-
-    protected static ?string $modelLabel = 'مؤلف';
-
-    protected static ?string $pluralModelLabel = 'المؤلفون';
-
-    protected static ?string $recordTitleAttribute = 'name';
+    protected static ?string $recordTitleAttribute = 'Author';
 
     public static function form(Schema $schema): Schema
     {

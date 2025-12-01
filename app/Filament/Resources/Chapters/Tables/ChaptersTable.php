@@ -35,9 +35,6 @@ class ChaptersTable
                 TextColumn::make('page_end')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('estimated_reading_time')
-                    ->numeric()
-                    ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -46,18 +43,6 @@ class ChaptersTable
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('internal_index_start')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('internal_index_end')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('start_page_internal_index')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('end_page_internal_index')
-                    ->numeric()
-                    ->sortable(),
             ])
             ->filters([
                 //

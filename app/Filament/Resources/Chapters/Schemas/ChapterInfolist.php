@@ -31,26 +31,11 @@ class ChapterInfolist
                 TextEntry::make('page_end')
                     ->numeric()
                     ->placeholder('-'),
-                TextEntry::make('estimated_reading_time')
-                    ->numeric()
-                    ->placeholder('-'),
                 TextEntry::make('created_at')
                     ->dateTime()
                     ->placeholder('-'),
                 TextEntry::make('updated_at')
                     ->dateTime()
-                    ->placeholder('-'),
-                TextEntry::make('internal_index_start')
-                    ->numeric()
-                    ->placeholder('-'),
-                TextEntry::make('internal_index_end')
-                    ->numeric()
-                    ->placeholder('-'),
-                TextEntry::make('start_page_internal_index')
-                    ->numeric()
-                    ->placeholder('-'),
-                TextEntry::make('end_page_internal_index')
-                    ->numeric()
                     ->placeholder('-'),
             ]);
     }

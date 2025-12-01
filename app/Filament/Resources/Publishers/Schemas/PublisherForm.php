@@ -16,8 +16,6 @@ class PublisherForm
             ->components([
                 TextInput::make('name')
                     ->required(),
-                TextInput::make('slug')
-                    ->default(null),
                 TextInput::make('address')
                     ->default(null),
                 TextInput::make('email')

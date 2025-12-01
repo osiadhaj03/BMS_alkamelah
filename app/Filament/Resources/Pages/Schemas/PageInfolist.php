@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Pages\Schemas;
 
-use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 
@@ -38,16 +37,7 @@ class PageInfolist
                 TextEntry::make('original_page_number')
                     ->numeric()
                     ->placeholder('-'),
-                TextEntry::make('word_count')
-                    ->numeric()
-                    ->placeholder('-'),
                 TextEntry::make('html_content')
-                    ->placeholder('-')
-                    ->columnSpanFull(),
-                IconEntry::make('printed_missing')
-                    ->boolean()
-                    ->placeholder('-'),
-                TextEntry::make('formatted_content')
                     ->placeholder('-')
                     ->columnSpanFull(),
             ]);

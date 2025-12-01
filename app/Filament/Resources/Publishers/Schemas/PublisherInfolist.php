@@ -14,8 +14,6 @@ class PublisherInfolist
         return $schema
             ->components([
                 TextEntry::make('name'),
-                TextEntry::make('slug')
-                    ->placeholder('-'),
                 TextEntry::make('address')
                     ->placeholder('-'),
                 TextEntry::make('email')
