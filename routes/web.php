@@ -9,20 +9,40 @@ Route::get('/', function () {
 
 // مسار مؤقت لمسح الـ Cache - احذفه بعد الاستخدام
 Route::get('/clear-cache-secret-2024', function () {
-    Artisan::call('optimize:clear');
-    Artisan::call('filament:optimize-clear');
+    // مسح الـ cache يدوياً بدون استخدام artisan commands
+    $paths = [
+        storage_path('framework/views'),
+        storage_path('framework/cache/data'),
+        base_path('bootstrap/cache'),
+    ];
     
-    // حذف ملفات views المؤقتة يدوياً
-    $viewsPath = storage_path('framework/views');
-    $files = glob($viewsPath . '/*');
-    foreach ($files as $file) {
-        if (is_file($file)) {
-            unlink($file);
+    $cleared = [];
+    
+    foreach ($paths as $path) {
+        if (is_dir($path)) {
+            $files = glob($path . '/*');
+            foreach ($files as $file) {
+                if (is_file($file) && !str_contains($file, '.gitignore')) {
+                    unlink($file);
+                }
+            }
+            $cleared[] = $path;
         }
     }
     
-    return 'All caches cleared successfully! ✅<br><br>
-            <strong>Important:</strong> Delete this route from routes/web.php after use.';
+    // مسح cache من جدول cache في قاعدة البيانات
+    try {
+        \Illuminate\Support\Facades\DB::table('cache')->truncate();
+        $cleared[] = 'database cache table';
+    } catch (\Exception $e) {
+        // تجاهل إذا لم يكن هناك جدول cache
+    }
+    
+    return '<h2>Cache Cleared Successfully! ✅</h2>
+            <p>Cleared paths:</p>
+            <ul><li>' . implode('</li><li>', $cleared) . '</li></ul>
+            <p><strong>Important:</strong> Delete this route from routes/web.php after use.</p>
+            <p><a href="/admin">Go to Admin Panel</a></p>';
 });
 
 // مسار للتحقق من محتوى AuthorForm - احذفه بعد الاستخدام
