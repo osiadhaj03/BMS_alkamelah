@@ -82,7 +82,7 @@ class AuthorsTable
                     ])
                     ->default('المذهب الحنفي')
                     ->native(false)
-                    ->live(),
+//->live(),
                 SelectFilter::make('is_living')
                     ->label('على قيد الحياة')
                     ->options([
@@ -91,17 +91,17 @@ class AuthorsTable
                     ])
                     ->default(0)
                     ->native(false)
-                    ->live(),
+                    //->live(),
                 SelectFilter::make('birth_date')
                     ->label('تاريخ الولادة')
                     ->date()
                     ->native(false)
-                    ->live(),
+                    //->live(),
                 SelectFilter::make('death_date')
                     ->label('تاريخ الوفاة')
                     ->date()
                     ->native(false)
-                    ->live(),
+                 //   ->live(),
                     
             ])
             ->recordActions([
