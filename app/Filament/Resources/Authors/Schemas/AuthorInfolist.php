@@ -33,7 +33,23 @@ class AuthorInfolist
                                     TextEntry::make('full_name')
                                         ->label('الاسم الكامل')
                                         ->size(TextEntry\TextEntrySize::Large)
-                                        ->weight('bold'),
+                                        ->weight('bold')
+                                        ->placeholder('غير محدد'),
+
+                                    Grid::make(2)
+                                        ->schema([
+                                            TextEntry::make('laqab')
+                                                ->label('اللقب')
+                                                ->badge()
+                                                ->color('info')
+                                                ->placeholder('لا يوجد'),
+
+                                            TextEntry::make('kunyah')
+                                                ->label('الكنية')
+                                                ->badge()
+                                                ->color('warning')
+                                                ->placeholder('لا يوجد'),
+                                        ]),
 
                                     TextEntry::make('madhhab')
                                         ->label('المذهب')

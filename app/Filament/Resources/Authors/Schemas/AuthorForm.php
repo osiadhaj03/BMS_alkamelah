@@ -20,11 +20,39 @@ class AuthorForm
                     ->description('بيانات المؤلف الرئيسية')
                     ->icon('heroicon-o-user')
                     ->schema([
-                        TextInput::make('full_name')
-                            ->label('الاسم الكامل')
-                            ->required()
-                            ->maxLength(255)
-                            ->placeholder('أدخل اسم المؤلف كاملاً'),
+                        Grid::make(3)
+                            ->schema([
+                                TextInput::make('first_name')
+                                    ->label('الاسم الأول')
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->placeholder('مثال: النعمان'),
+
+                                TextInput::make('middle_name')
+                                    ->label('الاسم الأوسط')
+                                    ->maxLength(255)
+                                    ->placeholder('مثال : بن ثابت'),
+
+                                TextInput::make('last_name')
+                                    ->label('الاسم الأخير')
+                                    ->maxLength(255)
+                                    ->placeholder('مثال: التيمي'),
+                            ]),
+
+                        Grid::make(2)
+                            ->schema([
+                                TextInput::make('laqab')
+                                    ->label('اللقب')
+                                    ->maxLength(255)
+                                    ->placeholder('مثال: الإمام، الشيخ، العلامة')
+                                    ->helperText('اللقب العلمي أو الشرفي'),
+
+                                TextInput::make('kunyah')
+                                    ->label('الكنية')
+                                    ->maxLength(255)
+                                    ->placeholder('مثال: أبو حنيفة، أبو يوسف')
+                                    ->helperText('الكنية بأبو أو أم'),
+                            ]),
 
                         FileUpload::make('image')
                             ->label('صورة المؤلف')

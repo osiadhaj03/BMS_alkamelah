@@ -12,7 +12,11 @@ class Author extends Model
     use HasFactory;
 
     protected $fillable = [
-        'full_name',
+        'first_name',
+        'middle_name',
+        'last_name',
+        'laqab',
+        'kunyah',
         'biography',
         'image',
         'madhhab',
@@ -126,5 +130,21 @@ class Author extends Model
     public function getBooksCountAttribute(): int
     {
         return $this->books()->count();
+    }
+
+    /**
+     * الحصول على الاسم الكامل (مركب من جميع أجزاء الاسم)
+     */
+    public function getFullNameAttribute(): string
+    {
+        $nameParts = array_filter([
+            $this->laqab,
+            $this->kunyah,
+            $this->first_name,
+            $this->middle_name,
+            $this->last_name,
+        ]);
+
+        return implode(' ', $nameParts);
     }
 }
