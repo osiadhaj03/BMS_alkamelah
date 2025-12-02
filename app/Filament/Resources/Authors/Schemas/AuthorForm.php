@@ -160,6 +160,7 @@ class AuthorForm
                             ->columnSpanFull()
                             ->defaultItems(0),
                     ])
+                    ->columnSpanFull()  
                     ->collapsible()
                     ->collapsed(),
             ]);
