@@ -2,13 +2,13 @@
 
 namespace App\Filament\Resources\Authors\Schemas;
 
-use Filament\Infolists\Components\Grid;
-use Filament\Infolists\Components\Group;
-use Filament\Infolists\Components\IconEntry;
-use Filament\Infolists\Components\ImageEntry;
-use Filament\Infolists\Components\RepeatableEntry;
-use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\IconEntry;
+use Filament\Schemas\Components\ImageEntry;
+use Filament\Schemas\Components\RepeatableEntry;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\TextEntry;
 use Filament\Schemas\Schema;
 
 class AuthorInfolist
