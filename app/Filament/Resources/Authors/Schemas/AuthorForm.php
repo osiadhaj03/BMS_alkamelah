@@ -52,9 +52,10 @@ class AuthorForm
                                 'source-ai',
                                 'source-ai-transform',
                             ])
-                            ->columnSpanFull(),
+                            ->columnSpanFull()
+                            ->rows(10),
                     ])
-                    ->columns(1),
+                     ->columnSpanFull(),
 
                 Section::make('التفاصيل')
                     ->description('معلومات إضافية عن المؤلف')
@@ -97,7 +98,7 @@ class AuthorForm
                                     ->hidden(fn ($get) => $get('is_living') == 1),
                             ]),
                     ])
-                    ->columns(1),
+                     ->columnSpanFull(),
             ]);
     }
 }

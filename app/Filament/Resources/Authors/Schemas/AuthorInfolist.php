@@ -57,7 +57,7 @@ class AuthorInfolist
                             ->prose()
                             ->placeholder('لا توجد سيرة ذاتية')
                             ->columnSpanFull(),
-                    ]),
+                    ]) ->columnSpanFull(),
 
                 Section::make('التواريخ')
                     ->icon('heroicon-o-calendar')
