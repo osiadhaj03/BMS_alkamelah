@@ -6,6 +6,7 @@ use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Components\Group;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\ImageEntry;
+use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
@@ -93,6 +94,37 @@ class AuthorInfolist
                             ]),
                     ])
                     ->collapsible(),
+
+                Section::make('روابط الفيديو')
+                    ->icon('heroicon-o-video-camera')
+                    ->schema([
+                        RepeatableEntry::make('video_links')
+                            ->label('')
+                            ->schema([
+                                TextEntry::make('url')
+                                    ->label('الرابط')
+                                    ->url(fn ($state) => $state)
+                                    ->openUrlInNewTab()
+                                    ->icon('heroicon-o-link')
+                                    ->copyable()
+                                    ->columnSpan(2),
+
+                                TextEntry::make('title')
+                                    ->label('العنوان')
+                                    ->placeholder('لا يوجد عنوان')
+                                    ->columnSpan(2),
+
+                                TextEntry::make('description')
+                                    ->label('الوصف')
+                                    ->placeholder('لا يوجد وصف')
+                                    ->columnSpanFull(),
+                            ])
+                            ->columns(4)
+                            ->columnSpanFull(),
+                    ])
+                    ->collapsible()
+                    ->collapsed()
+                    ->visible(fn ($record) => !empty($record->video_links)),
 
                 Section::make('معلومات النظام')
                     ->icon('heroicon-o-cog')

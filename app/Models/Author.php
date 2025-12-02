@@ -18,6 +18,7 @@ class Author extends Model
         'laqab',
         'kunyah',
         'biography',
+        'video_links',
         'image',
         'madhhab',
         'is_living',
@@ -29,6 +30,7 @@ class Author extends Model
         'birth_date' => 'date',
         'death_date' => 'date',
         'is_living' => 'boolean',
+        'video_links' => 'array',
     ];
 
     /**

@@ -3,8 +3,10 @@
 namespace App\Filament\Resources\Authors\Schemas;
 
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
@@ -44,14 +46,12 @@ class AuthorForm
                                 TextInput::make('laqab')
                                     ->label('اللقب')
                                     ->maxLength(255)
-                                    ->placeholder('مثال: الإمام، الشيخ، العلامة')
-                                    ->helperText('اللقب العلمي أو الشرفي'),
+                                    ->placeholder(' مثال: الإمام الأعظم، الإمام، الشيخ، العلامة ،الدكتور'),
 
                                 TextInput::make('kunyah')
                                     ->label('الكنية')
                                     ->maxLength(255)
-                                    ->placeholder('مثال: أبو حنيفة، أبو يوسف')
-                                    ->helperText('الكنية بأبو أو أم'),
+                                    ->placeholder('مثال: أبو حنيفة، أبو يوسف'),
                             ]),
 
                         FileUpload::make('image')
@@ -127,6 +127,41 @@ class AuthorForm
                             ]),
                     ])
                      ->columnSpanFull(),
+
+                Section::make('روابط الفيديو')
+                    ->description('إضافة روابط فيديوهات عن المؤلف')
+                    ->icon('heroicon-o-video-camera')
+                    ->schema([
+                        Repeater::make('video_links')
+                            ->label('')
+                            ->schema([
+                                TextInput::make('url')
+                                    ->label('رابط الفيديو')
+                                    ->required()
+                                    ->placeholder('https://youtube.com/watch?v=...')
+                                    ->columnSpan(2),
+
+                                TextInput::make('title')
+                                    ->label('عنوان الفيديو')
+                                    ->placeholder('مثال: محاضرة عن الإمام')
+                                    ->columnSpan(2),
+
+                                Textarea::make('description')
+                                    ->label('وصف الفيديو')
+                                    ->rows(2)
+                                    ->placeholder('وصف مختصر للفيديو')
+                                    ->columnSpanFull(),
+                            ])
+                            ->columns(4)
+                            ->collapsible()
+                            ->itemLabel(fn (array $state): ?string => $state['title'] ?? 'فيديو جديد')
+                            ->addActionLabel('إضافة فيديو')
+                            ->reorderable()
+                            ->columnSpanFull()
+                            ->defaultItems(0),
+                    ])
+                    ->collapsible()
+                    ->collapsed(),
             ]);
     }
 }
