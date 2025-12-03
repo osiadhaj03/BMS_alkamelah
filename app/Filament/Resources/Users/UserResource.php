@@ -28,7 +28,7 @@ class UserResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return 'إدارة النظام';
+        return 'إدارة الوصول';
     }
 
     public static function getModelLabel(): string
