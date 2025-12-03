@@ -44,6 +44,31 @@ class BookForm
                             ->default('public')
                             ->required(),
                     ])
+                    ->columns(2)
+                    ->columnSpanFull(),
+
+                Section::make('معلومات الطبعة')
+                    ->schema([
+                        Select::make('has_original_pagination')
+                            ->label('يحتوي على ترقيم الصفحات الأصلي(وفق المطبوع)')
+                            ->options([
+                                'yes' => 'نعم',
+                                'no' => 'لا',
+                            ])
+                            ->default('yes')
+                            ->required(),
+                        TextInput::make('edition')
+                            ->label('رقم الطبعة')
+                            ->placeholder('الطبعة 1 ، 2، ...')
+                            ->numeric(),
+
+
+                        TextInput::make('edition_year')
+                            ->label('سنة الطبعة')
+                            ->placeholder('سنة الطبعة(مثال: 1999)')
+                            ->numeric(),    
+                    ])
+                    ->columns(3)
                     ->columnSpanFull(),
 
                 Section::make('التصنيف والمؤلفين والنشر')
@@ -100,8 +125,7 @@ class BookForm
                             ->preload()
                             ->default(null),
                         
-                        Toggle::make('has_original_pagination')
-                            ->label('يحتوي على ترقيم الصفحات الأصلي'),
+                       
                     ])
                     ->columnSpanFull(),
 
@@ -126,12 +150,7 @@ class BookForm
                             ])
                             ->columnSpanFull(),
 
-                        TextInput::make('edition')
-                            ->label('الطبعة'),
 
-                        TextInput::make('edition_year')
-                            ->label('سنة الطبعة')
-                            ->numeric(),
 
                         Repeater::make('download_links')
                             ->label('روابط التحميل')
