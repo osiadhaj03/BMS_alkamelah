@@ -2,6 +2,9 @@
 
 namespace App\Filament\Resources\Books\Schemas;
 
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\KeyValue;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -75,6 +78,48 @@ class BookForm
                             ->columnSpanFull(),
                     ])
                     ->collapsed(),
+
+                Section::make('البيانات الوصفية')
+                    ->relationship('bookMetadata')
+                    ->schema([
+                        FileUpload::make('images')
+                            ->label('الصور')
+                            ->multiple()
+                            ->image()
+                            ->directory('book-images')
+                            ->columnSpanFull(),
+
+                        Repeater::make('video_links')
+                            ->label('روابط الفيديو')
+                            ->schema([
+                                TextInput::make('title')->label('العنوان')->required(),
+                                TextInput::make('url')->label('الرابط')->url()->required(),
+                                TextInput::make('description')->label('الوصف'),
+                            ])
+                            ->columnSpanFull(),
+
+                        TextInput::make('edition')
+                            ->label('الطبعة'),
+
+                        TextInput::make('edition_year')
+                            ->label('سنة الطبعة')
+                            ->numeric(),
+
+                        Repeater::make('download_links')
+                            ->label('روابط التحميل')
+                            ->schema([
+                                TextInput::make('title')->label('العنوان')->required(),
+                                TextInput::make('url')->label('الرابط')->url()->required(),
+                                TextInput::make('type')->label('النوع (PDF, etc)'),
+                            ])
+                            ->columnSpanFull(),
+
+                        KeyValue::make('metadata')
+                            ->label('بيانات إضافية')
+                            ->keyLabel('المفتاح')
+                            ->valueLabel('القيمة')
+                            ->columnSpanFull(),
+                    ]),
             ]);
     }
 }

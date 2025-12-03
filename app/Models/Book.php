@@ -207,4 +207,11 @@ class Book extends Model
     {
         return $this->extractedMetadata()->exists();
     }
+    /**
+     * البيانات الوصفية للكتاب (Metadata)
+     */
+    public function bookMetadata(): HasOne
+    {
+        return $this->hasOne(BookMetadata::class);
+    }
 }
