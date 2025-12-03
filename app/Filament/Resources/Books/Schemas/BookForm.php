@@ -235,7 +235,7 @@ class BookForm
                             ->defaultItems(0),
 
                         
-                    ])->columnSpanFull(),
+                    ])->collapsed() ->columnSpanFull(),
                 Section::make('معلومات إضافية')
                     ->schema([
                         Textarea::make('additional_notes')
