@@ -23,7 +23,7 @@ class BookForm
                         TextInput::make('title')
                             ->label('عنوان الكتاب')
                             ->required()
-                            ->columnSpan(2),
+                            ->columnSpanFull(),
                         
                         Textarea::make('description')
                             ->label('وصف الكتاب')
@@ -46,7 +46,7 @@ class BookForm
                     ])
                     ->columnSpanFull(),
 
-                Section::make('التصنيف')
+                Section::make('التصنيف والمؤلفين والنشر')
                     ->schema([
                         Select::make('book_section_id')
                             ->label('القسم')
@@ -54,10 +54,7 @@ class BookForm
                             ->searchable()
                             ->preload()
                             ->default(null),
-                    ]),
 
-                Section::make('المؤلفين')
-                    ->schema([
                         Repeater::make('authorBooks')
                             ->label('المؤلفين')
                             ->relationship()
@@ -89,30 +86,13 @@ class BookForm
                                         false => 'لا',
                                     ])
                                     ->default(false)
-                                    ->required()
-                                    ->live()
-                                    ->afterStateUpdated(function ($state, $set, $get, $component) {
-                                        if ($state === true) {
-                                            $repeaterState = $get('../../authorBooks');
-                                            $currentPath = $component->getStatePath();
-                                            
-                                            foreach ($repeaterState as $key => $item) {
-                                                $itemPath = "../../authorBooks.{$key}.is_main";
-                                                if ($itemPath !== $currentPath && ($item['is_main'] ?? false) === true) {
-                                                    $set("../../authorBooks.{$key}.is_main", false);
-                                                }
-                                            }
-                                        }
-                                    }),
+                                    ->required(),
                             ])
                             ->columns(3)
                             ->columnSpanFull()
                             ->defaultItems(1)
                             ->addActionLabel('إضافة مؤلف'),
-                    ]),
 
-                Section::make('معلومات النشر')
-                    ->schema([
                         Select::make('publisher_id')
                             ->label('الناشر')
                             ->relationship('publisher', 'name')
@@ -122,16 +102,10 @@ class BookForm
                         
                         Toggle::make('has_original_pagination')
                             ->label('يحتوي على ترقيم الصفحات الأصلي'),
-                    ]),
-
-                Section::make('معلومات إضافية')
-                    ->schema([
-                        Textarea::make('additional_notes')
-                            ->label('ملاحظات إضافية')
-                            ->default(null)
-                            ->columnSpanFull(),
                     ])
-                    ->collapsed(),
+                    ->columnSpanFull(),
+
+
 
                 Section::make('البيانات الوصفية')
                     ->relationship('bookMetadata')
@@ -168,12 +142,21 @@ class BookForm
                             ])
                             ->columnSpanFull(),
 
+                        
+                    ]) ->columnSpanFull(),
+                Section::make('معلومات إضافية')
+                    ->schema([
+                        Textarea::make('additional_notes')
+                            ->label('ملاحظات إضافية')
+                            ->default(null)
+                            ->columnSpanFull(),
                         KeyValue::make('metadata')
                             ->label('بيانات إضافية')
                             ->keyLabel('المفتاح')
                             ->valueLabel('القيمة')
-                            ->columnSpanFull(),
-                    ]),
+                            ->columnSpanFull(),    
+                    ])
+                    ->collapsed() ->columnSpanFull(),
             ]);
     }
 }
