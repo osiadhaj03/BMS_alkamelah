@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\BookReader\BookReaderPage;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
@@ -7,6 +8,20 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// ═══════════════════════════════════════════════════════════
+// Book Reader Routes
+// ═══════════════════════════════════════════════════════════
+
+///Route::get('/book/{bookId}/{pageNumber?}', BookReaderPage::class)
+///    ->where('bookId', '[0-9]+')
+///    ->where('pageNumber', '[0-9]+')
+///    ->name('book.read');
+///
+///// Alternative route with slug
+///Route::get('/read/{bookSlug}/{pageNumber?}', BookReaderPage::class)
+///    ->where('pageNumber', '[0-9]+')
+///    ->name('book.read.slug');
+///
 // مسار مؤقت لمسح الـ Cache - احذفه بعد الاستخدام
 Route::get('/clear-cache-secret-2024', function () {
     // مسح الـ cache يدوياً بدون استخدام artisan commands

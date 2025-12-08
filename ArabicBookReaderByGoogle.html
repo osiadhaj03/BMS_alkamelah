@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>قارئ الكتب العربية - عمدة الرعاية</title>
+    
+    <!-- تحميل الخطوط العربية -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Noto+Kufi+Arabic:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- متغيرات الألوان الجديدة (مستوحاة من الصور) --- */
+        :root {
+            /* النمط النهاري "التراثي" */
+            --bg-body: #f3f1eb; /* بيج هادئ للخلفية العامة */
+            --bg-paper: #fdfbf7; /* لون ورق كريمي */
+            --bg-sidebar: #fdfbf7;
+            
+            --text-main: #2b2b2b; /* أسود فحمي */
+            --text-secondary: #666666;
+            
+            --accent-color: #557c55; /* أخضر زيتوني (Sage Green) */
+            --accent-hover: #416041;
+            --accent-light: #e8f0e8; /* خلفية خفيفة للعناصر النشطة */
+            
+            --border-color: #e0ddd5;
+            --highlight-color: #ffeb3b80;
+            
+            --shadow-soft: 0 10px 30px rgba(85, 124, 85, 0.08); /* ظل أخضر خفيف */
+            --shadow-paper: 0 4px 20px rgba(0,0,0,0.06);
+            
+            --font-main: 'Amiri', serif;
+            --font-ui: 'Noto Kufi Arabic', sans-serif;
+            
+            --radius-main: 16px; /* زوايا دائرية ناعمة */
+        }
+
+        [data-theme="dark"] {
+            /* النمط الليلي */
+            --bg-body: #1a1b1e;
+            --bg-paper: #25262b;
+            --bg-sidebar: #202125;
+            
+            --text-main: #e0e0e0;
+            --text-secondary: #909296;
+            
+            --accent-color: #74b874;
+            --accent-hover: #8ce98c;
+            --accent-light: #2c3e2c;
+            
+            --border-color: #2c2e33;
+            --highlight-color: #4a4a2e;
+            --shadow-soft: 0 10px 30px rgba(0,0,0,0.3);
+            --shadow-paper: none;
+        }
+
+        /* --- Reset & Base --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            font-family: var(--font-ui);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            transition: background 0.4s ease, color 0.4s ease;
+            overflow: hidden; /* App-like feel */
+            height: 100vh;
+            display: flex;
+            
+            /* زخرفة خلفية إسلامية خفيفة جداً باستخدام CSS Gradient */
+            background-image: 
+                radial-gradient(var(--border-color) 1px, transparent 1px),
+                radial-gradient(var(--border-color) 1px, transparent 1px);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+        }
+
+        /* --- شريط جانبي صغير للأدوات (يسار الشاشة كما في الصورة 2) --- */
+        /* ملاحظة: بما أن الصفحة RTL، فاليسار هو الجهة "البعيدة". هذا الشريط للأيقونات فقط */
+        .mini-sidebar {
+            width: 60px;
+            background: var(--bg-paper);
+            border-right: 1px solid var(--border-color); /* في الـ RTL يصبح هذا الحد على اليمين */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 20px;
+            gap: 20px;
+            z-index: 1000;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.02);
+        }
+        
+        .mini-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .mini-icon:hover, .mini-icon.active {
+            background-color: var(--accent-light);
+            color: var(--accent-color);
+        }
+        .mini-icon svg { width: 22px; height: 22px; fill: currentColor; }
+
+        /* --- الحاوية الرئيسية --- */
+        .app-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background: transparent;
+        }
+
+        /* --- الهيدر (شريط الأدوات) --- */
+        header {
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+            z-index: 900;
+        }
+
+        .header-title {
+            display: flex;
+            flex-direction: column;
+        }
+        .header-title h1 {
+            font-size: 1.2rem;
+            color: var(--text-main);
+            font-weight: 700;
+        }
+        .header-title span {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        /* مجموعة الأزرار العلوية (كپسولة) */
+        .toolbar-pill {
+            background: var(--bg-paper);
+            padding: 5px 10px;
+            border-radius: 30px; /* شكل كبسولة */
+            display: flex;
+            gap: 5px;
+            align-items: center;
+            box-shadow: var(--shadow-paper);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-icon {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%; /* دائري بالكامل */
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-ui);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        .btn-icon:hover {
+            background-color: var(--accent-light);
+            color: var(--accent-color);
+        }
+        .btn-main {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        .btn-main:hover {
+            background-color: var(--accent-hover);
+            color: white;
+        }
+        .btn-icon svg { width: 20px; height: 20px; fill: currentColor; }
+
+
+        /* --- منطقة العمل (Sidebar + Content) --- */
+        .workspace {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            padding: 0 20px 20px 20px; /* مسافة حول الورقة */
+            gap: 20px;
+        }
+
+        /* --- القائمة الجانبية (الفهرس) --- */
+        aside.sidebar {
+            width: 300px;
+            background-color: var(--bg-paper);
+            border-radius: var(--radius-main);
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: transform 0.3s ease, width 0.3s ease;
+            box-shadow: var(--shadow-paper);
+        }
+
+        .sidebar-header {
+            padding: 1.2rem;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(0,0,0,0.01);
+        }
+
+        .search-wrapper {
+            position: relative;
+            background: var(--bg-body);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+        .search-wrapper input {
+            width: 100%;
+            padding: 12px 40px 12px 12px;
+            border: none;
+            background: transparent;
+            color: var(--text-main);
+            font-family: var(--font-ui);
+            font-size: 0.9rem;
+        }
+        .search-wrapper .icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+
+        .toc-scroll {
+            overflow-y: auto;
+            flex: 1;
+            padding: 10px;
+        }
+        
+        .toc-item {
+            margin-bottom: 2px;
+        }
+        
+        .toc-link {
+            display: flex;
+            align-items: center;
+            padding: 10px 12px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 0.9rem;
+            border-radius: 8px;
+            transition: all 0.2s;
+            gap: 10px;
+        }
+        .toc-link:hover {
+            background-color: var(--bg-body);
+        }
+        .toc-link.active {
+            background-color: var(--accent-light);
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+        
+        .toc-icon {
+            width: 18px;
+            height: 18px;
+            opacity: 0.5;
+            flex-shrink: 0;
+        }
+        .toc-link.active .toc-icon { opacity: 1; fill: var(--accent-color); }
+
+        .toc-sub {
+            padding-right: 20px; /* إزاحة للفروع */
+            display: none;
+            margin-top: 2px;
+        }
+        .toc-item.expanded .toc-sub { display: block; }
+
+        .chevron {
+            margin-right: auto; /* دفع الأيقونة لليسار */
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            transition: transform 0.2s;
+        }
+        .toc-item.expanded > .toc-link .chevron { transform: rotate(180deg); }
+
+        /* --- منطقة القراءة (الورقة) --- */
+        main.content-area {
+            flex: 1;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+            position: relative;
+            border-radius: var(--radius-main);
+            /* إزالة الخلفية هنا لأن الورقة هي العنصر الداخلي */
+            display: flex;
+            justify-content: center;
+        }
+
+        .paper-sheet {
+            width: 100%;
+            max-width: 900px; /* عرض مريح للقراءة */
+            background-color: var(--bg-paper);
+            min-height: 100%;
+            padding: 60px 80px;
+            box-shadow: var(--shadow-paper);
+            border-radius: var(--radius-main);
+            border: 1px solid var(--border-color);
+            transition: background 0.3s;
+        }
+
+        .chapter-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+        .chapter-header h2 {
+            font-family: var(--font-ui);
+            font-weight: 700;
+            color: var(--accent-color);
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+        /* زخرفة بسيطة تحت العنوان */
+        .chapter-header::after {
+            content: "❖";
+            display: block;
+            color: var(--border-color);
+            font-size: 1.5rem;
+            margin-top: 15px;
+        }
+
+        .chapter-text {
+            font-family: var(--font-main);
+            line-height: 2.1;
+            font-size: 24px; /* خط أكبر قليلاً لمحاكاة الصور */
+            text-align: justify;
+            color: var(--text-main);
+        }
+        
+        .chapter-text p { 
+            margin-bottom: 1.8rem; 
+            text-indent: 0;
+        }
+        
+        /* أرقام الآيات أو الفقرات (زخرفية) */
+        .verse-end {
+            color: var(--accent-color);
+            font-size: 0.8em;
+            margin: 0 5px;
+        }
+
+        .page-pill {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-paper);
+            border: 1px solid var(--border-color);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            box-shadow: var(--shadow-soft);
+            z-index: 100;
+            opacity: 0.9;
+        }
+
+        /* --- أدوات عائمة --- */
+        .highlight {
+            background-color: var(--highlight-color);
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 950px) {
+            .workspace { padding: 0; gap: 0; }
+            .paper-sheet { border-radius: 0; border: none; padding: 40px 25px; }
+            aside.sidebar {
+                position: fixed;
+                top: 0; bottom: 0; right: 0;
+                z-index: 2000;
+                width: 85%;
+                max-width: 320px;
+                border-radius: 0;
+                transform: translateX(100%);
+            }
+            aside.sidebar.active { transform: translateX(0); }
+            
+            /* Overlay when sidebar is active */
+            .sidebar-overlay {
+                position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+                z-index: 1900; display: none;
+            }
+            .sidebar-overlay.active { display: block; }
+            
+            .mini-sidebar { display: none; } /* إخفاء الشريط الرفيع في الموبايل */
+            #menu-toggle { display: flex !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- الشريط الجانبي الرفيع (أيقونات فقط) -->
+    <div class="mini-sidebar">
+        <div class="mini-icon active" title="القراءة">
+            <svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg>
+        </div>
+        <div class="mini-icon" onclick="toggleSidebar()" title="الفهرس">
+            <svg viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+        </div>
+        <div class="mini-icon" id="btn-bookmark-side" title="المحفوظات">
+            <svg viewBox="0 0 24 24"><path d="M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <!-- الهيدر -->
+        <header>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <button class="btn-icon" id="menu-toggle" style="display: none;">
+                    <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+                </button>
+                <div class="header-title">
+                    <h1>عمدة الرعاية على شرح الوقاية</h1>
+                    <span>الإمام اللكنوي (ت 747هـ)</span>
+                </div>
+            </div>
+
+            <!-- شريط الأدوات العائم -->
+            <div class="toolbar-pill">
+                <button class="btn-icon" id="btn-search-trigger" title="بحث">
+                    <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                </button>
+                <div style="width: 1px; height: 20px; background: var(--border-color); margin: 0 5px;"></div>
+                <button class="btn-icon" id="btn-decrease">A-</button>
+                <button class="btn-icon" id="btn-increase">A+</button>
+                <button class="btn-icon" id="btn-theme">
+                    <svg viewBox="0 0 24 24"><path d="M20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69zM12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6zm0-10c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z"/></svg>
+                </button>
+                <button class="btn-icon btn-main" id="btn-share" style="border-radius: 20px; padding: 0 15px; width: auto; font-size: 0.8rem;">
+                    مشاركة
+                </button>
+            </div>
+        </header>
+
+        <!-- مساحة العمل -->
+        <div class="workspace">
+            
+            <!-- Overlay for mobile -->
+            <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+            <!-- الفهرس الجانبي -->
+            <aside class="sidebar" id="sidebar">
+                <div class="sidebar-header">
+                    <div class="search-wrapper">
+                        <input type="text" id="search-input" placeholder="ابحث في الفهرس...">
+                        <span class="icon">🔍</span>
+                    </div>
+                </div>
+                <div class="toc-scroll">
+                    <ul class="toc-list" id="toc-container" style="list-style: none;">
+                        <!-- JS Injected TOC -->
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- محتوى القراءة -->
+            <main class="content-area" id="content-scroll-area">
+                <div id="book-content-wrapper">
+                    <!-- الصفحات ستضاف هنا -->
+                </div>
+                
+                <!-- رقم الصفحة العائم -->
+                <div class="page-pill" id="page-indicator">الصفحة 1 / 310</div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. البيانات (نفس البيانات السابقة) ---
+        const bookData = [
+            {
+                id: "ch1",
+                title: "مقدمة المحقق",
+                level: 1,
+                content: `
+                    <p>الحمد لله رب العالمين، والصلاة والسلام على سيد المرسلين، وعلى آله وصحبه أجمعين.</p>
+                    <p>فإن كتاب "شرح الوقاية" لصدر الشريعة الثاني عبيد الله بن مسعود (المتوفى سنة 747هـ) يعتبر من أهم المتون في المذهب الحنفي، وقد اعتنى به العلماء شرحاً وتحشية.</p>
+                    <p>وقد تميز هذا الكتاب بدقة العبارة، وحسن الترتيب، وجمع المسائل المهمة التي يحتاجها المفتي والقاضي وطالب العلم. وهذه الطبعة التي بين أيديكم تم تحقيقها على عدة نسخ خطية نفيسة، قوبلت بعناية تامة.</p>
+                `,
+                subchapters: [
+                    { id: "ch1-1", title: "منهج التحقيق", content: "اعتمدنا في تحقيق هذا الكتاب المنهج العلمي القائم على جمع النسخ والمقابلة بينها، وتخريج الأحاديث، والتعليق على المواضع المشكلة..." }
+                ]
+            },
+            {
+                id: "ch2",
+                title: "كتاب الطهارة",
+                level: 1,
+                content: `
+                    <p>كتاب الطهارة: وفيه بيان أنواع المياه، والوضوء، والغسل، والتيمم، والمسح على الخفين.</p>
+                    <p>اعلم أن الطهارة شرط لصحة الصلاة، وهي تنقسم إلى طهارة من الحدث وطهارة من الخبث. والأصل في المياه الطهارة ما لم يتغير أحد أوصافها.</p>
+                `,
+                subchapters: [
+                    {
+                        id: "ch2-1",
+                        title: "فصل في الوضوء",
+                        content: `
+                            <p>فرائض الوضوء أربعة: غسل الوجه، وغسل اليدين مع المرفقين، ومسح ربع الرأس، وغسل الرجلين مع الكعبين.</p>
+                            <p>وسننه: غسل اليدين إلى الرسغين ثلاثاً قبل إدخالهما الإناء، والتسمية في ابتدائه، والسواك، والمضمضة، والاستنشاق، ومسح الأذنين.</p>
+                            <p>قال رسول الله صلى الله عليه وسلم: (لا صلاة لمن لا وضوء له، ولا وضوء لمن لم يذكر اسم الله عليه).</p>
+                        `
+                    },
+                    {
+                        id: "ch2-2",
+                        title: "فصل في الغسل",
+                        content: `
+                            <p>موجبات الغسل: الجنابة، والحيض، والنفاس. وفرائضه: المضمضة، والاستنشاق، وغسل سائر البدن.</p>
+                            <p>وسننه: أن يبدأ المغتسل بغسل يديه وفرجه، ويزيل النجاسة إن كانت على بدنه، ثم يتوضأ وضوءه للصلاة.</p>
+                        `
+                    }
+                ]
+            },
+            {
+                id: "ch3",
+                title: "كتاب الصلاة",
+                level: 1,
+                content: `
+                    <p>الصلاة هي عماد الدين، من أقامها فقد أقام الدين. وهي مفروضة بالكتاب والسنة والإجماع.</p>
+                    <p>أوقات الصلاة خمسة: الفجر، والظهر، والعصر، والمغرب، والعشاء. ولكل وقت بداية ونهاية محددة شرعاً لا يجوز تقديمها عنه ولا تأخيرها إلا لعذر.</p>
+                `,
+                subchapters: [
+                    { id: "ch3-1", title: "فصل في الأوقات", content: "<p>أول وقت الفجر إذا طلع الفجر الثاني وهو البياض المعترض في الأفق. وأول وقت الظهر إذا زالت الشمس.</p>" }
+                ]
+            }
+        ];
+
+        let flatChapters = [];
+        function flattenBooks(data) {
+            data.forEach(chapter => {
+                flatChapters.push(chapter);
+                if (chapter.subchapters) {
+                    chapter.subchapters.forEach(sub => {
+                        sub.parentId = chapter.id;
+                        flatChapters.push(sub);
+                    });
+                }
+            });
+        }
+        flattenBooks(bookData);
+
+        const state = {
+            loadedCount: 0,
+            fontSize: 24,
+            theme: 'light',
+            isLoading: false
+        };
+
+        const dom = {
+            toc: document.getElementById('toc-container'),
+            wrapper: document.getElementById('book-content-wrapper'),
+            scrollArea: document.getElementById('content-scroll-area'),
+            sidebar: document.getElementById('sidebar'),
+            overlay: document.getElementById('sidebar-overlay'),
+            pageInd: document.getElementById('page-indicator')
+        };
+
+        function init() {
+            renderTOC();
+            loadNextChapter(); // Load first
+            loadNextChapter(); // Load second
+            
+            // Events
+            dom.scrollArea.addEventListener('scroll', handleScroll);
+            document.getElementById('btn-increase').onclick = () => updateFont(2);
+            document.getElementById('btn-decrease').onclick = () => updateFont(-2);
+            document.getElementById('btn-theme').onclick = toggleTheme;
+            document.getElementById('menu-toggle').onclick = toggleSidebar;
+            dom.overlay.onclick = toggleSidebar;
+            
+            // Search
+            document.getElementById('search-input').addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase();
+                document.querySelectorAll('.toc-item').forEach(item => {
+                    const text = item.innerText.toLowerCase();
+                    item.style.display = text.includes(term) ? 'block' : 'none';
+                });
+            });
+        }
+
+        // --- Rendering ---
+        
+        function renderTOC() {
+            let html = '';
+            bookData.forEach(chapter => {
+                const hasSub = chapter.subchapters && chapter.subchapters.length > 0;
+                html += `
+                    <li class="toc-item ${hasSub ? 'expanded' : ''}" id="toc-${chapter.id}">
+                        <a href="#" class="toc-link" onclick="scrollToChapter('${chapter.id}', event)">
+                            <svg class="toc-icon" viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg>
+                            <span>${chapter.title}</span>
+                            ${hasSub ? '<span class="chevron">▼</span>' : ''}
+                        </a>
+                        ${hasSub ? `<ul class="toc-sub" style="list-style:none;">` : ''}
+                `;
+                
+                if (hasSub) {
+                    chapter.subchapters.forEach(sub => {
+                        html += `
+                            <li class="toc-item" id="toc-${sub.id}">
+                                <a href="#" class="toc-link" onclick="scrollToChapter('${sub.id}', event)">
+                                    <svg class="toc-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                                    <span>${sub.title}</span>
+                                </a>
+                            </li>
+                        `;
+                    });
+                    html += `</ul>`;
+                }
+                html += `</li>`;
+            });
+            dom.toc.innerHTML = html;
+            
+            // Toggle Logic
+            document.querySelectorAll('.chevron').forEach(icon => {
+                icon.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    icon.closest('.toc-item').classList.toggle('expanded');
+                });
+            });
+        }
+
+        function loadNextChapter() {
+            if (state.isLoading || state.loadedCount >= flatChapters.length) return;
+            state.isLoading = true;
+
+            const chapter = flatChapters[state.loadedCount];
+            const div = document.createElement('div');
+            div.className = 'paper-sheet';
+            div.style.marginBottom = "30px"; // Spacing between sheets
+            div.id = `chapter-${chapter.id}`;
+            
+            div.innerHTML = `
+                <div class="chapter-header">
+                    <h2>${chapter.title}</h2>
+                </div>
+                <div class="chapter-text" style="font-size: ${state.fontSize}px">
+                    ${chapter.content}
+                </div>
+                <div style="text-align: center; margin-top: 40px; color: var(--text-secondary); font-size: 0.8rem;">
+                    ۞
+                </div>
+            `;
+
+            dom.wrapper.appendChild(div);
+            state.loadedCount++;
+            state.isLoading = false;
+        }
+
+        function handleScroll() {
+            const el = dom.scrollArea;
+            // Infinite Scroll
+            if (el.scrollTop + el.clientHeight >= el.scrollHeight - 200) {
+                loadNextChapter();
+            }
+
+            // Update Page Number & Active TOC
+            const sheets = document.querySelectorAll('.paper-sheet');
+            sheets.forEach((sheet, idx) => {
+                const rect = sheet.getBoundingClientRect();
+                // Check if element is mostly in view
+                if (rect.top < window.innerHeight / 2 && rect.bottom > window.innerHeight / 4) {
+                    // Update Active TOC
+                    document.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+                    const activeId = sheet.id.replace('chapter-', '');
+                    const link = document.querySelector(`#toc-${activeId} > .toc-link`);
+                    if(link) link.classList.add('active');
+
+                    // Update Page Pill
+                    dom.pageInd.innerText = `الصفحة ${idx + 1} / ${flatChapters.length}`;
+                }
+            });
+        }
+
+        // --- Actions ---
+
+        window.scrollToChapter = function(id, e) {
+            e.preventDefault();
+            dom.sidebar.classList.remove('active');
+            dom.overlay.classList.remove('active');
+
+            let target = document.getElementById(`chapter-${id}`);
+            if(!target) {
+                // Quick load simulation
+                while(state.loadedCount < flatChapters.length) {
+                    loadNextChapter();
+                    target = document.getElementById(`chapter-${id}`);
+                    if(target) break;
+                }
+            }
+            if(target) target.scrollIntoView({behavior: 'smooth'});
+        };
+
+        function updateFont(delta) {
+            state.fontSize += delta;
+            document.querySelectorAll('.chapter-text').forEach(t => t.style.fontSize = state.fontSize + 'px');
+        }
+
+        function toggleTheme() {
+            state.theme = state.theme === 'light' ? 'dark' : 'light';
+            document.body.setAttribute('data-theme', state.theme);
+        }
+
+        function toggleSidebar() {
+            dom.sidebar.classList.toggle('active');
+            dom.overlay.classList.toggle('active');
+        }
+
+        // Init
+        init();
+
+    </script>
+</body>
+</html>
