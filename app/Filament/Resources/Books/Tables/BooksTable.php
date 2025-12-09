@@ -62,17 +62,17 @@ class BooksTable
                     ->boolean(),
                 TextColumn::make('volumes_count')
                     ->label('عدد المجلدات')
-                    ->counts('volumes')
+                    ->getStateUsing(fn ($record) => $record->volumes()->count())
                     ->toggleable()
                     ->sortable(),
                 TextColumn::make('chapters_count')
                     ->label('عدد الفصول')
-                    ->counts('chapters')
+                    ->getStateUsing(fn ($record) => $record->chapters()->count())
                     ->toggleable()
                     ->sortable(),
                 TextColumn::make('pages_count')
                     ->label('عدد الصفحات')
-                    ->counts('pages')
+                    ->getStateUsing(fn ($record) => $record->pages()->count())
                     ->toggleable()
                     ->sortable(),
 
