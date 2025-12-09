@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+// Show All Route - for listing all books or authors with optional section filtering
+Route::get('/show-all/{type?}', [HomeController::class, 'showAll'])->name('show-all');
+
 
 // ═══════════════════════════════════════════════════════════
 // Book Reader Routes
