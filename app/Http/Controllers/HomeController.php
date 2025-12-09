@@ -150,4 +150,20 @@ class HomeController extends Controller
         
         return view('components.superduper.pages.show-all-books', compact('books', 'currentSection'));
     }
+
+    /**
+     * عرض جميع أقسام الكتب
+     * 
+     * @return \Illuminate\View\View
+     */
+    public function categories()
+    {
+        $sections = BookSection::withCount('books')
+            ->where('is_active', true)
+            ->whereNull('parent_id')
+            ->orderBy('sort_order')
+            ->get();
+        
+        return view('components.superduper.pages.categories', compact('sections'));
+    }
 }
