@@ -38,6 +38,7 @@ class BooksTable
                 ->label('القسم')
                 ->searchable()
                 ->toggleable(),
+
                 TextColumn::make('publisher.name')
                 ->label('الناشر')
                 ->searchable()
@@ -59,6 +60,21 @@ class BooksTable
                 ->label('وفق المطبوع')
                 ->toggleable()
                     ->boolean(),
+                TextColumn::make('volumes_count')
+                    ->label('عدد المجلدات')
+                    ->counts('volumes')
+                    ->toggleable()
+                    ->sortable(),
+                TextColumn::make('chapters_count')
+                    ->label('عدد الفصول')
+                    ->counts('chapters')
+                    ->toggleable()
+                    ->sortable(),
+                TextColumn::make('pages_count')
+                    ->label('عدد الصفحات')
+                    ->counts('pages')
+                    ->toggleable()
+                    ->sortable(),
 
             ])
             ->filters([
