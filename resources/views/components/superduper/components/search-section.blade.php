@@ -48,10 +48,7 @@
                     <span class="absolute inset-0 border-2 border-green-600 rounded-3xl"></span>
                     عناوين الكتب
                 </button>
-                <!-- <a href="{{ route('search.ultra-fast') }}" 
-                   class="bg-white/20 backdrop-blur-sm text-white border-2 border-white/50 transition-all duration-300 hover:bg-white hover:text-green-800 hover:shadow-lg transform hover:-translate-y-1 px-8 py-3 rounded-3xl font-bold shadow-md text-center">
-                    محتوى الكتب
-                </a> -->
+
             </div>
 
             <!-- Search Bar -->
