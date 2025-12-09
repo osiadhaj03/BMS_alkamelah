@@ -10,6 +10,9 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 // Show All Route - for listing all books or authors with optional section filtering
 Route::get('/show-all/{type?}', [HomeController::class, 'showAll'])->name('show-all');
 
+// Categories Route - for displaying all book categories/sections
+Route::get('/categories', [HomeController::class, 'categories'])->name('categories');
+
 
 // ═══════════════════════════════════════════════════════════
 // Book Reader Routes
