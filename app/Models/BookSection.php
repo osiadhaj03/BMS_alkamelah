@@ -96,4 +96,17 @@ class BookSection extends Model
     {
         return $query->orderBy('sort_order');
     }
+
+    /**
+     * Get sections with book count for homepage
+     */
+    public static function getForHomepage($limit = 6)
+    {
+        return self::where('is_active', true)
+            ->whereNull('parent_id')
+            ->withCount('books')
+            ->orderBy('sort_order')
+            ->limit($limit)
+            ->get();
+    }
 }

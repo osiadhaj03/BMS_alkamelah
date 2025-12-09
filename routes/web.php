@@ -1,12 +1,12 @@
 <?php
 
+use App\Http\Controllers\HomeController;
 use App\Livewire\BookReader\BookReaderPage;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
 
 // ═══════════════════════════════════════════════════════════
 // Book Reader Routes
