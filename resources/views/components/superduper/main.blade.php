@@ -42,8 +42,8 @@
 
     <x-superduper.footer />
 
-    {{-- الزر العائم ونموذج الملاحظات --}}
-    @include('partials.feedback-panel')
+    {{-- الزر العائم ونموذج الملاحظات - معطل مؤقتاً --}}
+    {{-- @include('partials.feedback-panel') --}}
 
     <!-- App JS -->
     {{-- <script src="{{ asset('js/app.js') }}"></script> --}}
