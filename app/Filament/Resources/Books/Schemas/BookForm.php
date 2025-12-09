@@ -229,7 +229,7 @@ class BookForm
                             ->columns(3)
                             ->collapsible()
                             ->itemLabel(fn (array $state): ?string => $state['title'] ?? 'فيديو جديد')
-                            ->addActionLabel('إضافة فيديو')
+                            ->addActionLabel('إضافة رابط تحميل')
                             ->reorderable()
                             ->columnSpanFull()
                             ->defaultItems(0),

@@ -68,7 +68,7 @@ class BookResource extends Resource
         return [
             'index' => ListBooks::route('/'),
             'create' => CreateBook::route('/create'),
-            'view' => ViewBook::route('/{record}'),
+            //'view' => ViewBook::route('/{record}'),
             'edit' => EditBook::route('/{record}/edit'),
         ];
     }
