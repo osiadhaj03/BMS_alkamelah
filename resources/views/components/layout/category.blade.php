@@ -1,6 +1,12 @@
-<div class="w-full py-16 relative" style="background-image: url('{{ asset('images/Frame 1321314420.png') }}'); background-size: cover; background-position: center; background-attachment: fixed;">
+<div class="w-full py-16 relative" style="background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%); background-image: 
+    repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(220, 220, 220, 0.1) 35px, rgba(220, 220, 220, 0.1) 70px),
+    repeating-linear-gradient(-45deg, transparent, transparent 35px, rgba(220, 220, 220, 0.1) 35px, rgba(220, 220, 220, 0.1) 70px),
+    repeating-linear-gradient(90deg, transparent, transparent 50px, rgba(200, 200, 200, 0.05) 50px, rgba(200, 200, 200, 0.05) 100px);
+    background-size: 100% 100%, 100% 100%, 100% 100%;
+    background-position: 0 0, 0 0, 0 0;
+    background-attachment: fixed;">
     <!-- Overlay for better readability -->
-    <div class="absolute inset-0 bg-white/95"></div>
+    <div class="absolute inset-0 bg-white/85"></div>
     
     <div class="max-w-7xl mx-auto px-4 relative z-20">
         <!-- Header Section -->
