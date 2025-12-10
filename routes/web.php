@@ -2,8 +2,9 @@
 
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
 
-Route::get('/', )->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // مسار مؤقت لمسح الـ Cache - احذفه بعد الاستخدام
 Route::get('/clear-cache-secret-2024', function () {

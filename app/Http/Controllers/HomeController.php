@@ -102,11 +102,10 @@ class HomeController extends Controller
 
         /**
          * 4. إرجاع البيانات إلى الـ View
-         * - العرض: components.superduper.pages.home
+         * - العرض: pages.home (الصفحة الجديدة المبسطة)
          * - البيانات المرسلة: $sections, $books, $authors, $stats
-         * - كل متغير يحتوي على collection مع pagination للكتب والمؤلفين
          */
-        return view('components.superduper.pages.home', compact('sections', 'books', 'authors', 'stats'));
+        return view('pages.home', compact('sections', 'books', 'authors', 'stats'));
     }
 
     /**

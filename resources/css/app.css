@@ -9,3 +9,11 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+/* Custom media query for hero title */
+@media (min-width: 768px) {
+    .md\:text-8xl {
+        font-size: 4.5rem;
+        line-height: 2;
+    }
+}
