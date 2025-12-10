@@ -3,8 +3,12 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\BookReaderController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Book Reader Routes
+Route::get('/book/{book}/read', [BookReaderController::class, 'show'])->name('book.read');
 
 // مسار مؤقت لمسح الـ Cache - احذفه بعد الاستخدام
 Route::get('/clear-cache-secret-2024', function () {
