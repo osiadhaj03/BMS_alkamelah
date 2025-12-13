@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>آداب الفتوى والمفتي والمستفتي - قارئ الكتب</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Tajawal', sans-serif; }
+        .bg-green-600 { background-color: #16a34a; }
+        .text-green-600 { color: #16a34a; }
+        .text-green-700 { color: #15803d; }
+        .bg-green-700 { background-color: #15803d; }
+        .border-green-600 { border-color: #16a34a; }
+        .hover\:bg-green-700:hover { background-color: #15803d; }
+        .hover\:text-green-600:hover { color: #16a34a; }
+        .hover\:border-green-600:hover { border-color: #16a34a; }
+        .focus\:border-green-600:focus { border-color: #16a34a; }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Header -->
+    <div class="fixed top-0 left-0 right-0 bg-white shadow-sm border-b z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <!-- Breadcrumb -->
+            <nav class="text-sm text-gray-600 mb-3">
+                <ol class="flex items-center space-x-2 space-x-reverse">
+                    <li><a href="/" class="hover:text-green-600">الرئيسية</a></li>
+                    <li class="text-gray-400">/</li>
+                    <li><a href="#" class="hover:text-green-600">أقسام الكتاب</a></li>
+                    <li class="text-gray-400">/</li>
+                    <li><a href="#" class="hover:text-green-600">أصول الفقه والقواعد الفقهية</a></li>
+                    <li class="text-gray-400">/</li>
+                    <li class="text-gray-800">آداب الفتوى والمفتي والمستفتي</li>
+                </ol>
+            </nav>
+
+            <!-- Book Title and Controls -->
+            <div class="flex items-center justify-between">
+                <!-- Book Title with Icon -->
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8">
+                        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="50" r="48" fill="#e8f3f0" stroke="#16a34a" stroke-width="2"/>
+                            <g transform="translate(50, 50)">
+                                <circle cx="0" cy="0" r="35" fill="none" stroke="#16a34a" stroke-width="1" opacity="0.3"/>
+                                <circle cx="0" cy="0" r="28" fill="none" stroke="#16a34a" stroke-width="1" opacity="0.3"/>
+                                <g stroke="#16a34a" stroke-width="1.5" fill="none">
+                                    <line x1="0" y1="-20" x2="0" y2="20"/>
+                                    <line x1="-20" y1="0" x2="20" y2="0"/>
+                                    <line x1="-14" y1="-14" x2="14" y2="14"/>
+                                    <line x1="-14" y1="14" x2="14" y2="-14"/>
+                                </g>
+                                <circle cx="0" cy="0" r="3" fill="#16a34a"/>
+                            </g>
+                        </svg>
+                    </div>
+                    <h1 class="text-2xl font-bold text-green-700">
+                        آداب الفتوى والمفتي والمستفتي - [النووي]
+                    </h1>
+                </div>
+
+                <!-- Search and Controls -->
+                <div class="flex items-center gap-4">
+                    <!-- Search in Book -->
+                    <div class="relative">
+                        <input type="text" placeholder="بحث في الكتاب..." 
+                               class="w-64 px-4 py-2 pr-10 text-sm border border-gray-300 rounded-full focus:outline-none focus:border-green-600 text-right">
+                        <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-green-600">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Reading Controls -->
+                    <div class="flex items-center gap-2">
+                        <button class="p-2 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg" title="مشاركة">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
+                            </svg>
+                        </button>
+                        <button class="p-2 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg" title="ملء الشاشة">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path>
+                            </svg>
+                        </button>
+                        <button class="p-2 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg" title="طباعة">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex h-screen pt-20">
+        <!-- Left Sidebar - Table of Contents -->
+        <div class="w-80 bg-white border-l border-gray-200 overflow-y-auto">
+            <div class="p-4">
+                <h3 class="text-lg font-bold text-green-700 mb-4">الصفحة</h3>
+                
+                <!-- Page Input -->
+                <div class="mb-4">
+                    <div class="flex items-center gap-2">
+                        <input type="number" value="1" min="1" max="120" 
+                               class="w-16 px-2 py-1 text-center border border-gray-300 rounded focus:outline-none focus:border-green-600">
+                        <span class="text-gray-600 text-sm">من 120</span>
+                    </div>
+                </div>
+
+                <h3 class="text-lg font-bold text-green-700 mb-4">فهرس المحتويات</h3>
+                
+                <!-- Table of Contents -->
+                <div class="space-y-2">
+                    <div class="border-b border-gray-100 pb-2">
+                        <div class="flex justify-between items-center p-2 rounded bg-green-100 text-green-700">
+                            <span class="text-sm font-medium">آداب الفتوى والمفتي</span>
+                            <span class="text-xs text-gray-500">1</span>
+                        </div>
+                    </div>
+                    <div class="border-b border-gray-100 pb-2">
+                        <div class="flex justify-between items-center p-2 rounded hover:bg-green-50 transition-colors text-gray-700">
+                            <span class="text-sm font-medium">شروط المفتي وأحكامه</span>
+                            <span class="text-xs text-gray-500">16</span>
+                        </div>
+                    </div>
+                    <div class="border-b border-gray-100 pb-2">
+                        <div class="flex justify-between items-center p-2 rounded hover:bg-green-50 transition-colors text-gray-700">
+                            <span class="text-sm font-medium">آداب المستفتي</span>
+                            <span class="text-xs text-gray-500">31</span>
+                        </div>
+                    </div>
+                    <div class="border-b border-gray-100 pb-2">
+                        <div class="flex justify-between items-center p-2 rounded hover:bg-green-50 transition-colors text-gray-700">
+                            <span class="text-sm font-medium">أصول الإفتاء والاجتهاد</span>
+                            <span class="text-xs text-gray-500">46</span>
+                        </div>
+                    </div>
+                    <div class="border-b border-gray-100 pb-2">
+                        <div class="flex justify-between items-center p-2 rounded hover:bg-green-50 transition-colors text-gray-700">
+                            <span class="text-sm font-medium">قواعد الفتوى والترجيح</span>
+                            <span class="text-xs text-gray-500">61</span>
+                        </div>
+                    </div>
+                    <div class="border-b border-gray-100 pb-2">
+                        <div class="flex justify-between items-center p-2 rounded hover:bg-green-50 transition-colors text-gray-700">
+                            <span class="text-sm font-medium">النوازل والمستجدات</span>
+                            <span class="text-xs text-gray-500">76</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Reading Progress -->
+                <div class="mt-6 pt-4 border-t border-gray-200">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm text-gray-600">تقدم القراءة</span>
+                        <span class="text-sm font-medium text-green-600">8%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-green-600 h-2 rounded-full transition-all" style="width: 8%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center - Book Content -->
+        <div class="flex-1 bg-white overflow-y-auto">
+            <div class="max-w-4xl mx-auto p-8">
+                <!-- Book Content -->
+                <div class="prose prose-lg max-w-none">
+                    <!-- Page Header -->
+                    <div class="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
+                        <h2 class="text-xl font-bold text-green-700">
+                            آداب الفتوى والمفتي والمستفتي
+                        </h2>
+                        <div class="text-sm text-gray-600">
+                            صفحة 1 من 120
+                        </div>
+                    </div>
+                    
+                    <!-- Main Content Area -->
+                    <div class="leading-loose text-gray-800 text-lg">
+                        <p class="mb-6 text-center text-xl font-bold text-green-700">
+                            بسم الله الرحمن الرحيم
+                        </p>
+                        
+                        <p class="mb-4">
+                            الحمد لله رب العالمين، والصلاة والسلام على أشرف الأنبياء والمرسلين، نبينا محمد وعلى آله وصحبه أجمعين.
+                        </p>
+                        
+                        <p class="mb-4">
+                            أما بعد: فإن من أعظم ما يحتاج إليه طالب العلم معرفة آداب الفتوى والمفتي والمستفتي، وذلك لأن الفتوى أمر عظيم، وشأن خطير، إذ هي توقيع عن الله تبارك وتعالى.
+                        </p>
+                        
+                        <p class="mb-4">
+                            وقد اعتنى العلماء بهذا الجانب عناية فائقة، وألفوا في آداب الفتوى مؤلفات كثيرة، منها ما هو مستقل، ومنها ما هو ضمن مؤلفات أخرى في أصول الفقه أو غيرها.
+                        </p>
+                        
+                        <p class="mb-4">
+                            وهذا الكتاب يتناول هذا الموضوع المهم، ويقسم الآداب إلى ثلاثة أقسام رئيسية:
+                        </p>
+                        
+                        <ul class="mb-6 mr-8 space-y-2">
+                            <li class="flex items-start">
+                                <span class="text-green-600 font-bold ml-2">•</span>
+                                آداب الفتوى نفسها وأحكامها وشروطها
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-green-600 font-bold ml-2">•</span>
+                                آداب المفتي وما يجب عليه من العلم والورع والتقوى
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-green-600 font-bold ml-2">•</span>
+                                آداب المستفتي وكيفية سؤاله وتعامله مع الفتوى
+                            </li>
+                        </ul>
+                        
+                        <p class="mb-4">
+                            ونسأل الله تعالى أن ينفع بهذا العمل، وأن يجعله خالصاً لوجهه الكريم، إنه ولي ذلك والقادر عليه.
+                        </p>
+
+                        <h3 class="text-xl font-bold text-green-700 mt-8 mb-4 text-center">
+                            المقدمة
+                        </h3>
+                        
+                        <p class="mb-4">
+                            إن الفتوى في الإسلام لها مكانة عظيمة، وشأن خطير، لأنها بيان لحكم الله تعالى في المسألة المعروضة. والمفتي يقوم مقام الرسول صلى الله عليه وسلم في بيان الأحكام الشرعية للناس.
+                        </p>
+                        
+                        <p class="mb-4">
+                            لذلك كان لا بد من وضع ضوابط وآداب للفتوى والمفتي والمستفتي، حتى تؤدى هذه الوظيفة العظيمة على الوجه المطلوب شرعاً.
+                        </p>
+                    </div>
+                    
+                    <!-- Page Navigation -->
+                    <div class="flex justify-between items-center mt-12 pt-6 border-t border-gray-200">
+                        <div class="flex items-center gap-4">
+                            <button disabled class="flex items-center gap-2 px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                </svg>
+                                <span>الصفحة السابقة</span>
+                            </button>
+                            
+                            <button class="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                                <span>الصفحة التالية</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        
+                        <!-- Page Counter -->
+                        <div class="text-center">
+                            <div class="text-lg font-bold text-green-700">1</div>
+                            <div class="text-xs text-gray-500">صفحة</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Sidebar - Chapter Navigation -->
+        <div class="w-80 bg-gray-50 border-r border-gray-200 overflow-y-auto">
+            <div class="p-4">
+                <h3 class="text-lg font-bold text-green-700 mb-4">فصول الكتاب</h3>
+                
+                <!-- Chapters List -->
+                <div class="space-y-1">
+                    <div class="bg-white rounded-lg border border-gray-200 hover:shadow-sm transition-shadow">
+                        <div class="block p-3 bg-green-50 rounded-lg">
+                            <div class="flex justify-between items-start">
+                                <div class="flex-1">
+                                    <h4 class="font-medium text-gray-800 text-sm mb-1">آداب الفتوى والمفتي</h4>
+                                    <p class="text-xs text-gray-600">من صفحة 1 إلى 15</p>
+                                </div>
+                                <div class="text-right">
+                                    <span class="inline-block w-6 h-6 bg-green-600 text-white rounded-full text-xs font-bold flex items-center justify-center">1</span>
+                                </div>
+                            </div>
+                            <div class="mt-2 text-xs text-green-600 font-medium">← تقرأ حالياً</div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg border border-gray-200 hover:shadow-sm transition-shadow">
+                        <div class="block p-3 hover:bg-green-50 rounded-lg transition-colors">
+                            <div class="flex justify-between items-start">
+                                <div class="flex-1">
+                                    <h4 class="font-medium text-gray-800 text-sm mb-1">شروط المفتي وأحكامه</h4>
+                                    <p class="text-xs text-gray-600">من صفحة 16 إلى 30</p>
+                                </div>
+                                <div class="text-right">
+                                    <span class="inline-block w-6 h-6 bg-green-100 text-green-700 rounded-full text-xs font-bold flex items-center justify-center">2</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg border border-gray-200 hover:shadow-sm transition-shadow">
+                        <div class="block p-3 hover:bg-green-50 rounded-lg transition-colors">
+                            <div class="flex justify-between items-start">
+                                <div class="flex-1">
+                                    <h4 class="font-medium text-gray-800 text-sm mb-1">آداب المستفتي</h4>
+                                    <p class="text-xs text-gray-600">من صفحة 31 إلى 45</p>
+                                </div>
+                                <div class="text-right">
+                                    <span class="inline-block w-6 h-6 bg-green-100 text-green-700 rounded-full text-xs font-bold flex items-center justify-center">3</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg border border-gray-200 hover:shadow-sm transition-shadow">
+                        <div class="block p-3 hover:bg-green-50 rounded-lg transition-colors">
+                            <div class="flex justify-between items-start">
+                                <div class="flex-1">
+                                    <h4 class="font-medium text-gray-800 text-sm mb-1">أصول الإفتاء والاجتهاد</h4>
+                                    <p class="text-xs text-gray-600">من صفحة 46 إلى 60</p>
+                                </div>
+                                <div class="text-right">
+                                    <span class="inline-block w-6 h-6 bg-green-100 text-green-700 rounded-full text-xs font-bold flex items-center justify-center">4</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg border border-gray-200 hover:shadow-sm transition-shadow">
+                        <div class="block p-3 hover:bg-green-50 rounded-lg transition-colors">
+                            <div class="flex justify-between items-start">
+                                <div class="flex-1">
+                                    <h4 class="font-medium text-gray-800 text-sm mb-1">قواعد الفتوى والترجيح</h4>
+                                    <p class="text-xs text-gray-600">من صفحة 61 إلى 75</p>
+                                </div>
+                                <div class="text-right">
+                                    <span class="inline-block w-6 h-6 bg-green-100 text-green-700 rounded-full text-xs font-bold flex items-center justify-center">5</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg border border-gray-200 hover:shadow-sm transition-shadow">
+                        <div class="block p-3 hover:bg-green-50 rounded-lg transition-colors">
+                            <div class="flex justify-between items-start">
+                                <div class="flex-1">
+                                    <h4 class="font-medium text-gray-800 text-sm mb-1">النوازل والمستجدات</h4>
+                                    <p class="text-xs text-gray-600">من صفحة 76 إلى 90</p>
+                                </div>
+                                <div class="text-right">
+                                    <span class="inline-block w-6 h-6 bg-green-100 text-green-700 rounded-full text-xs font-bold flex items-center justify-center">6</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Book Info -->
+                <div class="mt-6 pt-4 border-t border-gray-300">
+                    <div class="bg-white rounded-lg p-4 border border-gray-200">
+                        <h4 class="font-bold text-green-700 text-sm mb-2">معلومات الكتاب</h4>
+                        <div class="space-y-2 text-xs text-gray-600">
+                            <div class="flex justify-between">
+                                <span>المؤلف:</span>
+                                <span class="font-medium">الإمام النووي</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>عدد الصفحات:</span>
+                                <span class="font-medium">120</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>القسم:</span>
+                                <span class="font-medium">أصول الفقه</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------------------------->
+<!--------------------------------------------------------------------------------------->
+<!--------------------------------------------------------------------------------------->
+<!--------------------------------------------------------------------------------------->
+<!--------------------------------------------------------------------------------------->
+<!--------------------------------------------------------------------------------------->
+<!--------------------------------------------------------------------------------------->
+<!--------------------------------------------------------------------------------------->
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>آداب الفتوى والمفتي والمستفتي - قارئ الكتب</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Tajawal', sans-serif; }
+        .bg-green-600 { background-color: #16a34a; }
+        .text-green-600 { color: #16a34a; }
+        .text-green-700 { color: #15803d; }
+        .bg-green-700 { background-color: #15803d; }
+        .border-green-600 { border-color: #16a34a; }
+        .hover\:bg-green-700:hover { background-color: #15803d; }
+        .hover\:text-green-600:hover { color: #16a34a; }
+        .hover\:border-green-600:hover { border-color: #16a34a; }
+        .focus\:border-green-600:focus { border-color: #16a34a; }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Header -->
+    <div class="fixed top-0 left-0 right-0 bg-white shadow-sm border-b z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <!-- Breadcrumb -->
+            <nav class="text-sm text-gray-600 mb-3">
+                <ol class="flex items-center space-x-2 space-x-reverse">
+                    <li><a href="/" class="hover:text-green-600">الرئيسية</a></li>
+                    <li class="text-gray-400">/</li>
+                    <li><a href="#" class="hover:text-green-600">أقسام الكتاب</a></li>
+                    <li class="text-gray-400">/</li>
+                    <li><a href="#" class="hover:text-green-600">أصول الفقه والقواعد الفقهية</a></li>
+                    <li class="text-gray-400">/</li>
+                    <li class="text-gray-800">آداب الفتوى والمفتي والمستفتي</li>
+                </ol>
+            </nav>
+
+            <!-- Book Title and Controls -->
+            <div class="flex items-center justify-between">
+                <!-- Book Title with Icon -->
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8">
+                        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="50" r="48" fill="#e8f3f0" stroke="#16a34a" stroke-width="2"/>
+                            <g transform="translate(50, 50)">
+                                <circle cx="0" cy="0" r="35" fill="none" stroke="#16a34a" stroke-width="1" opacity="0.3"/>
+                                <circle cx="0" cy="0" r="28" fill="none" stroke="#16a34a" stroke-width="1" opacity="0.3"/>
+                                <g stroke="#16a34a" stroke-width="1.5" fill="none">
+                                    <line x1="0" y1="-20" x2="0" y2="20"/>
+                                    <line x1="-20" y1="0" x2="20" y2="0"/>
+                                    <line x1="-14" y1="-14" x2="14" y2="14"/>
+                                    <line x1="-14" y1="14" x2="14" y2="-14"/>
+                                </g>
+                                <circle cx="0" cy="0" r="3" fill="#16a34a"/>
+                            </g>
+                        </svg>
+                    </div>
+                    <h1 class="text-2xl font-bold text-green-700">
+                        آداب الفتوى والمفتي والمستفتي - [النووي]
+                    </h1>
+                </div>
+
+                <!-- Search and Controls -->
+                <div class="flex items-center gap-4">
+                    <!-- Search in Book -->
+                    <div class="relative">
+                        <input type="text" placeholder="بحث في الكتاب..." 
+                               class="w-64 px-4 py-2 pr-10 text-sm border border-gray-300 rounded-full focus:outline-none focus:border-green-600 text-right">
+                        <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-green-600">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Reading Controls -->
+                    <div class="flex items-center gap-2">
+                        <button class="p-2 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg" title="مشاركة">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
+                            </svg>
+                        </button>
+                        <button class="p-2 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg" title="ملء الشاشة">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path>
+                            </svg>
+                        </button>
+                        <button class="p-2 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg" title="طباعة">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex h-screen pt-20">
+        <!-- Left Sidebar - Table of Contents -->
+        <div class="w-80 bg-white border-l border-gray-200 overflow-y-auto">
+            <div class="p-4">
+
+                <h3 class="text-lg font-bold text-green-700 mb-4">فهرس المحتويات</h3>
+                
+                <!-- Table of Contents -->
+                <div class="space-y-2">
+                    <div class="border-b border-gray-100 pb-2">
+                        <div class="flex justify-between items-center p-2 rounded bg-green-100 text-green-700">
+                            <span class="text-sm font-medium">آداب الفتوى والمفتي</span>
+                            <span class="text-xs text-gray-500">1</span>
+                        </div>
+                    </div>
+                    <div class="border-b border-gray-100 pb-2">
+                        <div class="flex justify-between items-center p-2 rounded hover:bg-green-50 transition-colors text-gray-700">
+                            <span class="text-sm font-medium">شروط المفتي وأحكامه</span>
+                            <span class="text-xs text-gray-500">16</span>
+                        </div>
+                    </div>
+                    <div class="border-b border-gray-100 pb-2">
+                        <div class="flex justify-between items-center p-2 rounded hover:bg-green-50 transition-colors text-gray-700">
+                            <span class="text-sm font-medium">آداب المستفتي</span>
+                            <span class="text-xs text-gray-500">31</span>
+                        </div>
+                    </div>
+                    <div class="border-b border-gray-100 pb-2">
+                        <div class="flex justify-between items-center p-2 rounded hover:bg-green-50 transition-colors text-gray-700">
+                            <span class="text-sm font-medium">أصول الإفتاء والاجتهاد</span>
+                            <span class="text-xs text-gray-500">46</span>
+                        </div>
+                    </div>
+                    <div class="border-b border-gray-100 pb-2">
+                        <div class="flex justify-between items-center p-2 rounded hover:bg-green-50 transition-colors text-gray-700">
+                            <span class="text-sm font-medium">قواعد الفتوى والترجيح</span>
+                            <span class="text-xs text-gray-500">61</span>
+                        </div>
+                    </div>
+                    <div class="border-b border-gray-100 pb-2">
+                        <div class="flex justify-between items-center p-2 rounded hover:bg-green-50 transition-colors text-gray-700">
+                            <span class="text-sm font-medium">النوازل والمستجدات</span>
+                            <span class="text-xs text-gray-500">76</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center - Book Content -->
+        <div class="flex-1 bg-white overflow-y-auto">
+            <div class="max-w-4xl mx-auto p-8">
+                <!-- Book Content -->
+                <div class="prose prose-lg max-w-none">
+                    <!-- Page Header -->
+                    <div class="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
+                        <h2 class="text-xl font-bold text-green-700">
+                            آداب الفتوى والمفتي والمستفتي
+                        </h2>
+                        <div class="text-sm text-gray-600">
+                            صفحة 1 من 120
+                        </div>
+                    </div>
+                    
+                    <!-- Main Content Area -->
+                    <div class="leading-loose text-gray-800 text-lg">
+                        <p class="mb-6 text-center text-xl font-bold text-green-700">
+                            بسم الله الرحمن الرحيم
+                        </p>
+                        
+                        <p class="mb-4">
+                            الحمد لله رب العالمين، والصلاة والسلام على أشرف الأنبياء والمرسلين، نبينا محمد وعلى آله وصحبه أجمعين.
+                        </p>
+                        
+                        <p class="mb-4">
+                            أما بعد: فإن من أعظم ما يحتاج إليه طالب العلم معرفة آداب الفتوى والمفتي والمستفتي، وذلك لأن الفتوى أمر عظيم، وشأن خطير، إذ هي توقيع عن الله تبارك وتعالى.
+                        </p>
+                        
+                        <p class="mb-4">
+                            وقد اعتنى العلماء بهذا الجانب عناية فائقة، وألفوا في آداب الفتوى مؤلفات كثيرة، منها ما هو مستقل، ومنها ما هو ضمن مؤلفات أخرى في أصول الفقه أو غيرها.
+                        </p>
+                        
+                        <p class="mb-4">
+                            وهذا الكتاب يتناول هذا الموضوع المهم، ويقسم الآداب إلى ثلاثة أقسام رئيسية:
+                        </p>
+                        
+                        <ul class="mb-6 mr-8 space-y-2">
+                            <li class="flex items-start">
+                                <span class="text-green-600 font-bold ml-2">•</span>
+                                آداب الفتوى نفسها وأحكامها وشروطها
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-green-600 font-bold ml-2">•</span>
+                                آداب المفتي وما يجب عليه من العلم والورع والتقوى
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-green-600 font-bold ml-2">•</span>
+                                آداب المستفتي وكيفية سؤاله وتعامله مع الفتوى
+                            </li>
+                        </ul>
+                        
+                        <p class="mb-4">
+                            ونسأل الله تعالى أن ينفع بهذا العمل، وأن يجعله خالصاً لوجهه الكريم، إنه ولي ذلك والقادر عليه.
+                        </p>
+
+                        <h3 class="text-xl font-bold text-green-700 mt-8 mb-4 text-center">
+                            المقدمة
+                        </h3>
+                        
+                        <p class="mb-4">
+                            إن الفتوى في الإسلام لها مكانة عظيمة، وشأن خطير، لأنها بيان لحكم الله تعالى في المسألة المعروضة. والمفتي يقوم مقام الرسول صلى الله عليه وسلم في بيان الأحكام الشرعية للناس.
+                        </p>
+                        
+                        <p class="mb-4">
+                            لذلك كان لا بد من وضع ضوابط وآداب للفتوى والمفتي والمستفتي، حتى تؤدى هذه الوظيفة العظيمة على الوجه المطلوب شرعاً.
+                        </p>
+                    </div>
+                </div>
+            </div>        
+                    <!-- Page Navigation -->
+                    <div class="flex justify-between items-center mt-12 pt-6 border-t border-gray-200">
+                        <div class="flex items-center gap-4">
+                            <button disabled class="flex items-center gap-2 px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                </svg>
+                                <span>الصفحة السابقة</span>
+                            </button>
+                            
+                            <button class="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                                <span>الصفحة التالية</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        
+                        <!-- Page Counter -->
+                        <div class="text-center">
+                            <div class="text-lg font-bold text-green-700">1</div>
+                            <div class="text-xs text-gray-500">صفحة</div>
+                        </div>
+                    
+                
+            </div>
+        </div>
+
+        <!-- Right Sidebar - Chapter Navigation -->
+        <div class="w-80 bg-gray-50 border-r border-gray-200 overflow-y-auto pb-80">
+            <div class="p-4">
+                <h3 class="text-lg font-bold text-green-700 mb-4">فصول الكتاب</h3>
+                
+                <!-- Chapters List -->
+                <div class="space-y-1">
+                    <div class="bg-white rounded-lg border border-gray-200 hover:shadow-sm transition-shadow">
+                        <div class="block p-3 bg-green-50 rounded-lg">
+                            <div class="flex justify-between items-start">
+                                <div class="flex-1">
+                                    <h4 class="font-medium text-gray-800 text-sm mb-1">آداب الفتوى والمفتي</h4>
+                                    <p class="text-xs text-gray-600">من صفحة 1 إلى 15</p>
+                                </div>
+                                <div class="text-right">
+                                    <span class="inline-block w-6 h-6 bg-green-600 text-white rounded-full text-xs font-bold flex items-center justify-center">1</span>
+                                </div>
+                            </div>
+                            <div class="mt-2 text-xs text-green-600 font-medium">← تقرأ حالياً</div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg border border-gray-200 hover:shadow-sm transition-shadow">
+                        <div class="block p-3 hover:bg-green-50 rounded-lg transition-colors">
+                            <div class="flex justify-between items-start">
+                                <div class="flex-1">
+                                    <h4 class="font-medium text-gray-800 text-sm mb-1">شروط المفتي وأحكامه</h4>
+                                    <p class="text-xs text-gray-600">من صفحة 16 إلى 30</p>
+                                </div>
+                                <div class="text-right">
+                                    <span class="inline-block w-6 h-6 bg-green-100 text-green-700 rounded-full text-xs font-bold flex items-center justify-center">2</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg border border-gray-200 hover:shadow-sm transition-shadow">
+                        <div class="block p-3 hover:bg-green-50 rounded-lg transition-colors">
+                            <div class="flex justify-between items-start">
+                                <div class="flex-1">
+                                    <h4 class="font-medium text-gray-800 text-sm mb-1">آداب المستفتي</h4>
+                                    <p class="text-xs text-gray-600">من صفحة 31 إلى 45</p>
+                                </div>
+                                <div class="text-right">
+                                    <span class="inline-block w-6 h-6 bg-green-100 text-green-700 rounded-full text-xs font-bold flex items-center justify-center">3</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg border border-gray-200 hover:shadow-sm transition-shadow">
+                        <div class="block p-3 hover:bg-green-50 rounded-lg transition-colors">
+                            <div class="flex justify-between items-start">
+                                <div class="flex-1">
+                                    <h4 class="font-medium text-gray-800 text-sm mb-1">أصول الإفتاء والاجتهاد</h4>
+                                    <p class="text-xs text-gray-600">من صفحة 46 إلى 60</p>
+                                </div>
+                                <div class="text-right">
+                                    <span class="inline-block w-6 h-6 bg-green-100 text-green-700 rounded-full text-xs font-bold flex items-center justify-center">4</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg border border-gray-200 hover:shadow-sm transition-shadow">
+                        <div class="block p-3 hover:bg-green-50 rounded-lg transition-colors">
+                            <div class="flex justify-between items-start">
+                                <div class="flex-1">
+                                    <h4 class="font-medium text-gray-800 text-sm mb-1">قواعد الفتوى والترجيح</h4>
+                                    <p class="text-xs text-gray-600">من صفحة 61 إلى 75</p>
+                                </div>
+                                <div class="text-right">
+                                    <span class="inline-block w-6 h-6 bg-green-100 text-green-700 rounded-full text-xs font-bold flex items-center justify-center">5</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg border border-gray-200 hover:shadow-sm transition-shadow">
+                        <div class="block p-3 hover:bg-green-50 rounded-lg transition-colors">
+                            <div class="flex justify-between items-start">
+                                <div class="flex-1">
+                                    <h4 class="font-medium text-gray-800 text-sm mb-1">النوازل والمستجدات</h4>
+                                    <p class="text-xs text-gray-600">من صفحة 76 إلى 90</p>
+                                </div>
+                                <div class="text-right">
+                                    <span class="inline-block w-6 h-6 bg-green-100 text-green-700 rounded-full text-xs font-bold flex items-center justify-center">6</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Book Info -->
+                <div class="mt-6 pt-4 border-t border-gray-300">
+                    <div class="bg-white rounded-lg p-4 border border-gray-200">
+                        <h4 class="font-bold text-green-700 text-sm mb-2">معلومات الكتاب</h4>
+                        <div class="space-y-2 text-xs text-gray-600">
+                            <div class="flex justify-between">
+                                <span>المؤلف:</span>
+                                <span class="font-medium">الإمام النووي</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>عدد الصفحات:</span>
+                                <span class="font-medium">120</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>القسم:</span>
+                                <span class="font-medium">أصول الفقه</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fixed Page Section -->
+            <div class="fixed bottom-0 right-0 w-80 bg-gray-50 border-t border-gray-200 p-4 z-30">
+                <h3 class="text-lg font-bold text-green-700 mb-4">الصفحة</h3>
+                
+                <!-- Page Input -->
+                <div class="mb-4">
+                    <div class="flex items-center gap-2">
+                        <input type="number" value="1" min="1" max="120" 
+                               class="w-16 px-2 py-1 text-center border border-gray-300 rounded focus:outline-none focus:border-green-600">
+                        <span class="text-gray-600 text-sm">من 120</span>
+                    </div>
+                </div>
+
+                <!-- Reading Progress -->
+                <div class="mt-4 pt-4 border-t border-gray-200">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm text-gray-600">تقدم القراءة</span>
+                        <span class="text-sm font-medium text-green-600">8%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-green-600 h-2 rounded-full transition-all" style="width: 8%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
