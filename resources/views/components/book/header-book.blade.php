@@ -278,11 +278,10 @@
                 </div>
             </div>
             
-            <input type="text" class="search-input" id="header-search-input" placeholder="بحث داخل الكتاب...">
-            
-            <button class="btn-search-action" id="btn-search-go">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-            </button>
+            <!-- Dynamic Search Component -->
+            <div class="flex-1 relative">
+                <x-book.book-search :book="$book" />
+            </div>
         </div>
 
         <!-- More Actions (Three Dots) -->
@@ -291,6 +290,43 @@
         </div>
     </div>
 </header>
+
+<!-- Mobile Search Sidebar Overlay -->
+<div id="mobile-search-overlay" 
+     class="fixed inset-0 z-50 hidden lg:hidden"
+     style="background-color: rgba(0,0,0,0.5);">
+    
+    <!-- Sidebar Panel -->
+    <div id="mobile-search-panel"
+         class="absolute top-0 right-0 h-full w-80 max-w-full bg-white shadow-xl transform transition-transform duration-300"
+         style="background-color: var(--bg-paper);">
+        
+        <!-- Header -->
+        <div class="flex items-center justify-between p-4 border-b" style="border-color: var(--border-color);">
+            <h3 class="text-lg font-bold" style="color: var(--text-main); font-family: var(--font-ui);">
+                البحث في الكتاب
+            </h3>
+            <button id="close-mobile-search" 
+                    class="p-2 rounded-full hover:bg-gray-100 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+        
+        <!-- Search Component -->
+        <div class="p-4">
+            <x-book.book-search :book="$book" />
+        </div>
+        
+        <!-- Quick Tips -->
+        <div class="px-4 py-3 mx-4 rounded-lg" style="background-color: var(--accent-light);">
+            <p class="text-sm" style="color: var(--accent-color); font-family: var(--font-ui);">
+                💡 اكتب كلمة البحث واضغط على النتيجة للانتقال للصفحة
+            </p>
+        </div>
+    </div>
+</div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -336,6 +372,53 @@
             moreMenu.addEventListener('click', function(e) {
                 e.stopPropagation();
             });
+        }
+        
+        // Mobile Search Sidebar
+        const mobileSearchBtn = document.getElementById('header-search-mobile-btn');
+        const mobileSearchOverlay = document.getElementById('mobile-search-overlay');
+        const mobileSearchPanel = document.getElementById('mobile-search-panel');
+        const closeMobileSearch = document.getElementById('close-mobile-search');
+        
+        function openMobileSearch() {
+            mobileSearchOverlay.classList.remove('hidden');
+            setTimeout(() => {
+                mobileSearchPanel.style.transform = 'translateX(0)';
+            }, 10);
+            // Focus on search input
+            setTimeout(() => {
+                const searchInput = mobileSearchPanel.querySelector('input[type="text"]');
+                if (searchInput) searchInput.focus();
+            }, 300);
+        }
+        
+        function closeMobileSearchPanel() {
+            mobileSearchPanel.style.transform = 'translateX(100%)';
+            setTimeout(() => {
+                mobileSearchOverlay.classList.add('hidden');
+            }, 300);
+        }
+        
+        if (mobileSearchBtn) {
+            mobileSearchBtn.addEventListener('click', openMobileSearch);
+        }
+        
+        if (closeMobileSearch) {
+            closeMobileSearch.addEventListener('click', closeMobileSearchPanel);
+        }
+        
+        // Close when clicking overlay background
+        if (mobileSearchOverlay) {
+            mobileSearchOverlay.addEventListener('click', function(e) {
+                if (e.target === mobileSearchOverlay) {
+                    closeMobileSearchPanel();
+                }
+            });
+        }
+        
+        // Set initial state
+        if (mobileSearchPanel) {
+            mobileSearchPanel.style.transform = 'translateX(100%)';
         }
     });
 </script>

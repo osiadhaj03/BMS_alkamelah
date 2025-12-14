@@ -12,6 +12,11 @@ Route::get('/book/{bookId}/{pageNumber?}', [BookReaderController::class, 'show']
     ->name('book.read')
     ->where(['bookId' => '[0-9]+', 'pageNumber' => '[0-9]+']);
 
+// Book Search API (for in-book search)
+Route::get('/book/{bookId}/search', [BookReaderController::class, 'search'])
+    ->name('book.search')
+    ->where(['bookId' => '[0-9]+']);
+
 // Static Book Preview Route
 Route::get('/preview/book-static', function () {
     return view('pages.book-preview');

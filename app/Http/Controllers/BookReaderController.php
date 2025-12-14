@@ -78,4 +78,124 @@ class BookReaderController extends Controller
             'previousPage'
         ));
     }
+
+    /**
+     * Search within a specific book
+     * 
+     * @param Request $request
+     * @param int $bookId
+     */
+    public function search(Request $request, $bookId)
+    {
+        $query = $request->input('q', '');
+        $offset = (int) $request->input('offset', 0);
+        $limit = (int) $request->input('limit', 10);
+        
+        if (empty($query) || strlen($query) < 2) {
+            return response()->json([
+                'results' => [],
+                'total' => 0,
+                'hasMore' => false,
+                'message' => 'الرجاء إدخال كلمة بحث (حرفين على الأقل)'
+            ]);
+        }
+
+        // Remove Arabic diacritics for better matching
+        $cleanQuery = $this->removeArabicDiacritics($query);
+        
+        // Build base query
+        $baseQuery = Page::where('book_id', $bookId)
+            ->where(function($q) use ($query, $cleanQuery) {
+                // Search with original query (with diacritics)
+                $q->where('content', 'LIKE', "%{$query}%")
+                  ->orWhere('html_content', 'LIKE', "%{$query}%");
+                
+                // Also search without diacritics if different
+                if ($cleanQuery !== $query) {
+                    $q->orWhereRaw("REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(content, 'ً', ''), 'ٌ', ''), 'ٍ', ''), 'َ', ''), 'ُ', ''), 'ِ', ''), 'ّ', ''), 'ْ', '') LIKE ?", ["%{$cleanQuery}%"]);
+                }
+            });
+        
+        // Get total count
+        $total = $baseQuery->count();
+        
+        // Get paginated results
+        $results = (clone $baseQuery)
+            ->with('chapter:id,title')
+            ->select('id', 'page_number', 'chapter_id', 'content', 'html_content')
+            ->orderBy('page_number')
+            ->offset($offset)
+            ->limit($limit)
+            ->get();
+
+        // Format results with snippets
+        $formattedResults = $results->map(function($page) use ($query) {
+            $content = strip_tags($page->html_content ?? $page->content);
+            $snippet = $this->getSearchSnippet($content, $query, 150);
+            
+            return [
+                'page_number' => $page->page_number,
+                'chapter' => $page->chapter?->title,
+                'snippet' => $snippet,
+            ];
+        });
+
+        return response()->json([
+            'results' => $formattedResults,
+            'total' => $total,
+            'offset' => $offset,
+            'hasMore' => ($offset + $limit) < $total,
+            'query' => $query
+        ]);
+    }
+
+    /**
+     * Remove Arabic diacritics (harakat) from text
+     */
+    private function removeArabicDiacritics($text)
+    {
+        // Arabic diacritics: Fathatan, Dammatan, Kasratan, Fatha, Damma, Kasra, Shadda, Sukun
+        $diacritics = ['ً', 'ٌ', 'ٍ', 'َ', 'ُ', 'ِ', 'ّ', 'ْ', 'ٰ'];
+        return str_replace($diacritics, '', $text);
+    }
+
+    /**
+     * Get a snippet of text around the search query
+     */
+    private function getSearchSnippet($content, $query, $length = 150)
+    {
+        $content = strip_tags($content);
+        $position = mb_stripos($content, $query);
+        
+        if ($position === false) {
+            // Try without diacritics
+            $cleanContent = $this->removeArabicDiacritics($content);
+            $cleanQuery = $this->removeArabicDiacritics($query);
+            $position = mb_stripos($cleanContent, $cleanQuery);
+        }
+        
+        if ($position === false) {
+            return mb_substr($content, 0, $length) . '...';
+        }
+
+        $start = max(0, $position - 50);
+        $snippet = mb_substr($content, $start, $length);
+        
+        // Add ellipsis
+        if ($start > 0) {
+            $snippet = '...' . $snippet;
+        }
+        if (mb_strlen($content) > $start + $length) {
+            $snippet .= '...';
+        }
+
+        // Highlight the query in the snippet
+        $snippet = preg_replace(
+            '/(' . preg_quote($query, '/') . ')/iu',
+            '<mark class="bg-yellow-200 px-0.5 rounded">$1</mark>',
+            $snippet
+        );
+
+        return $snippet;
+    }
 }

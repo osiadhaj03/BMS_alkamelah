@@ -124,4 +124,49 @@
             @endif
         }
     });
+    
+    // Highlight search query in content
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const highlightQuery = urlParams.get('highlight');
+        
+        if (highlightQuery && highlightQuery.length > 1) {
+            const contentEl = document.querySelector('.prose');
+            if (contentEl) {
+                highlightText(contentEl, highlightQuery);
+                
+                // Scroll to first highlight
+                setTimeout(() => {
+                    const firstHighlight = document.querySelector('.search-highlight');
+                    if (firstHighlight) {
+                        firstHighlight.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }, 300);
+            }
+        }
+    });
+    
+    function highlightText(element, query) {
+        const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null, false);
+        const textNodes = [];
+        
+        while (walker.nextNode()) {
+            textNodes.push(walker.currentNode);
+        }
+        
+        textNodes.forEach(node => {
+            const text = node.textContent;
+            const regex = new RegExp(`(${escapeRegExp(query)})`, 'gi');
+            
+            if (regex.test(text)) {
+                const span = document.createElement('span');
+                span.innerHTML = text.replace(regex, '<mark class="search-highlight" style="background-color: #fef08a; padding: 2px 4px; border-radius: 3px;">$1</mark>');
+                node.parentNode.replaceChild(span, node);
+            }
+        });
+    }
+    
+    function escapeRegExp(string) {
+        return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
 </script>
