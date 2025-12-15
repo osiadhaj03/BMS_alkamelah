@@ -7,6 +7,11 @@ use App\Http\Controllers\BookReaderController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+// Search Page Prototype
+Route::get('/search', function () {
+    return view('pages.search.advanced-search');
+})->name('search.index');
+
 // Book Reader Routes
 Route::get('/book/{bookId}/{pageNumber?}', [BookReaderController::class, 'show'])
     ->name('book.read')
