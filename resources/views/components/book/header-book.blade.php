@@ -337,19 +337,23 @@
 
         <!-- Search Bar (New) -->
         <div class="search-container">
+            <!--
             <div class="actions-container">
+ 
                 <button class="btn-filter" id="btn-filter">
                     <span>تصفية</span>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M6 12h12M10 18h4"/></svg>
                 </button>
-                <!-- Filter Dropdown -->
+                -->
+                <!-- Filter Dropdown 
                 <div class="dropdown-menu filter-dropdown" id="filter-menu">
                     <button class="dropdown-item">كل الكتاب</button>
                     <button class="dropdown-item">العناوين فقط</button>
                     <button class="dropdown-item">الصفحة الحالية</button>
                 </div>
+                
             </div>
-            
+            -->
             <!-- Dynamic Search Component -->
             <div class="flex-1 relative">
                 <x-book.book-search :book="$book" />
