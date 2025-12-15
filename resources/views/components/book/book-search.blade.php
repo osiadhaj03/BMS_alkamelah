@@ -1,8 +1,9 @@
 @props([
-    'book' => null
+    'book' => null,
+    'inline' => false
 ])
 
-<div class="book-search-container" x-data="bookSearch({{ $book?->id ?? 'null' }})">
+<div class="book-search-container relative" x-data="bookSearch({{ $book?->id ?? 'null' }})">
     <!-- Search Input -->
     <div class="relative">
         <input type="text" 
@@ -32,24 +33,39 @@
         <button x-show="query.length > 0" 
                 @click="clearSearch()"
                 class="absolute top-2.5 right-3 p-1 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors">
-            
-            <!--
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
-            -->
-            
         </button>
     </div>
     
-    <!-- Results Dropdown -->
+    <!-- Results Container - Different styling for inline (mobile) vs dropdown (desktop) -->
+    @if($inline)
+    {{-- Inline Mode: Results appear inside the sidebar, not as a floating dropdown --}}
     <div x-show="showResults" 
          x-transition
-         class="mt-2 bg-white rounded-xl shadow-xl border overflow-hidden z-50"
-         style="max-height: 350px; border-color: var(--border-color); background-color: var(--bg-paper);">
+         class="mt-4 rounded-xl border overflow-hidden"
+         style="border-color: var(--border-color); background-color: var(--bg-paper);">
+        
+        <!-- Results Count Header -->
+        <div x-show="results.length > 0" class="px-4 py-2 border-b" style="border-color: var(--border-color); background-color: var(--accent-light);">
+            <span class="text-sm font-medium" style="color: var(--accent-color);">
+                عثرنا على <span x-text="total"></span> نتيجة
+            </span>
+        </div>
+        
+        <!-- Results List - Scrollable inside sidebar -->
+        <div class="overflow-y-auto" style="max-height: calc(100vh - 280px);">
+    @else
+    {{-- Dropdown Mode: Floating overlay for desktop --}}
+    <div x-show="showResults" 
+         x-transition
+         class="absolute left-0 right-0 top-full mt-2 bg-white rounded-xl shadow-xl border overflow-hidden z-50"
+         style="min-width: 400px; max-height: 450px; border-color: var(--border-color); background-color: var(--bg-paper); box-shadow: var(--shadow-dropdown, 0 10px 25px -5px rgba(0, 0, 0, 0.15));">
         
         <!-- Results List -->
         <div class="overflow-y-auto" style="max-height: 400px;">
+    @endif
             <!-- No Results -->
             <template x-if="results.length === 0 && !loading && searched">
                 <div class="p-6 text-center">

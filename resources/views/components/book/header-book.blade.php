@@ -8,14 +8,22 @@
         background-repeat: repeat;
         background-position: center top;
         position: relative;
-        padding: 1.5rem 2rem;
+        padding: 0.5rem 0.75rem; /* Compact padding for mobile */
         border-bottom: 1px solid var(--border-color);
     }
+    
+    /* Desktop header padding */
+    @media (min-width: 1024px) {
+        .book-header {
+            padding: 1.5rem 2rem;
+        }
+    }
+    
     .book-header::before {
         content: '';
         position: absolute;
         inset: 0;
-        background-color: rgba(255, 255, 255, 0); /* Reduced opacity for better pattern visibility */
+        background-color: rgba(255, 255, 255, 0);
         z-index: 0;
     }
     .book-header > * {
@@ -57,31 +65,83 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 2rem;
-        flex-wrap: wrap;
+        gap: 0.5rem; /* Tight gap for mobile */
+        flex-wrap: nowrap; /* Single line on mobile */
+    }
+    
+    @media (min-width: 1024px) {
+        .header-main-row {
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
     }
 
     .book-identity {
         display: flex;
         align-items: center;
-        gap: 1rem;
+        gap: 0.5rem; /* Tighter gap for mobile */
+        flex: 1;
+        min-width: 0; /* Allow truncation */
+    }
+    
+    @media (min-width: 1024px) {
+        .book-identity {
+            gap: 1rem;
+            flex: unset;
+        }
     }
 
+    /* Hide book icon on mobile */
     .book-icon-svg {
-        width: 48px;
-        height: 48px;
+        display: none;
+    }
+    
+    @media (min-width: 1024px) {
+        .book-icon-svg {
+            display: block;
+            width: 48px;
+            height: 48px;
+        }
     }
 
-    .header-title h1 {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: var(--text-main);
-        line-height: 1.2;
+    .header-title {
+        min-width: 0; /* Enable truncation */
     }
+    
+    .header-title h1 {
+        font-size: 0.95rem; /* Smaller on mobile */
+        font-weight: 600;
+        color: var(--text-main);
+        line-height: 1.3;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 180px; /* Limit width for truncation on mobile */
+    }
+    
+    @media (min-width: 1024px) {
+        .header-title h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+            white-space: normal;
+            overflow: visible;
+            text-overflow: unset;
+            max-width: none;
+        }
+    }
+    
+    /* Hide author name on mobile */
     .header-title span {
-        font-size: 0.9rem;
-        color: var(--text-secondary);
-        display: block;
+        display: none;
+    }
+    
+    @media (min-width: 1024px) {
+        .header-title span {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            display: block;
+        }
     }
 
     /* Center: Search */
@@ -134,8 +194,20 @@
         border-radius: 8px;
     }
 
-    .btn-menu { width: 40px; height: 40px; }
+    /* Smaller menu button on mobile */
+    .btn-menu { 
+        width: 32px; 
+        height: 32px;
+        flex-shrink: 0;
+    }
     .btn-menu:hover { background: var(--bg-hover); color: var(--text-main); }
+    
+    @media (min-width: 1024px) {
+        .btn-menu { 
+            width: 40px; 
+            height: 40px; 
+        }
+    }
 
     .btn-filter {
         gap: 0.5rem;
@@ -316,15 +388,16 @@
         
         <!-- Search Component -->
         <div class="p-4">
-            <x-book.book-search :book="$book" />
+            <x-book.book-search :book="$book" :inline="true" />
         </div>
         
-        <!-- Quick Tips -->
+        <!-- Quick Tips 
         <div class="px-4 py-3 mx-4 rounded-lg" style="background-color: var(--accent-light);">
             <p class="text-sm" style="color: var(--accent-color); font-family: var(--font-ui);">
                 💡 اكتب كلمة البحث واضغط على النتيجة للانتقال للصفحة
             </p>
         </div>
+        -->
     </div>
 </div>
 

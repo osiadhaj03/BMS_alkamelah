@@ -9,17 +9,17 @@
 ])
 
 <main class="flex-1 overflow-y-auto" style="height: calc(100vh - 80px); background-color: var(--bg-body);">
-    <div class="max-w-4xl mx-auto p-8">
+    <div class="max-w-4xl mx-auto p-2 lg:p-8">
         <!-- Content Wrapper -->
         <div class="p-0">
             
             <!-- Page Content -->
             <div id="book-content-wrapper" class="space-y-8">
                 @if($currentPage)
-                    <div class="rounded-lg shadow-lg p-8 relative page-container transition-transform duration-300 hover:shadow-xl" 
+                    <div class="rounded-lg shadow-lg p-2 lg:p-8 relative page-container transition-transform duration-300 hover:shadow-xl" 
                          style="background-color: var(--bg-paper); box-shadow: var(--shadow-paper); font-family: var(--font-main);"
                          data-page="{{ $currentPageNum }}">
-                        
+                        <!-- Page Header 
                         <div class="flex justify-between items-center mb-6 pb-4 border-b border-gray-100">
                             <span class="text-xs text-gray-400" style="font-family: var(--font-ui);">
                                 {{ $book?->title ?? 'الكتاب' }} - {{ $book?->authors?->first()?->full_name ?? 'المؤلف' }}
@@ -28,14 +28,14 @@
                                 صفحة {{ $currentPageNum }} من {{ $totalPages }}
                             </span>
                         </div>
-
-                        <!-- Chapter Title if available -->
+-->
+                        <!-- Chapter Title if available 
                         @if($currentPage->chapter)
                             <h3 class="text-xl font-bold mb-4" style="color: var(--accent-color); font-family: var(--font-ui);">
                                 {{ $currentPage->chapter->title }}
                             </h3>
                         @endif
-
+                        -->
                         <!-- Content -->
                         <div class="prose prose-lg max-w-none leading-loose" style="color: var(--text-main); line-height: 2;">
                             {!! $currentPage->html_content ?? nl2br(e($currentPage->content)) !!}
@@ -43,7 +43,7 @@
                     </div>
                 @else
                     <!-- No Content Message -->
-                    <div class="rounded-lg shadow-lg p-8 text-center" 
+                    <div class="rounded-lg shadow-lg p-2 lg:p-8 text-center" 
                          style="background-color: var(--bg-paper); box-shadow: var(--shadow-paper);">
                         <div class="text-6xl mb-4">📖</div>
                         <p class="text-gray-500 text-lg" style="font-family: var(--font-ui);">
