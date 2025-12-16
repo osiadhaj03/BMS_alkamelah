@@ -27,19 +27,24 @@ class AuthorsTable
                 
                 TextColumn::make('first_name')
                     ->label('الاسم الأول')
+                    ->searchable()
                     ->toggleable(),
                 TextColumn::make('middle_name')
                     ->label('الاسم الأوسط')
+                    ->searchable()
                     ->toggleable(),
                 TextColumn::make('last_name')
                     ->label('الاسم الأخير')
+                    ->searchable()
                     ->toggleable(),
                 TextColumn::make('laqab')
                     ->label('اللقب')
+                    ->searchable()
                     ->toggleable()
                     ->badge(),
                 TextColumn::make('kunyah')
                     ->label('الكنية')
+                    ->searchable()
                     ->toggleable()
                     ->badge(),
                 TextColumn::make('madhhab')

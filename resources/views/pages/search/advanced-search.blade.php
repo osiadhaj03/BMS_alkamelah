@@ -27,7 +27,7 @@
 
         <!-- Mobile Toggle Button (Visible only on small screens) -->
         <button id="mobile-sidebar-toggle" 
-                class="lg:hidden absolute bottom-6 right-6 z-30 p-3 rounded-full bg-green-600 text-white shadow-lg hover:bg-green-700 transition-colors">
+                class="lg:hidden absolute bottom-10 right-6 z-30 p-3 rounded-full bg-green-600 text-white shadow-lg hover:bg-green-700 transition-colors">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
             </svg>
