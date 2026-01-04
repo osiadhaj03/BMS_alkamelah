@@ -32,13 +32,13 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->colors([
-                'primary' => '#2C6E4A',      // أخضر (اللون الأساسي)
-                'secondary' => '#161E29',   // لون داكن جداً
-                'accent' => '#192126',      // لون داكن
-                'danger' => '#BA4749',      // أحمر/وردي
-                'success' => '#2C6E4A',     // أخضر للنجاح
-                'warning' => '#BA4749',     // أحمر للتحذير
-                'info' => '#192126',        // داكن للمعلومات
+              //      'primary' => '#2C6E4A',      // أخضر (اللون الأساسي)
+              //      'secondary' => '#161E29',   // لون داكن جداً
+              //      'accent' => '#192126',      // لون داكن
+              //      'danger' => '#BA4749',      // أحمر/وردي
+              //      'success' => '#2C6E4A',     // أخضر للنجاح
+              //      'warning' => '#BA4749',     // أحمر للتحذير
+              //      'info' => '#192126',        // داكن للمعلومات
             ])
             ->brandName('نظام إدارة المكتبة')
             ->darkMode(true)
@@ -66,25 +66,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->plugins([
                 FilamentShieldPlugin::make(),
-                FilamentUiSwitcherPlugin::make()
-                    ->withModeSwitcher(),
-                \Caresome\FilamentAuthDesigner\AuthDesignerPlugin::make()
-                    ->login(
-                        layout: \Caresome\FilamentAuthDesigner\Enums\AuthLayout::Overlay,
-                        media: asset('images/الأقصى.jpg')
-                    )
-                    ->registration(
-                        layout: \Caresome\FilamentAuthDesigner\Enums\AuthLayout::Overlay,
-                        media: asset('images/الأقصى.jpg')
-                    )
-                    ->passwordReset(
-                        layout: \Caresome\FilamentAuthDesigner\Enums\AuthLayout::Overlay,
-                        media: asset('images/الأقصى.jpg')
-                    )
-                    ->emailVerification(
-                        layout: \Caresome\FilamentAuthDesigner\Enums\AuthLayout::Overlay,
-                        media: asset('images/الأقصى.jpg')
-                    ),
+
             ])
             ->authMiddleware([
                 Authenticate::class,
