@@ -1,0 +1,23 @@
+/* Custom Login Page Styles */
+.fi-simple-page {
+    background: transparent !important;
+}
+
+.fi-simple-main {
+    background: rgba(0, 0, 0, 0.3) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+/* Make the form container more visible on the background */
+.fi-simple-main-ctn {
+    position: relative;
+    z-index: 10;
+}
+
+/* Add a subtle glow to the login card */
+.dark .fi-simple-main {
+    background: rgba(17, 24, 39, 0.85) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}

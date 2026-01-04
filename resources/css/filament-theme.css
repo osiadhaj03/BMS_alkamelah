@@ -166,3 +166,51 @@ textarea:focus {
     scrollbar-width: thin;
     scrollbar-color: #E0D9CE #F5F0EA;
 }
+
+/* ==========================================
+   Custom Login Page Styles
+   Glass morphism effect with background image
+   ========================================== */
+
+/* Remove default background on login page */
+.fi-simple-page {
+    background: transparent !important;
+}
+
+/* Glass effect for login card */
+.fi-simple-main {
+    background: rgba(0, 0, 0, 0.4) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    border-radius: 1rem;
+}
+
+/* Ensure form is above background */
+.fi-simple-main-ctn {
+    position: relative;
+    z-index: 10;
+}
+
+/* Dark mode adjustments */
+.dark .fi-simple-main {
+    background: rgba(17, 24, 39, 0.85) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Make inputs more visible on dark background */
+.fi-simple-page .fi-input {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.fi-simple-page .fi-input:focus {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    border-color: #2C6E4A !important;
+}
+
+/* Logo/brand text styling on login */
+.fi-simple-page .fi-logo {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
