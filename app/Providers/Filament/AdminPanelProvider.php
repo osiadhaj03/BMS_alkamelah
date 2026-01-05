@@ -19,6 +19,9 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Caresome\FilamentAuthDesigner\AuthDesignerPlugin;
+use Caresome\FilamentAuthDesigner\Data\AuthPageConfig;
+use Caresome\FilamentAuthDesigner\Enums\MediaPosition;
 
 
 class AdminPanelProvider extends PanelProvider
@@ -31,13 +34,13 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->colors([
-              //      'primary' => '#2C6E4A',      // أخضر (اللون الأساسي)
-              //      'secondary' => '#161E29',   // لون داكن جداً
-              //      'accent' => '#192126',      // لون داكن
-              //      'danger' => '#BA4749',      // أحمر/وردي
-              //      'success' => '#2C6E4A',     // أخضر للنجاح
-              //      'warning' => '#BA4749',     // أحمر للتحذير
-              //      'info' => '#192126',        // داكن للمعلومات
+                //'primary' => '#2C6E4A',
+                //'secondary' => '#161E29',
+                //'accent' => '#192126',
+                //'danger' => '#BA4749',
+                //'success' => '#2C6E4A',
+                //'warning' => '#BA4749',
+                //'info' => '#192126',
             ])
             ->brandName('نظام إدارة المكتبة')
             ->darkMode(true)
@@ -65,6 +68,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->plugins([
                 FilamentShieldPlugin::make(),
+<<<<<<< HEAD
                 //AuthDesignerPlugin::make()
                 //->login(fn (AuthPageConfig $config) => $config
                 //    ->media(asset('assets/background.jpg'))//C:\Users\osaidsalah002\Documents\BMS_alkamelah\storage\assets\2.jpg  C:\Users\osaidsalah002\Documents\BMS_alkamelah\public\images\الأقصى.jpg
@@ -72,6 +76,14 @@ class AdminPanelProvider extends PanelProvider
                 //    ->blur(8)
                 //)
 
+=======
+                AuthDesignerPlugin::make()
+                    ->login(fn (AuthPageConfig $config) => $config
+                        ->media(asset('assets/2.png'))
+                        ->mediaPosition(MediaPosition::Cover)
+                        ->blur(0)
+                ),
+>>>>>>> 259c61a9a95929946ce861491fc8937df4062fc3
             ])
             ->authMiddleware([
                 Authenticate::class,

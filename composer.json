@@ -12,7 +12,11 @@
         "php": "^8.2",
         "alperenersoy/filament-export": "^4.0",
         "bezhansalleh/filament-shield": "^4.0",
+<<<<<<< HEAD
         "caresome/filament-auth-designer": "^1.0",
+=======
+        "caresome/filament-auth-designer": "*",
+>>>>>>> 259c61a9a95929946ce861491fc8937df4062fc3
         "caresome/filament-neobrutalism-theme": "*",
         "elasticsearch/elasticsearch": "7.17",
         "filament/filament": "^4.2",
