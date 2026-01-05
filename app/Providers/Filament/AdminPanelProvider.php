@@ -8,7 +8,9 @@ use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages\Dashboard;
-use Filament\AuthDesigner\AuthDesignerPlugin;
+use Caresome\FilamentAuthDesigner\AuthDesignerPlugin;
+use Caresome\FilamentAuthDesigner\Data\AuthPageConfig;
+use Caresome\FilamentAuthDesigner\Enums\MediaPosition;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -32,13 +34,13 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->colors([
-              //      'primary' => '#2C6E4A',      // أخضر (اللون الأساسي)
-              //      'secondary' => '#161E29',   // لون داكن جداً
-              //      'accent' => '#192126',      // لون داكن
-              //      'danger' => '#BA4749',      // أحمر/وردي
-              //      'success' => '#2C6E4A',     // أخضر للنجاح
-              //      'warning' => '#BA4749',     // أحمر للتحذير
-              //      'info' => '#192126',        // داكن للمعلومات
+                //'primary' => '#2C6E4A',
+                //'secondary' => '#161E29',
+                //'accent' => '#192126',
+                //'danger' => '#BA4749',
+                //'success' => '#2C6E4A',
+                //'warning' => '#BA4749',
+                //'info' => '#192126',
             ])
             ->brandName('نظام إدارة المكتبة')
             ->darkMode(true)
