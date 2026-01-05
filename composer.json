@@ -12,7 +12,7 @@
         "php": "^8.2",
         "alperenersoy/filament-export": "^4.0",
         "bezhansalleh/filament-shield": "^4.0",
-        "caresome/filament-auth-designer": "^1.0",
+        "caresome/filament-auth-designer": "*",
         "elasticsearch/elasticsearch": "7.17",
         "filament/filament": "^4.2",
         "filament/spatie-laravel-media-library-plugin": "^4.2",

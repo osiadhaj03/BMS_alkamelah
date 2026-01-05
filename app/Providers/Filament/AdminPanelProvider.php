@@ -8,6 +8,7 @@ use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages\Dashboard;
+use Filament\AuthDesigner\AuthDesignerPlugin;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -65,6 +66,12 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->plugins([
                 FilamentShieldPlugin::make(),
+                AuthDesignerPlugin::make()
+                ->login(fn (AuthPageConfig $config) => $config
+                    ->media(asset('assets/2.jpg'))
+                    ->mediaPosition(MediaPosition::Cover)
+                    ->blur(8)
+                )
 
             ])
             ->authMiddleware([
