@@ -68,22 +68,13 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->plugins([
                 FilamentShieldPlugin::make(),
-<<<<<<< HEAD
-                //AuthDesignerPlugin::make()
-                //->login(fn (AuthPageConfig $config) => $config
-                //    ->media(asset('assets/background.jpg'))//C:\Users\osaidsalah002\Documents\BMS_alkamelah\storage\assets\2.jpg  C:\Users\osaidsalah002\Documents\BMS_alkamelah\public\images\الأقصى.jpg
-                //    ->mediaPosition(MediaPosition::Cover)
-                //    ->blur(8)
-                //)
-
-=======
                 AuthDesignerPlugin::make()
                     ->login(fn (AuthPageConfig $config) => $config
                         ->media(asset('assets/2.png'))
                         ->mediaPosition(MediaPosition::Cover)
                         ->blur(0)
                 ),
->>>>>>> 259c61a9a95929946ce861491fc8937df4062fc3
+
             ])
             ->authMiddleware([
                 Authenticate::class,
