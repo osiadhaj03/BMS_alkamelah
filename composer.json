@@ -9,7 +9,7 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^8.2",
+        "php": "^8.2.12",
         "alperenersoy/filament-export": "^4.0",
         "bezhansalleh/filament-shield": "^4.0",
         "caresome/filament-auth-designer": "^2.0",
@@ -95,11 +95,7 @@
         "allow-plugins": {
             "pestphp/pest-plugin": true,
             "php-http/discovery": true
-        },
-        "platform": {
-            "php": "8.2.0"
-        },
-        "platform-check": false
+        }
     },
     "minimum-stability": "stable",
     "prefer-stable": true
