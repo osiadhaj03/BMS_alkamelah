@@ -106,7 +106,9 @@ class BookForm
                             ->schema([
                                 Select::make('author_id')
                                     ->label('المؤلف')
-                                    ->relationship('author', 'first_name')
+                                    ->relationship('author', 'full_name')
+                                    ->getOptionLabelFromRecordUsing(fn ($record) => $record->full_name ?? $record->first_name ?? 'بدون اسم')
+                                    ->placeholder('اختر مؤلفاً')
                                     ->searchable()
                                     ->preload()
                                     ->required(),
