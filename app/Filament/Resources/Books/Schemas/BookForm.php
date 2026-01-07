@@ -3,8 +3,8 @@
 namespace App\Filament\Resources\Books\Schemas;
 
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\KeyValue;
+use Filament\Schemas\Components\Grid;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
