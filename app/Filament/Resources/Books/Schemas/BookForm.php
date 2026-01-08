@@ -95,13 +95,13 @@ class BookForm
                             ])
                             ->default('yes')
                             ->required(),
-                        TextInput::make('bookMetadata.edition')
+                        TextInput::make('edition')
                             ->label('رقم الطبعة')
                             ->placeholder('الطبعة 1 ، 2، ...')
                             ->numeric(),
 
 
-                        TextInput::make('bookMetadata.edition_year')
+                        TextInput::make('edition_year')
                             ->label('سنة الطبعة')
                             ->placeholder('سنة الطبعة(مثال: 1999)')
                             ->numeric(),    
