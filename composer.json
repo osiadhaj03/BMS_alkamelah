@@ -12,7 +12,6 @@
         "php": "^8.2.12",
         "alperenersoy/filament-export": "^4.0",
         "bezhansalleh/filament-shield": "^4.0",
-        "caresome/filament-auth-designer": "^2.0",
         "caresome/filament-neobrutalism-theme": "*",
         "elasticsearch/elasticsearch": "7.17",
         "filament/filament": "^4.2",
@@ -21,8 +20,7 @@
         "laravel/framework": "^12.0",
         "laravel/scout": "^10.23",
         "laravel/tinker": "^2.10.1",
-        "naturalgroove/laravel-filament-rich-editor-source-ai": "^1.0",
-        "resma/filament-awin-theme": "^1.1"
+        "naturalgroove/laravel-filament-rich-editor-source-ai": "^1.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
