@@ -7,9 +7,9 @@ use Filament\Widgets\ChartWidget;
 
 class BooksByPublisherChart extends ChartWidget
 {
-    protected static ?string $heading = 'توزيع الكتب حسب الناشرين';
+    public ?string $heading = 'توزيع الكتب حسب الناشرين';
 
-    protected static ?string $description = 'أكثر 10 ناشرين عدداً من الكتب';
+    public ?string $description = 'أكثر 10 ناشرين عدداً من الكتب';
 
     protected function getData(): array
     {

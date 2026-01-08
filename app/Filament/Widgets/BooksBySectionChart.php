@@ -7,9 +7,9 @@ use Filament\Widgets\ChartWidget;
 
 class BooksBySectionChart extends ChartWidget
 {
-    protected static ?string $heading = 'توزيع الكتب حسب الأقسام';
+    public ?string $heading = 'توزيع الكتب حسب الأقسام';
 
-    protected static ?string $description = 'نسبة الكتب في كل قسم';
+    public ?string $description = 'نسبة الكتب في كل قسم';
 
     protected function getData(): array
     {
