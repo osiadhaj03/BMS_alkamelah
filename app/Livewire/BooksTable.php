@@ -58,6 +58,23 @@ class BooksTable extends Component
         if ($section) {
             $this->sectionFilters = [(int) $section];
         }
+
+        // قراءة البحث من URL
+        if (request()->has('search')) {
+            $this->search = request('search');
+        }
+
+        // قراءة فلاتر الأقسام من URL
+        if (request()->has('sectionFilters')) {
+            $filters = request('sectionFilters');
+            $this->sectionFilters = is_array($filters) ? array_map('intval', $filters) : [(int) $filters];
+        }
+
+        // قراءة فلاتر المؤلفين من URL
+        if (request()->has('authorFilters')) {
+            $filters = request('authorFilters');
+            $this->authorFilters = is_array($filters) ? array_map('intval', $filters) : [(int) $filters];
+        }
     }
 
     public function updatingSearch()

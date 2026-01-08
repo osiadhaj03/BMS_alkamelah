@@ -75,7 +75,7 @@ class AdminPanelProvider extends PanelProvider
                 FilamentShieldPlugin::make(),
                 AuthDesignerPlugin::make()
                     ->login(fn (AuthPageConfig $config) => $config
-                        ->media(asset('assets/2.png'))
+                        ->media(asset('assets/2.jpg'))
                         ->mediaPosition(MediaPosition::Cover)
                         ->blur(0)
                     ),

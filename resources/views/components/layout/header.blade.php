@@ -38,8 +38,8 @@
                     الرئيسية
                 </a>
                 <span class="text-gray-300">|</span>
-                <a href="#"
-                    class="text-gray-700 hover:text-green-800 px-3 py-2  text-sm font-medium border-b-2 border-transparent hover:border-green-800 transition-colors">
+                <a href="{{ route('search.static') }}"
+                    class="text-gray-700 hover:text-green-800 px-3 py-2  text-sm font-medium border-b-2 border-transparent hover:border-green-800 transition-colors {{ request()->routeIs('search.static') ? 'border-green-800 text-green-800' : '' }}">
                     البحث
                 </a>
                 <span class="text-gray-300">|</span>

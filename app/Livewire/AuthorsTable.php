@@ -73,6 +73,31 @@ class AuthorsTable extends Component
         $this->perPage = $perPage;
         $this->showPagination = $showPagination;
         $this->showPerPageSelector = $showPerPageSelector;
+
+        // قراءة البحث من URL
+        if (request()->has('search')) {
+            $this->search = request('search');
+        }
+
+        // قراءة فلاتر المذاهب من URL
+        if (request()->has('madhhabFilters')) {
+            $filters = request('madhhabFilters');
+            $this->madhhabFilters = is_array($filters) ? $filters : [$filters];
+        }
+
+        // قراءة فلاتر القرون من URL
+        if (request()->has('centuryFilters')) {
+            $filters = request('centuryFilters');
+            $this->centuryFilters = is_array($filters) ? array_map('intval', $filters) : [(int) $filters];
+        }
+
+        // قراءة نطاق التاريخ من URL
+        if (request()->has('deathDateFrom')) {
+            $this->deathDateFrom = request('deathDateFrom');
+        }
+        if (request()->has('deathDateTo')) {
+            $this->deathDateTo = request('deathDateTo');
+        }
     }
 
     public function updatingSearch()
