@@ -4,7 +4,7 @@ namespace App\Providers\Filament;
 
 use Filament\Http\Middleware\Authenticate;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
-use Caresome\FilamentNeobrutalism\NeobrutalismeTheme;
+//use Caresome\FilamentNeobrutalism\NeobrutalismeTheme;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -14,6 +14,10 @@ use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
+use App\Filament\Widgets\StatsOverviewWidget;
+use App\Filament\Widgets\BooksAddedMonthlyChart;
+use App\Filament\Widgets\BooksBySectionChart;
+use App\Filament\Widgets\BooksByPublisherChart;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -47,6 +51,10 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
+                StatsOverviewWidget::class,
+                BooksAddedMonthlyChart::class,
+                BooksBySectionChart::class,
+                BooksByPublisherChart::class,
                 AccountWidget::class,
                 FilamentInfoWidget::class,
             ])
@@ -63,13 +71,13 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->plugins([
                 FilamentShieldPlugin::make(),
-                NeobrutalismeTheme::make()
-                    ->customize([
-                        'border-width' => '3px',
-                        'border-width-thick' => '4px',
-                        'radius-md' => '0.75rem',
-                        'shadow-offset-md' => '4px',
-                    ]),
+                //NeobrutalismeTheme::make()
+                //    ->customize([
+                //        'border-width' => '3px',
+                //        'border-width-thick' => '4px',
+                //        'radius-md' => '0.75rem',
+                //        'shadow-offset-md' => '4px',
+                //    ]),
             ])
             ->authMiddleware([
                 Authenticate::class,
