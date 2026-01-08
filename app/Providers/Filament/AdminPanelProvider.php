@@ -81,7 +81,7 @@ class AdminPanelProvider extends PanelProvider
                     ]),
                 AuthDesignerPlugin::make()
                     ->login(fn (AuthPageConfig $config) => $config
-                        ->media(asset('assets/auth-bg.png'))
+                        ->media(asset('assets/2.jpg'))
                         ->mediaPosition(MediaPosition::Cover)
                         ->blur(0)
                     ),
