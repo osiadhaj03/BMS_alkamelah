@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use Filament\Http\Middleware\Authenticate;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
+use Caresome\FilamentNeobrutalism\NeobrutalismeTheme;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -65,6 +66,13 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->plugins([
                 FilamentShieldPlugin::make(),
+                NeobrutalismeTheme::make()
+                    ->customize([
+                        'border-width' => '3px',
+                        'border-width-thick' => '4px',
+                        'radius-md' => '0.75rem',
+                        'shadow-offset-md' => '4px',
+                    ]),
             ])
             ->authMiddleware([
                 Authenticate::class,
