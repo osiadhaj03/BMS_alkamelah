@@ -31,6 +31,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->notifications()
             ->colors([
                 'primary' => Color::Green,
                 'secondary' => Color::Green,
@@ -39,6 +40,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->brandName('نظام إدارة المكتبة')
             ->darkMode(true)
+            ->broadcasting()
             ->maxContentWidth('full')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
