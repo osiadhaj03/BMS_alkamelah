@@ -296,10 +296,10 @@
                         @if($activeFilterTab === 'madhhab')
                             <ul class="space-y-1">
                                 @foreach($this->getFilteredMadhhabs() as $m)
-                                    <li class="relative flex items-start py-2 px-4 hover:bg-white hover:shadow-sm rounded-lg transition-all cursor-pointer"
+                                    <li class="relative flex items-start py-3 px-4 hover:bg-white hover:shadow-sm rounded-lg transition-all cursor-pointer"
                                         wire:click="toggleMadhhabFilter('{{ $m }}')">
-                                        <div class="min-w-0 flex-1 text-sm">
-                                            <label class="select-none font-medium text-gray-900 cursor-pointer">{{ $m }}</label>
+                                        <div class="min-w-0 flex-1">
+                                            <label class="select-none font-medium text-gray-900 cursor-pointer" style="font-size: 1rem; line-height: 1.5rem;">{{ $m }}</label>
                                         </div>
                                         <div class="mr-3 flex h-6 items-center">
                                             <div class="relative flex items-center justify-center w-5 h-5 border rounded transition-colors {{ in_array($m, $madhhabFilters) ? 'bg-green-600 border-green-600' : 'bg-white border-gray-300' }}">
@@ -318,7 +318,8 @@
                             <div class="grid grid-cols-3 gap-2">
                                 @foreach($availableCenturies as $num => $name)
                                     <button wire:click="toggleCenturyFilter({{ $num }})"
-                                        class="py-3 px-2 text-center rounded-lg border-2 transition-all text-sm font-medium {{ in_array($num, $centuryFilters) ? 'bg-green-600 border-green-600 text-white' : 'bg-white border-gray-200 text-gray-700 hover:border-green-500' }}">
+                                        class="py-4 px-2 text-center rounded-lg border-2 transition-all font-medium {{ in_array($num, $centuryFilters) ? 'bg-green-600 border-green-600 text-white' : 'bg-white border-gray-200 text-gray-700 hover:border-green-500' }}"
+                                        style="font-size: 1rem; line-height: 1.5rem;">
                                         {{ $name }}
                                     </button>
                                 @endforeach
