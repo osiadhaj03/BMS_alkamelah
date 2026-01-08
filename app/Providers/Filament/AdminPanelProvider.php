@@ -18,9 +18,6 @@ use Filament\Support\Colors\Color;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
 use App\Filament\Widgets\StatsOverviewWidget;
-use App\Filament\Widgets\BooksAddedMonthlyChart;
-use App\Filament\Widgets\BooksBySectionChart;
-use App\Filament\Widgets\BooksByPublisherChart;
 use App\Filament\Widgets\ReviewedBooksWidget;
 use App\Filament\Widgets\AuthorsWithBiographyWidget;
 use App\Filament\Widgets\PublishersWithCompleteInfoWidget;
@@ -63,8 +60,6 @@ class AdminPanelProvider extends PanelProvider
                 AuthorsWithBiographyWidget::class,
                 PublishersWithCompleteInfoWidget::class,
                 TotalUsersWidget::class,
-                BooksBySectionChart::class,
-                BooksByPublisherChart::class,
                 AccountWidget::class,
                 FilamentInfoWidget::class,
             ])
