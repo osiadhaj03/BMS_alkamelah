@@ -23,6 +23,7 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Caresome\FilamentAuthDesigner\Data\AuthPageConfig;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 
@@ -78,6 +79,13 @@ class AdminPanelProvider extends PanelProvider
                         'shadow-offset-md' => '4px',
                         '--primary-color' => '#1A3A2A',
                     ]),
+                AuthDesignerPlugin::make()
+                    ->login(fn (AuthPageConfig $config) => $config
+                        ->media(asset('assets/auth-bg.png'))
+                        ->mediaPosition(MediaPosition::Cover)
+                        ->blur(0)
+                    ),
+
             ])
             ->authMiddleware([
                 Authenticate::class,
