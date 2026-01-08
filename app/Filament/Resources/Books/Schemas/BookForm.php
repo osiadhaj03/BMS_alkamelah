@@ -85,14 +85,19 @@ class BookForm
                     ->columnSpanFull(),
 
                 Section::make('معلومات الطبعة')
-                    ->relationship('bookMetadata')
                     ->schema([
                         Select::make('has_original_pagination')
                             ->label('وفق المطبوع')
                             ->boolean()
                             ->default(true)
                             ->required(),
-                        TextInput::make('edition')
+                    ])
+                    ->columns(1)
+                    ->columnSpanFull(),
+
+                Section::make('معلومات الطبعة التفاصيلية')
+                    ->relationship('bookMetadata')
+                    ->schema([
                             ->label('رقم الطبعة')
                             ->placeholder('الطبعة 1 ، 2، ...')
                             ->numeric(),
@@ -106,7 +111,6 @@ class BookForm
                     ->columns(3)
                     ->columnSpanFull(),
 
-                Section::make('التصنيف والمؤلفين والنشر')
                     ->schema([
                         Select::make('book_section_id')
                             ->label('القسم')
