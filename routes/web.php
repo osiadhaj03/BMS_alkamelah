@@ -4,6 +4,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\BookReaderController;
+use App\Http\Controllers\NewsletterSubscriberController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/category', [HomeController::class, 'categories'])->name('categories.index');
@@ -11,6 +12,7 @@ Route::get('/authors', [HomeController::class, 'authors'])->name('authors.index'
 Route::get('/author/{id}', [HomeController::class, 'authorShow'])->name('author.show');
 Route::get('/books', [HomeController::class, 'books'])->name('books.index');
 Route::view('/about-us', 'pages.about')->name('about');
+Route::post('/newsletter/subscribe', [NewsletterSubscriberController::class, 'store'])->name('newsletter.subscribe');
 
 
 // Search Page Prototype

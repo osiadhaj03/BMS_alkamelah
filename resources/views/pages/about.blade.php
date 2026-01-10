@@ -157,16 +157,38 @@
                         <h4 class="text-xl font-bold text-[#1a3a2a] mb-2">اشترك في النشرة البريدية</h4>
                         <p class="text-gray-600 mb-6">ليصلك كل جديد من الكتب والإصدارات</p>
 
-                        <form class="max-w-xl mx-auto space-y-4">
+                        @if ($errors->any())
+                            <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                                <ul class="text-red-600 text-sm">
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
+                        @if (session('success'))
+                            <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+                                <p class="text-green-600 font-semibold">✓ {{ session('success') }}</p>
+                            </div>
+                        @endif
+
+                        <form action="{{ route('newsletter.subscribe') }}" method="POST" class="max-w-xl mx-auto space-y-4">
+                            @csrf
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <input type="text" placeholder="الاسم الكامل"
-                                    class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-[#2C6E4A] focus:ring-2 focus:ring-[#2C6E4A]/20 outline-none transition-all text-right">
-                                <input type="email" placeholder="البريد الإلكتروني"
-                                    class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-[#2C6E4A] focus:ring-2 focus:ring-[#2C6E4A]/20 outline-none transition-all text-right">
+                                <input type="text" name="name" placeholder="الاسم الكامل"
+                                    class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-[#2C6E4A] focus:ring-2 focus:ring-[#2C6E4A]/20 outline-none transition-all text-right"
+                                    value="{{ old('name') }}"
+                                    required>
+                                <input type="email" name="email" placeholder="البريد الإلكتروني"
+                                    class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-[#2C6E4A] focus:ring-2 focus:ring-[#2C6E4A]/20 outline-none transition-all text-right"
+                                    value="{{ old('email') }}"
+                                    required>
                             </div>
                             <div class="flex items-center gap-4">
-                                <input type="tel" placeholder="رقم الهاتف (اختياري - للإشعارات عبر واتساب)"
-                                    class="flex-1 px-4 py-3 rounded-lg border border-gray-300 focus:border-[#2C6E4A] focus:ring-2 focus:ring-[#2C6E4A]/20 outline-none transition-all text-right">
+                                <input type="tel" name="phone" placeholder="رقم الهاتف (اختياري - للإشعارات عبر واتساب)"
+                                    class="flex-1 px-4 py-3 rounded-lg border border-gray-300 focus:border-[#2C6E4A] focus:ring-2 focus:ring-[#2C6E4A]/20 outline-none transition-all text-right"
+                                    value="{{ old('phone') }}">
                             </div>
                             <p class="text-sm text-gray-500">* أدخل رقم الهاتف لتصلك إشعارات الكتب الجديدة عبر واتساب</p>
                             <button type="submit"
