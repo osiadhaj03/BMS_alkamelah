@@ -56,13 +56,16 @@
                     class="w-full px-6 py-4 pr-14 pl-14 text-lg border-2 border-gray-300 rounded-full focus:outline-none focus:border-green-600 text-right bg-white">
 
                 <!-- Filter Icon (Right side) -->
-                <button @click="window.location.href='{{ route('search.static') }}'"
-                    class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-green-600 transition-colors">
+                <button @click="filterModalOpen = true"
+                    class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-green-600 transition-colors relative">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z">
                         </path>
                     </svg>
+                    <span x-show="getActiveFiltersCount() > 0"
+                        class="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold"
+                        x-text="getActiveFiltersCount()"></span>
                 </button>
 
                 <!-- Search Icon (Left side) -->
@@ -96,6 +99,304 @@
             </div>
         </div>
     </div>
+
+    <!-- Filter Modal for Books -->
+    <div x-show="filterModalOpen && searchMode === 'books'" style="display: none;"
+        class="fixed inset-0 z-[100] overflow-y-auto" aria-modal="true">
+
+        <div class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm" @click="filterModalOpen = false"></div>
+
+        <div class="flex min-h-full items-center justify-center p-4">
+            <div x-transition
+                class="relative transform overflow-hidden rounded-xl bg-white text-right shadow-xl w-full max-w-lg flex flex-col max-h-[80vh]">
+
+                <!-- Header -->
+                <div class="bg-white px-6 pt-5 pb-4 border-b border-gray-100">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-gray-900">تصفية الكتب</h3>
+                        <button @click="filterModalOpen = false" class="text-gray-400 hover:text-gray-500">
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Tabs -->
+                    <div class="flex border-b border-gray-200">
+                        <button @click="booksFilterTab = 'sections'"
+                            class="flex-1 pb-3 text-sm font-bold text-center border-b-2 transition-colors" :class="booksFilterTab === 'sections' ? 'border-green-600 text-green-600' :
+                                'border-transparent text-gray-500'">
+                            الأقسام
+                            <span x-show="sectionFilters.length > 0"
+                                class="mr-1 text-xs bg-green-100 text-green-600 px-1.5 py-0.5 rounded-full"
+                                x-text="sectionFilters.length"></span>
+                        </button>
+                        <button @click="booksFilterTab = 'authors'"
+                            class="flex-1 pb-3 text-sm font-bold text-center border-b-2 transition-colors" :class="booksFilterTab === 'authors' ? 'border-green-600 text-green-600' :
+                                'border-transparent text-gray-500'">
+                            المؤلفين
+                            <span x-show="authorFilters.length > 0"
+                                class="mr-1 text-xs bg-green-100 text-green-600 px-1.5 py-0.5 rounded-full"
+                                x-text="authorFilters.length"></span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <div class="flex-1 overflow-y-auto p-4 bg-gray-50 max-h-72">
+                    <!-- Sections Tab -->
+                    <div x-show="booksFilterTab === 'sections'">
+                        <div class="mb-3">
+                            <input type="text" x-model="sectionSearch" @input.debounce.300ms="fetchSections()"
+                                placeholder="بحث في الأقسام..." class="w-full rounded-lg border-gray-300 text-sm">
+                        </div>
+                        <ul class="space-y-1">
+                            <template x-for="section in sections" :key="section.id">
+                                <li class="flex items-center py-2 px-4 hover:bg-white rounded-lg cursor-pointer"
+                                    @click="toggleFilter('section', section.id)">
+                                    <div class="flex-1 font-medium" x-text="section.name" style="font-size: 1rem;">
+                                    </div>
+                                    <div class="w-5 h-5 border rounded flex items-center justify-center" :class="sectionFilters.includes(section.id) ?
+                                            'bg-green-600 border-green-600' : 'border-gray-300'">
+                                        <svg x-show="sectionFilters.includes(section.id)" class="w-3.5 h-3.5 text-white"
+                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                                d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
+
+                    <!-- Authors Tab -->
+                    <div x-show="booksFilterTab === 'authors'">
+                        <div class="mb-3">
+                            <input type="text" x-model="authorSearch" @input.debounce.300ms="fetchAuthorsForFilter()"
+                                placeholder="بحث في المؤلفين..." class="w-full rounded-lg border-gray-300 text-sm">
+                        </div>
+                        <ul class="space-y-1">
+                            <template x-for="author in authorsForFilter" :key="author.id">
+                                <li class="flex items-center py-2 px-4 hover:bg-white rounded-lg cursor-pointer"
+                                    @click="toggleFilter('author', author.id)">
+                                    <div class="flex-1 font-medium" x-text="author.name" style="font-size: 1rem;">
+                                    </div>
+                                    <div class="w-5 h-5 border rounded flex items-center justify-center" :class="authorFilters.includes(author.id) ? 'bg-green-600 border-green-600' :
+                                            'border-gray-300'">
+                                        <svg x-show="authorFilters.includes(author.id)" class="w-3.5 h-3.5 text-white"
+                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                                d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="bg-white px-6 py-3 gap-3 flex flex-row-reverse border-t border-gray-100">
+                    <button @click="filterModalOpen = false"
+                        class="px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-500">تطبيق</button>
+                    <button @click="filterModalOpen = false"
+                        class="px-4 py-2 bg-white text-gray-900 rounded-lg font-semibold ring-1 ring-gray-300 hover:bg-gray-50">إلغاء</button>
+                    <button @click="clearBooksFilters()" class="mr-auto text-sm text-gray-500 hover:text-red-600">مسح
+                        الكل</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Modal for Authors -->
+    <div x-show="filterModalOpen && searchMode === 'authors'" style="display: none;"
+        class="fixed inset-0 z-[100] overflow-y-auto" aria-modal="true">
+
+        <div class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm" @click="filterModalOpen = false"></div>
+
+        <div class="flex min-h-full items-center justify-center p-4">
+            <div x-transition
+                class="relative transform overflow-hidden rounded-xl bg-white text-right shadow-xl w-full max-w-lg flex flex-col max-h-[80vh]">
+
+                <!-- Header -->
+                <div class="bg-white px-6 pt-5 pb-4 border-b border-gray-100">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-gray-900">تصفية المؤلفين</h3>
+                        <button @click="filterModalOpen = false" class="text-gray-400 hover:text-gray-500">
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Tabs -->
+                    <div class="flex border-b border-gray-200">
+                        <button @click="authorsFilterTab = 'madhhab'"
+                            class="flex-1 pb-3 text-sm font-bold text-center border-b-2 transition-colors" :class="authorsFilterTab === 'madhhab' ? 'border-green-600 text-green-600' :
+                                'border-transparent text-gray-500'">
+                            المذهب
+                        </button>
+                        <button @click="authorsFilterTab = 'century'"
+                            class="flex-1 pb-3 text-sm font-bold text-center border-b-2 transition-colors" :class="authorsFilterTab === 'century' ? 'border-green-600 text-green-600' :
+                                'border-transparent text-gray-500'">
+                            القرن
+                        </button>
+                        <button @click="authorsFilterTab = 'daterange'"
+                            class="flex-1 pb-3 text-sm font-bold text-center border-b-2 transition-colors" :class="authorsFilterTab === 'daterange' ? 'border-green-600 text-green-600' :
+                                'border-transparent text-gray-500'">
+                            نطاق التاريخ
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <div class="flex-1 overflow-y-auto p-4 bg-gray-50 max-h-72">
+                    <!-- Madhhab Tab -->
+                    <div x-show="authorsFilterTab === 'madhhab'">
+                        <ul class="space-y-2">
+                            <template x-for="m in availableMadhhabs" :key="m">
+                                <li class="flex items-center py-3 px-4 hover:bg-white rounded-lg cursor-pointer"
+                                    @click="toggleMadhhabFilter(m)">
+                                    <div class="flex-1 font-medium" x-text="m"
+                                        style="font-size: 1rem; line-height: 1.5rem;"></div>
+                                    <div class="w-5 h-5 border rounded flex items-center justify-center" :class="madhhabFilters.includes(m) ? 'bg-green-600 border-green-600' :
+                                            'border-gray-300'">
+                                        <svg x-show="madhhabFilters.includes(m)" class="w-3.5 h-3.5 text-white"
+                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                                d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
+
+                    <!-- Century Tab -->
+                    <div x-show="authorsFilterTab === 'century'">
+                        <div class="grid grid-cols-3 gap-2">
+                            <template x-for="(name, num) in availableCenturies" :key="num">
+                                <button @click="toggleCenturyFilter(parseInt(num))"
+                                    class="py-4 px-2 text-center rounded-lg border-2 transition-all font-medium" :class="centuryFilters.includes(parseInt(num)) ?
+                                        'bg-green-600 border-green-600 text-white' :
+                                        'bg-white border-gray-200 text-gray-700'" x-text="name"
+                                    style="font-size: 1rem; line-height: 1.5rem;">
+                                </button>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- Date Range Tab -->
+                    <div x-show="authorsFilterTab === 'daterange'">
+                        <div class="bg-white rounded-lg p-5 shadow-sm">
+                            <p class="text-gray-600 mb-5" style="font-size: 1rem; line-height: 1.5rem;">أدخل نطاق سنة
+                                الوفاة بالتقويم الهجري:</p>
+                            <div class="flex gap-4 items-center">
+                                <div class="flex-1">
+                                    <label class="block font-medium text-gray-700 mb-2" style="font-size: 1rem;">من
+                                        سنة</label>
+                                    <input type="number" x-model="deathDateFrom" placeholder="مثال: 150" min="1"
+                                        max="1500" class="w-full px-4 py-3 rounded-lg border border-gray-300"
+                                        style="font-size: 1rem;">
+                                </div>
+                                <span class="text-gray-400 pt-8 text-xl">—</span>
+                                <div class="flex-1">
+                                    <label class="block font-medium text-gray-700 mb-2" style="font-size: 1rem;">إلى
+                                        سنة</label>
+                                    <input type="number" x-model="deathDateTo" placeholder="مثال: 200" min="1"
+                                        max="1500" class="w-full px-4 py-3 rounded-lg border border-gray-300"
+                                        style="font-size: 1rem;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="bg-white px-6 py-3 gap-3 flex flex-row-reverse border-t border-gray-100">
+                    <button @click="filterModalOpen = false"
+                        class="px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-500">تطبيق</button>
+                    <button @click="filterModalOpen = false"
+                        class="px-4 py-2 bg-white text-gray-900 rounded-lg font-semibold ring-1 ring-gray-300 hover:bg-gray-50">إلغاء</button>
+                    <button @click="clearAuthorsFilters()" class="mr-auto text-sm text-gray-500 hover:text-red-600">مسح
+                        الكل</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Modal for Content -->
+    <div x-show="filterModalOpen && searchMode === 'content'" style="display: none;"
+        class="fixed inset-0 z-[100] overflow-y-auto" aria-modal="true">
+
+        <div class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm" @click="filterModalOpen = false"></div>
+
+        <div class="flex min-h-full items-center justify-center p-4">
+            <div x-transition
+                class="relative transform overflow-hidden rounded-xl bg-white text-right shadow-xl w-full max-w-lg flex flex-col max-h-[80vh]">
+
+                <!-- Header -->
+                <div class="bg-white px-6 pt-5 pb-4 border-b border-gray-100">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-gray-900">إعدادات البحث في المحتوى</h3>
+                        <button @click="filterModalOpen = false" class="text-gray-400 hover:text-gray-500">
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <div class="flex-1 overflow-y-auto p-4 bg-gray-50">
+                    <!-- Search Type -->
+                    <div class="bg-white rounded-lg p-4 mb-4 shadow-sm">
+                        <h4 class="font-bold text-gray-800 text-sm mb-3">نوع البحث</h4>
+                        <div class="flex flex-col gap-2">
+                            <label class="flex items-center gap-3 p-2 rounded-md hover:bg-gray-50 cursor-pointer">
+                                <input type="radio" name="heroSearchType" value="exact" x-model="searchType"
+                                    class="h-4 w-4" style="color: #2C6E4A;">
+                                <span class="text-sm font-medium">البحث المطابق</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-2 rounded-md hover:bg-gray-50 cursor-pointer">
+                                <input type="radio" name="heroSearchType" value="flexible" x-model="searchType"
+                                    class="h-4 w-4" style="color: #2C6E4A;">
+                                <span class="text-sm font-medium">البحث الغير مطابق</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Word Order -->
+                    <div class="bg-white rounded-lg p-4 shadow-sm">
+                        <h4 class="font-bold text-gray-800 text-sm mb-3">ترتيب الكلمات</h4>
+                        <div class="flex flex-col gap-2">
+                            <label class="flex items-center gap-3 p-2 rounded-md hover:bg-gray-50 cursor-pointer">
+                                <input type="radio" name="heroWordOrder" value="consecutive" x-model="wordOrder"
+                                    class="h-4 w-4" style="color: #2C6E4A;">
+                                <span class="text-sm font-medium">كلمات متتالية</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-2 rounded-md hover:bg-gray-50 cursor-pointer">
+                                <input type="radio" name="heroWordOrder" value="any" x-model="wordOrder" class="h-4 w-4"
+                                    style="color: #2C6E4A;">
+                                <span class="text-sm font-medium">أي ترتيب</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="bg-white px-6 py-3 gap-3 flex flex-row-reverse border-t border-gray-100">
+                    <button @click="filterModalOpen = false"
+                        class="px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-500">تطبيق</button>
+                    <button @click="filterModalOpen = false"
+                        class="px-4 py-2 bg-white text-gray-900 rounded-lg font-semibold ring-1 ring-gray-300 hover:bg-gray-50">إلغاء</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -104,13 +405,58 @@
             query: '',
             searchMode: 'content',
             showDropdown: false,
+            filterModalOpen: false,
             suggestions: [],
             loadingSuggestions: false,
+
+            // Books filters
+            booksFilterTab: 'sections',
+            sectionFilters: [],
+            authorFilters: [],
+            sections: [],
+            authorsForFilter: [],
+            sectionSearch: '',
+            authorSearch: '',
+
+            // Authors filters
+            authorsFilterTab: 'madhhab',
+            madhhabFilters: [],
+            centuryFilters: [],
+            deathDateFrom: '',
+            deathDateTo: '',
+
+            // Content filters
+            searchType: 'flexible',
+            wordOrder: 'any',
+
+            availableMadhhabs: ['المذهب الحنفي', 'المذهب المالكي', 'المذهب الشافعي', 'المذهب الحنبلي'],
+            availableCenturies: {
+                1: 'الأول',
+                2: 'الثاني',
+                3: 'الثالث',
+                4: 'الرابع',
+                5: 'الخامس',
+                6: 'السادس',
+                7: 'السابع',
+                8: 'الثامن',
+                9: 'التاسع',
+                10: 'العاشر',
+                11: 'الحادي عشر',
+                12: 'الثاني عشر',
+                13: 'الثالث عشر',
+                14: 'الرابع عشر',
+                15: 'الخامس عشر'
+            },
 
             get placeholderText() {
                 if (this.searchMode === 'books') return 'ابحث في عناوين الكتب...';
                 if (this.searchMode === 'authors') return 'ابحث في المؤلفين...';
                 return 'ابحث في محتوى الكتب...';
+            },
+
+            init() {
+                this.fetchSections();
+                this.fetchAuthorsForFilter();
             },
 
             async fetchSuggestions() {
@@ -124,11 +470,19 @@
                     if (this.searchMode === 'books') {
                         const response = await fetch(`/api/books?search=${encodeURIComponent(this.query)}`);
                         const data = await response.json();
-                        this.suggestions = (data.data || []).slice(0, 6).map(b => ({ id: b.id, name: b.title, type: 'book' }));
+                        this.suggestions = (data.data || []).slice(0, 6).map(b => ({
+                            id: b.id,
+                            name: b.title,
+                            type: 'book'
+                        }));
                     } else if (this.searchMode === 'authors') {
                         const response = await fetch(`/api/authors?search=${encodeURIComponent(this.query)}`);
                         const data = await response.json();
-                        this.suggestions = (data.data || []).slice(0, 6).map(a => ({ id: a.id, name: a.name, type: 'author' }));
+                        this.suggestions = (data.data || []).slice(0, 6).map(a => ({
+                            id: a.id,
+                            name: a.name,
+                            type: 'author'
+                        }));
                     }
                 } catch (e) {
                     console.error('Error fetching suggestions:', e);
@@ -136,23 +490,117 @@
                 this.loadingSuggestions = false;
             },
 
+            async fetchSections() {
+                try {
+                    const response = await fetch(`/api/sections?search=${encodeURIComponent(this.sectionSearch)}`);
+                    this.sections = await response.json();
+                } catch (e) {
+                    console.error(e);
+                }
+            },
+
+            async fetchAuthorsForFilter() {
+                try {
+                    const response = await fetch(`/api/authors?search=${encodeURIComponent(this.authorSearch)}`);
+                    const data = await response.json();
+                    this.authorsForFilter = data.data || [];
+                } catch (e) {
+                    console.error(e);
+                }
+            },
+
             getSuggestionUrl(item) {
                 if (item.type === 'book') {
                     return `/book/${item.id}`;
                 }
-                return `/authors?search=${encodeURIComponent(item.name)}`;
+                return `/author/${item.id}`;
             },
 
             handleSearch() {
                 if (!this.query.trim()) return;
 
+                let url = '';
+                const params = new URLSearchParams();
+                params.set('search', this.query);
+
                 if (this.searchMode === 'books') {
-                    window.location.href = `/books?search=${encodeURIComponent(this.query)}`;
+                    url = '/books';
+                    this.sectionFilters.forEach(id => params.append('sectionFilters[]', id));
+                    this.authorFilters.forEach(id => params.append('authorFilters[]', id));
                 } else if (this.searchMode === 'authors') {
-                    window.location.href = `/authors?search=${encodeURIComponent(this.query)}`;
+                    url = '/authors';
+                    this.madhhabFilters.forEach(m => params.append('madhhabFilters[]', m));
+                    this.centuryFilters.forEach(c => params.append('centuryFilters[]', c));
+                    if (this.deathDateFrom) params.set('deathDateFrom', this.deathDateFrom);
+                    if (this.deathDateTo) params.set('deathDateTo', this.deathDateTo);
                 } else {
-                    window.location.href = `/search?q=${encodeURIComponent(this.query)}`;
+                    url = '/search';
+                    params.set('q', this.query);
+                    params.set('search_type', this.searchType);
+                    params.set('word_order', this.wordOrder);
                 }
+
+                window.location.href = url + '?' + params.toString();
+            },
+
+            toggleFilter(type, id) {
+                if (type === 'section') {
+                    if (this.sectionFilters.includes(id)) {
+                        this.sectionFilters = this.sectionFilters.filter(i => i !== id);
+                    } else {
+                        this.sectionFilters.push(id);
+                    }
+                } else if (type === 'author') {
+                    if (this.authorFilters.includes(id)) {
+                        this.authorFilters = this.authorFilters.filter(i => i !== id);
+                    } else {
+                        this.authorFilters.push(id);
+                    }
+                }
+            },
+
+            toggleMadhhabFilter(m) {
+                if (this.madhhabFilters.includes(m)) {
+                    this.madhhabFilters = this.madhhabFilters.filter(i => i !== m);
+                } else {
+                    this.madhhabFilters.push(m);
+                }
+            },
+
+            toggleCenturyFilter(c) {
+                if (this.centuryFilters.includes(c)) {
+                    this.centuryFilters = this.centuryFilters.filter(i => i !== c);
+                } else {
+                    this.centuryFilters.push(c);
+                }
+            },
+
+            clearBooksFilters() {
+                this.sectionFilters = [];
+                this.authorFilters = [];
+            },
+
+            clearAuthorsFilters() {
+                this.madhhabFilters = [];
+                this.centuryFilters = [];
+                this.deathDateFrom = '';
+                this.deathDateTo = '';
+            },
+
+            getActiveFiltersCount() {
+                if (this.searchMode === 'books') {
+                    return this.sectionFilters.length + this.authorFilters.length;
+                } else if (this.searchMode === 'authors') {
+                    let count = this.madhhabFilters.length + this.centuryFilters.length;
+                    if (this.deathDateFrom || this.deathDateTo) count++;
+                    return count;
+                } else if (this.searchMode === 'content') {
+                    let count = 0;
+                    if (this.searchType !== 'flexible') count++;
+                    if (this.wordOrder !== 'any') count++;
+                    return count;
+                }
+                return 0;
             }
         }
     }
