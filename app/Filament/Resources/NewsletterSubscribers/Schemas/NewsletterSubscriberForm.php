@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\NewsletterSubscribers\Schemas;
 
-use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\TextInput;
 use Filament\Schemas\Schema;
 
 class NewsletterSubscriberForm
