@@ -150,17 +150,17 @@
                     <button @click="searchMode = 'books'"
                         class="px-6 py-2.5 text-sm font-bold rounded-md transition-all shadow-sm hover:shadow-md border border-[#2C6E4A]"
                         :class="searchMode === 'books' ? 'bg-[#2C6E4A] text-white' : 'bg-white text-[#2C6E4A]'">
-                        بحث في {{ number_format($booksCount) }} كتاب
+                        بحث في الكتب
                     </button>
                     <button @click="searchMode = 'authors'"
                         class="px-6 py-2.5 text-sm font-bold rounded-md transition-all shadow-sm hover:shadow-md border border-[#2C6E4A]"
                         :class="searchMode === 'authors' ? 'bg-[#2C6E4A] text-white' : 'bg-white text-[#2C6E4A]'">
-                        بحث في {{ number_format($authorsCount) }} مؤلف
+                        بحث في المؤلفين
                     </button>
                     <button @click="searchMode = 'content'"
                         class="px-6 py-2.5 text-sm font-bold rounded-md transition-all shadow-sm hover:shadow-md border border-[#2C6E4A]"
                         :class="searchMode === 'content' ? 'bg-[#2C6E4A] text-white' : 'bg-white text-[#2C6E4A]'">
-                        بحث في {{ number_format($booksCount) }} كتاب و {{ number_format($pagesCount) }} صفحة
+                        بحث في المحتوى
                     </button>
                 </div>
             </div>
@@ -447,9 +447,9 @@
                 },
 
                 get placeholderText() {
-                    if (this.searchMode === 'books') return 'بحث في الكتب...';
-                    if (this.searchMode === 'authors') return 'بحث في المؤلفين...';
-                    return 'بحث في محتوى الكتب...';
+                    if (this.searchMode === 'books') return 'بحث في {{ number_format($booksCount) }} كتاب...';
+                    if (this.searchMode === 'authors') return 'بحث في {{ number_format($authorsCount) }} مؤلف...';
+                    return 'بحث في {{ number_format($booksCount) }} كتاب و {{ number_format($pagesCount) }} صفحة...';
                 },
 
                 init() {
