@@ -3,6 +3,11 @@
 @section('title', 'بحث')
 
 @section('content')
+    @php
+        $booksCount = \App\Models\Book::count();
+        $authorsCount = \App\Models\Author::count();
+        $pagesCount = \App\Models\Page::count();
+    @endphp
     <div class="min-h-screen flex flex-col items-center justify-center p-4 relative bg-[#fafafa]" dir="rtl"
         x-data="staticSearch()" @keydown.enter="handleSearch()">
 
@@ -145,17 +150,17 @@
                     <button @click="searchMode = 'books'"
                         class="px-6 py-2.5 text-sm font-bold rounded-md transition-all shadow-sm hover:shadow-md border border-[#2C6E4A]"
                         :class="searchMode === 'books' ? 'bg-[#2C6E4A] text-white' : 'bg-white text-[#2C6E4A]'">
-                        بحث في الكتب
+                        بحث في {{ number_format($booksCount) }} كتاب
                     </button>
                     <button @click="searchMode = 'authors'"
                         class="px-6 py-2.5 text-sm font-bold rounded-md transition-all shadow-sm hover:shadow-md border border-[#2C6E4A]"
                         :class="searchMode === 'authors' ? 'bg-[#2C6E4A] text-white' : 'bg-white text-[#2C6E4A]'">
-                        بحث في المؤلفين
+                        بحث في {{ number_format($authorsCount) }} مؤلف
                     </button>
                     <button @click="searchMode = 'content'"
                         class="px-6 py-2.5 text-sm font-bold rounded-md transition-all shadow-sm hover:shadow-md border border-[#2C6E4A]"
                         :class="searchMode === 'content' ? 'bg-[#2C6E4A] text-white' : 'bg-white text-[#2C6E4A]'">
-                        بحث في محتوى الكتب
+                        بحث في {{ number_format($booksCount) }} كتاب و {{ number_format($pagesCount) }} صفحة
                     </button>
                 </div>
             </div>
