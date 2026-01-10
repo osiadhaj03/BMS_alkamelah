@@ -457,6 +457,39 @@
             init() {
                 this.fetchSections();
                 this.fetchAuthorsForFilter();
+
+                // Read from URL to sync filters
+                const params = new URLSearchParams(window.location.search);
+                const path = window.location.pathname;
+
+                if (path.includes('/authors')) {
+                    this.searchMode = 'authors';
+                    if (params.has('search')) this.query = params.get('search');
+
+                    // Parse arrays from URL
+                    const mFilters = params.getAll('madhhabFilters[]');
+                    if (mFilters.length > 0) this.madhhabFilters = mFilters;
+
+                    const cFilters = params.getAll('centuryFilters[]');
+                    if (cFilters.length > 0) this.centuryFilters = cFilters.map(c => parseInt(c));
+
+                    if (params.has('deathDateFrom')) this.deathDateFrom = params.get('deathDateFrom');
+                    if (params.has('deathDateTo')) this.deathDateTo = params.get('deathDateTo');
+                } else if (path.includes('/books')) {
+                    this.searchMode = 'books';
+                    if (params.has('search')) this.query = params.get('search');
+
+                    const sFilters = params.getAll('sectionFilters[]');
+                    if (sFilters.length > 0) this.sectionFilters = sFilters.map(s => parseInt(s));
+
+                    const aFilters = params.getAll('authorFilters[]');
+                    if (aFilters.length > 0) this.authorFilters = aFilters.map(a => parseInt(a));
+                } else if (path.includes('/search')) {
+                    this.searchMode = 'content';
+                    if (params.has('q')) this.query = params.get('q');
+                    if (params.has('search_type')) this.searchType = params.get('search_type');
+                    if (params.has('word_order')) this.wordOrder = params.get('word_order');
+                }
             },
 
             async fetchSuggestions() {
@@ -517,11 +550,11 @@
             },
 
             handleSearch() {
-                if (!this.query.trim()) return;
+                const query = this.query ? this.query.trim() : '';
 
                 let url = '';
                 const params = new URLSearchParams();
-                params.set('search', this.query);
+                if (query) params.set('search', query);
 
                 if (this.searchMode === 'books') {
                     url = '/books';
@@ -534,8 +567,10 @@
                     if (this.deathDateFrom) params.set('deathDateFrom', this.deathDateFrom);
                     if (this.deathDateTo) params.set('deathDateTo', this.deathDateTo);
                 } else {
+                    if (!query) return; // Search content requires query
                     url = '/search';
-                    params.set('q', this.query);
+                    params.set('q', query);
+                    params.delete('search'); // Use 'q' instead of 'search' for content
                     params.set('search_type', this.searchType);
                     params.set('word_order', this.wordOrder);
                 }
@@ -563,15 +598,16 @@
                 if (this.madhhabFilters.includes(m)) {
                     this.madhhabFilters = this.madhhabFilters.filter(i => i !== m);
                 } else {
-                    this.madhhabFilters.push(m);
+                    this.madhhabFilters = [...new Set([...this.madhhabFilters, m])];
                 }
             },
 
             toggleCenturyFilter(c) {
-                if (this.centuryFilters.includes(c)) {
-                    this.centuryFilters = this.centuryFilters.filter(i => i !== c);
+                const centuryId = parseInt(c);
+                if (this.centuryFilters.includes(centuryId)) {
+                    this.centuryFilters = this.centuryFilters.filter(i => i !== centuryId);
                 } else {
-                    this.centuryFilters.push(c);
+                    this.centuryFilters = [...new Set([...this.centuryFilters, centuryId])];
                 }
             },
 
