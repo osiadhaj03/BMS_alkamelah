@@ -236,7 +236,7 @@
                         <div x-show="booksFilterTab === 'authors'">
                             <div class="mb-3">
                                 <input type="text" x-model="authorSearch" @input.debounce.300ms="fetchAuthorsForFilter()"
-                                    placeholder="بحث في المؤلفين..." class="w-full rounded-lg border-gray-300 text-sm">
+                                    placeholder="بحث في {{ number_format($authorsCount) }} المؤلفين..." class="w-full rounded-lg border-gray-300 text-sm">
                             </div>
                             <ul class="space-y-1">
                                 <template x-for="author in authorsForFilter" :key="author.id">
