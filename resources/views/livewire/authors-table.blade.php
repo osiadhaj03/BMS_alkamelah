@@ -146,7 +146,7 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="font-medium text-gray-900 mb-1" style="font-size: 1.1rem;">
-                                    <a href="#"
+                                    <a href="{{ route('author.show', $author->id) }}"
                                         class="text-green-700 hover:text-green-900 hover:underline transition-colors duration-200">
                                         {!! $this->highlightText($author->full_name, $search) !!}
                                     </a>

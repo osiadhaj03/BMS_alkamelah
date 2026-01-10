@@ -197,4 +197,23 @@ class HomeController extends Controller
         return view('pages.books');
     }
 
+    /**
+     * عرض صفحة المؤلف مع كتبه
+     * 
+     * @param int $id
+     * @return \Illuminate\View\View
+     */
+    public function authorShow($id)
+    {
+        $author = Author::findOrFail($id);
+
+        $books = $author->books()
+            ->with('bookSection')
+            ->withCount(['pages', 'volumes'])
+            ->orderBy('title')
+            ->paginate(20);
+
+        return view('pages.author-show', compact('author', 'books'));
+    }
+
 }
