@@ -25,7 +25,7 @@ class ArticleResource extends Resource
 
     protected static ?string $navigationLabel = 'المقالات';
 
-    protected static ?string $navigationGroup = 'المحتوى';
+    protected static UnitEnum|string|null $navigationGroup = 'المحتوى';
 
     protected static ?int $navigationSort = 2;
 
