@@ -21,11 +21,11 @@ class ArticleResource extends Resource
 {
     protected static ?string $model = Article::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlineDocumentText;
+    protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-document-text';
 
     protected static ?string $navigationLabel = 'المقالات';
 
-    protected static ?string $navigationGroup = 'المحتوى';
+    protected static UnitEnum|string|null $navigationGroup = 'المحتوى';
 
     protected static ?int $navigationSort = 2;
 

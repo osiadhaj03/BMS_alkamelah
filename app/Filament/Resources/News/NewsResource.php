@@ -9,6 +9,7 @@ use App\Filament\Resources\News\Schemas\NewsForm;
 use App\Filament\Resources\News\Tables\NewsTable;
 use App\Models\News;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -20,11 +21,11 @@ class NewsResource extends Resource
 {
     protected static ?string $model = News::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlineNewspaper;
+    protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-newspaper';
 
     protected static ?string $navigationLabel = 'الأخبار';
 
-    protected static ?string $navigationGroup = 'المحتوى';
+    protected static UnitEnum|string|null $navigationGroup = 'المحتوى';
 
     protected static ?int $navigationSort = 1;
 

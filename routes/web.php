@@ -6,6 +6,9 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\BookReaderController;
 use App\Http\Controllers\NewsletterSubscriberController;
 use App\Http\Controllers\FeedbackComplaintController;
+use App\Http\Controllers\NewsController;
+use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\ArticleCommentController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/category', [HomeController::class, 'categories'])->name('categories.index');
@@ -17,6 +20,22 @@ Route::post('/newsletter/subscribe', [NewsletterSubscriberController::class, 'st
 
 Route::view('/feedback', 'pages.feedback')->name('feedback');
 Route::post('/feedback/store', [FeedbackComplaintController::class, 'store'])->name('feedback.store');
+
+// News Routes
+Route::prefix('news')->name('news.')->group(function () {
+    Route::get('/', [NewsController::class, 'index'])->name('index');
+    Route::get('/{slug}', [NewsController::class, 'show'])->name('show');
+    Route::get('/category/{category}', [NewsController::class, 'byCategory'])->name('category');
+});
+
+// Articles Routes
+Route::prefix('articles')->name('articles.')->group(function () {
+    Route::get('/', [ArticleController::class, 'index'])->name('index');
+    Route::get('/{slug}', [ArticleController::class, 'show'])->name('show');
+    Route::get('/category/{category}', [ArticleController::class, 'byCategory'])->name('category');
+    Route::post('/{article}/like', [ArticleController::class, 'like'])->name('like');
+    Route::post('/{article}/comment', [ArticleCommentController::class, 'store'])->name('comment.store');
+});
 
 
 // Search Page Prototype
