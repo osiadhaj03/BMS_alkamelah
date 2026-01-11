@@ -5,7 +5,7 @@ namespace App\Filament\Resources\Articles\Schemas;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\Section;
+use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -28,20 +28,20 @@ class ArticleForm
                         ->afterStateUpdated(function ($state, callable $set) {
                             $set('slug', \Illuminate\Support\Str::slug($state));
                         }),
-                    
+
                     TextInput::make('slug')
                         ->label('الرابط')
                         ->required()
                         ->unique(ignoreRecord: true)
                         ->maxLength(255),
-                    
+
                     Textarea::make('excerpt')
                         ->label('المقتطف')
                         ->rows(3)
                         ->maxLength(500)
                         ->helperText('ملخص مختصر للمقال')
                         ->columnSpanFull(),
-                    
+
                     RichEditor::make('content')
                         ->label('المحتوى')
                         ->required()
@@ -62,7 +62,7 @@ class ArticleForm
                         ])
                         ->required()
                         ->default('general'),
-                    
+
                     Select::make('status')
                         ->label('الحالة')
                         ->options([
@@ -73,19 +73,19 @@ class ArticleForm
                         ])
                         ->required()
                         ->default('draft'),
-                    
+
                     DateTimePicker::make('published_at')
                         ->label('تاريخ النشر')
                         ->default(now()),
-                    
+
                     Toggle::make('is_featured')
                         ->label('مقال مميز'),
-                    
+
                     TextInput::make('priority')
                         ->label('الأولوية')
                         ->numeric()
                         ->default(0),
-                    
+
                     TextInput::make('reading_time')
                         ->label('وقت القراءة (بالدقائق)')
                         ->numeric()
@@ -98,18 +98,18 @@ class ArticleForm
                         ->relationship('author', 'name')
                         ->searchable()
                         ->preload()
-                        ->default(fn () => auth()->id()),
-                    
+                        ->default(fn() => auth()->id()),
+
                     TextInput::make('author_name')
                         ->label('اسم المؤلف (خارجي)')
                         ->helperText('إذا كان المؤلف ليس من المستخدمين'),
-                    
+
                     Select::make('related_book_id')
                         ->label('كتاب ذو صلة')
                         ->relationship('relatedBook', 'title')
                         ->searchable()
                         ->preload(),
-                    
+
                     Select::make('related_author_id')
                         ->label('مؤلف ذو صلة')
                         ->relationship('relatedAuthor', 'name')
@@ -132,16 +132,16 @@ class ArticleForm
                         ->label('الكلمات المفتاحية (Tags)')
                         ->helperText('اضغط Enter بعد كل كلمة')
                         ->columnSpanFull(),
-                    
+
                     TextInput::make('meta_title')
                         ->label('عنوان SEO')
                         ->maxLength(60),
-                    
+
                     Textarea::make('meta_description')
                         ->label('وصف SEO')
                         ->rows(2)
                         ->maxLength(160),
-                    
+
                     Textarea::make('meta_keywords')
                         ->label('كلمات SEO المفتاحية')
                         ->rows(2),
