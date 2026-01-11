@@ -11,6 +11,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Storage;
 
 class NewsForm
 {
@@ -99,6 +100,9 @@ class NewsForm
                         ->disk('public')
                         ->directory('news-images')
                         ->imageEditor()
+                        ->saveUploadedFileUsing(function ($file, $record) {
+                            return Storage::disk('public')->putFile('news-images', $file);
+                        })
                         ->columnSpanFull(),
                 ])->collapsible(),
 
