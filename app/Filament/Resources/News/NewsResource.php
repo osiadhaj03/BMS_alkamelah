@@ -11,7 +11,7 @@ use App\Models\News;
 use BackedEnum;
 use UnitEnum;
 use Filament\Resources\Resource;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -31,9 +31,9 @@ class NewsResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'title';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return NewsForm::configure($form);
+        return NewsForm::configure($schema);
     }
 
     public static function table(Table $table): Table

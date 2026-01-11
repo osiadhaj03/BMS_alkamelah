@@ -11,13 +11,13 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\TagsInput;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 
 class ArticleForm
 {
-    public static function configure(Form $form): Form
+    public static function configure(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->components([
                 Section::make('المحتوى الأساسي')->schema([
                     TextInput::make('title')
