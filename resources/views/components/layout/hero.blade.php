@@ -273,6 +273,12 @@
                                 </li>
                             </template>
                         </ul>
+                        <div x-show="hasMoreAuthors && authorsForFilter.length > 0" class="mt-4 text-center">
+                            <button @click="loadMoreAuthors()"
+                                class="text-sm text-green-600 font-semibold hover:text-green-800 transition-colors">
+                                عرض المزيد
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -435,6 +441,8 @@
             authorsForFilter: [],
             sectionSearch: '',
             authorSearch: '',
+            authorsPage: 1,
+            hasMoreAuthors: true,
 
             // Authors filters
             authorsFilterTab: 'madhhab',
@@ -503,12 +511,36 @@
                 } catch (e) { console.error(e); }
             },
 
-            async fetchAuthorsForFilter() {
+            async fetchAuthorsForFilter(loadMore = false) {
+                if (!loadMore) {
+                    this.authorsPage = 1;
+                    this.hasMoreAuthors = true;
+                }
+
                 try {
-                    const response = await fetch(`/api/authors?search=${encodeURIComponent(this.authorSearch)}`);
+                    const response = await fetch(`/api/authors?search=${encodeURIComponent(this.authorSearch)}&page=${this.authorsPage}`);
                     const data = await response.json();
-                    this.authorsForFilter = data.data || [];
+
+                    const newAuthors = data.data || [];
+
+                    if (loadMore) {
+                        this.authorsForFilter = [...this.authorsForFilter, ...newAuthors];
+                    } else {
+                        this.authorsForFilter = newAuthors;
+                    }
+
+                    // Check if we reached the last page or no more results
+                    if (data.current_page >= data.last_page || newAuthors.length === 0) {
+                        this.hasMoreAuthors = false;
+                    }
+
                 } catch (e) { console.error(e); }
+            },
+
+            loadMoreAuthors() {
+                if (!this.hasMoreAuthors) return;
+                this.authorsPage++;
+                this.fetchAuthorsForFilter(true);
             },
 
             getSuggestionUrl(item) {
@@ -546,6 +578,10 @@
             },
 
             toggleFilter(type, id) {
+                // Ensure ID is treated consistently (as int) if possible, or just exact match
+                // We'll trust the API sends numbers, but just in case, we don't force cast unless needed.
+                // However, standard equality check in JS includes type, so let's be safe.
+
                 if (type === 'section') {
                     if (this.sectionFilters.includes(id)) {
                         this.sectionFilters = this.sectionFilters.filter(i => i !== id);
