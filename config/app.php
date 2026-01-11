@@ -123,4 +123,16 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Deployment Token
+    |--------------------------------------------------------------------------
+    |
+    | This token is used to authenticate deployment script execution.
+    | Keep this secret and never commit it to version control.
+    |
+    */
+
+    'deploy_token' => env('DEPLOY_TOKEN'),
+
 ];

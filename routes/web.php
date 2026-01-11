@@ -37,6 +37,34 @@ Route::prefix('articles')->name('articles.')->group(function () {
     Route::post('/{article}/comment', [ArticleCommentController::class, 'store'])->name('comment.store');
 });
 
+// Deployment Script Route (Protected)
+Route::get('/deploy-fix-composer', function () {
+    // Security: Only run in production and with secret token
+    $token = request()->query('token');
+    $expectedToken = config('app.deploy_token', 'your-secret-token-here');
+    
+    if ($token !== $expectedToken) {
+        abort(403, 'Unauthorized');
+    }
+    
+    $scriptPath = base_path('fix-server-composer.sh');
+    
+    if (!file_exists($scriptPath)) {
+        return response()->json(['error' => 'Script not found'], 404);
+    }
+    
+    // Execute the script
+    $output = [];
+    $returnCode = 0;
+    exec("bash {$scriptPath} 2>&1", $output, $returnCode);
+    
+    return response()->json([
+        'success' => $returnCode === 0,
+        'return_code' => $returnCode,
+        'output' => implode("\n", $output),
+        'timestamp' => now()->toDateTimeString(),
+    ]);
+})->name('deploy.fix-composer');
 
 // Search Page Prototype
 Route::get('/search', function () {
