@@ -11,7 +11,7 @@ use App\Models\Article;
 use BackedEnum;
 use UnitEnum;
 use Filament\Resources\Resource;
-use Filament\Schemas\Schema;
+use Filament\Forms\Form;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -31,9 +31,9 @@ class ArticleResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'title';
 
-    public static function form(Schema $schema): Schema
+    public static function form(Form $form): Form
     {
-        return ArticleForm::configure($schema);
+        return ArticleForm::configure($form);
     }
 
     public static function table(Table $table): Table
