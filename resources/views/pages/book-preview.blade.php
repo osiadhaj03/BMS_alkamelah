@@ -50,6 +50,9 @@
         .hover\:text-green-600:hover { color: #16a34a; }
         .hover\:border-green-600:hover { border-color: #16a34a; }
         .focus\:border-green-600:focus { border-color: #16a34a; }
+        
+        /* Alpine.js x-cloak - Hide elements until Alpine initializes */
+        [x-cloak] { display: none !important; }
     </style>
 </head>
 <body class="min-h-screen" style="background-color: var(--bg-body);">
