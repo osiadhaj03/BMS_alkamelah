@@ -122,6 +122,7 @@ class ArticleForm
                         ->label('صورة الغلاف')
                         ->image()
                         ->maxSize(2048)
+                        ->disk('public')
                         ->directory('article-images')
                         ->imageEditor()
                         ->columnSpanFull(),

@@ -28,19 +28,19 @@ class NewsForm
                         ->afterStateUpdated(function ($state, callable $set) {
                             $set('slug', \Illuminate\Support\Str::slug($state));
                         }),
-                    
+
                     TextInput::make('slug')
                         ->label('الرابط')
                         ->required()
                         ->unique(ignoreRecord: true)
                         ->maxLength(255),
-                    
+
                     Textarea::make('excerpt')
                         ->label('المقتطف')
                         ->rows(3)
                         ->maxLength(500)
                         ->columnSpanFull(),
-                    
+
                     RichEditor::make('content')
                         ->label('المحتوى')
                         ->required()
@@ -59,7 +59,7 @@ class NewsForm
                         ])
                         ->required()
                         ->default('general'),
-                    
+
                     Select::make('status')
                         ->label('الحالة')
                         ->options([
@@ -70,26 +70,26 @@ class NewsForm
                         ])
                         ->required()
                         ->default('draft'),
-                    
+
                     DateTimePicker::make('published_at')
                         ->label('تاريخ النشر')
                         ->default(now()),
-                    
+
                     Toggle::make('is_pinned')
                         ->label('خبر مثبت'),
-                    
+
                     TextInput::make('priority')
                         ->label('الأولوية')
                         ->numeric()
                         ->default(0)
                         ->helperText('الأرقام الأعلى تظهر أولاً'),
-                    
+
                     Select::make('author_id')
                         ->label('الكاتب')
                         ->relationship('author', 'name')
                         ->searchable()
                         ->preload()
-                        ->default(fn () => auth()->id()),
+                        ->default(fn() => auth()->id()),
                 ])->columns(2),
 
                 Section::make('الوسائط')->schema([
@@ -100,9 +100,6 @@ class NewsForm
                         ->disk('public')
                         ->directory('news-images')
                         ->imageEditor()
-                        ->saveUploadedFileUsing(function ($file, $record) {
-                            return Storage::disk('public')->putFile('news-images', $file);
-                        })
                         ->columnSpanFull(),
                 ])->collapsible(),
 
@@ -111,13 +108,13 @@ class NewsForm
                         ->label('عنوان SEO')
                         ->maxLength(60)
                         ->helperText('يُفضل أن يكون بين 50-60 حرف'),
-                    
+
                     Textarea::make('meta_description')
                         ->label('وصف SEO')
                         ->rows(2)
                         ->maxLength(160)
                         ->helperText('يُفضل أن يكون بين 150-160 حرف'),
-                    
+
                     Textarea::make('meta_keywords')
                         ->label('الكلمات المفتاحية')
                         ->rows(2)
