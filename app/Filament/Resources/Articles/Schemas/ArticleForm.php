@@ -2,22 +2,22 @@
 
 namespace App\Filament\Resources\Articles\Schemas;
 
-use Filament\Schemas\Components\DateTimePicker;
-use Filament\Schemas\Components\FileUpload;
-use Filament\Schemas\Components\RichEditor;
-use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Select;
-use Filament\Schemas\Components\TextInput;
-use Filament\Schemas\Components\Textarea;
-use Filament\Schemas\Components\Toggle;
-use Filament\Schemas\Components\TagsInput;
-use Filament\Schemas\Schema;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\TagsInput;
+use Filament\Forms\Form;
 
 class ArticleForm
 {
-    public static function configure(Schema $schema): Schema
+    public static function configure(Form $form): Form
     {
-        return $schema
+        return $form
             ->components([
                 Section::make('المحتوى الأساسي')->schema([
                     TextInput::make('title')
