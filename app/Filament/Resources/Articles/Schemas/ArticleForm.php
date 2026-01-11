@@ -112,7 +112,7 @@ class ArticleForm
 
                     Select::make('related_author_id')
                         ->label('مؤلف ذو صلة')
-                        ->relationship('relatedAuthor', 'name')
+                        ->relationship('relatedAuthor', 'full_name')
                         ->searchable()
                         ->preload(),
                 ])->columns(2),
