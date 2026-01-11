@@ -96,6 +96,7 @@ class NewsForm
                         ->label('الصورة المميزة')
                         ->image()
                         ->maxSize(2048)
+                        ->disk('public')
                         ->directory('news-images')
                         ->imageEditor()
                         ->columnSpanFull(),
