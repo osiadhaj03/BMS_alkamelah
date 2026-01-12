@@ -100,7 +100,7 @@ class UltraFastSearchService
 					],
 					'from' => ($page - 1) * $perPage,
 					'size' => $perPage,
-					'sort' => ['_score'],
+					'sort' => $this->buildSort($filters['sort_by'] ?? 'relevance'),
 					'track_total_hits' => true, // إصلاح مشكلة الـ 10,000
 				],
 				'timeout' => '5s',
@@ -263,17 +263,21 @@ class UltraFastSearchService
 
 	/**
 	 * Build flexible match query - allows prefixes without stemming
-	 * Context7 Best Practice: Use match for any_order, match_phrase for consecutive/paragraph
+	 * Supports word_match: 'all_words' (AND) or 'some_words' (OR)
 	 */
-	protected function buildFlexibleMatchQuery(string $searchTerm, string $wordOrder = 'any_order'): array
+	protected function buildFlexibleMatchQuery(string $searchTerm, string $wordOrder = 'any_order', string $wordMatch = 'all_words'): array
 	{
-		// If any_order, use match with operator AND
+		// Determine operator based on word_match
+		$operator = ($wordMatch === 'some_words') ? 'or' : 'and';
+
+		// If any_order, use match with specified operator
 		if ($wordOrder === 'any_order') {
 			return [
 				'match' => [
 					'content.flexible' => [
 						'query' => $searchTerm,
-						'operator' => 'and'
+						'operator' => $operator,
+						'minimum_should_match' => ($wordMatch === 'some_words') ? '1' : null
 					]
 				]
 			];
@@ -491,6 +495,7 @@ class UltraFastSearchService
 			// Get search type from filters (new system)
 			$searchType = $filters['search_type'] ?? self::SEARCH_TYPE_FLEXIBLE;
 			$wordOrder = $filters['word_order'] ?? 'any_order';
+			$wordMatch = $filters['word_match'] ?? 'all_words'; // all_words or some_words
 
 			switch ($searchType) {
 				case self::SEARCH_TYPE_EXACT:
@@ -519,7 +524,7 @@ class UltraFastSearchService
 
 				case self::SEARCH_TYPE_FLEXIBLE:
 				default:
-					$boolQuery['bool']['must'][] = $this->buildFlexibleMatchQuery($query, $wordOrder);
+					$boolQuery['bool']['must'][] = $this->buildFlexibleMatchQuery($query, $wordOrder, $wordMatch);
 					break;
 			}
 		}
@@ -644,6 +649,39 @@ class UltraFastSearchService
 		}
 
 		return $boolQuery;
+	}
+
+	/**
+	 * Build sort array for Elasticsearch
+	 * Supports: relevance, book_title_asc, book_title_desc, page_number_asc, page_number_desc
+	 */
+	protected function buildSort(string $sortBy = 'relevance'): array
+	{
+		switch ($sortBy) {
+			case 'book_title_asc':
+				return [
+					['book_title.keyword' => ['order' => 'asc']],
+					'_score'
+				];
+			case 'book_title_desc':
+				return [
+					['book_title.keyword' => ['order' => 'desc']],
+					'_score'
+				];
+			case 'page_number_asc':
+				return [
+					['page_number' => ['order' => 'asc']],
+					'_score'
+				];
+			case 'page_number_desc':
+				return [
+					['page_number' => ['order' => 'desc']],
+					'_score'
+				];
+			case 'relevance':
+			default:
+				return ['_score'];
+		}
 	}
 
 	/**

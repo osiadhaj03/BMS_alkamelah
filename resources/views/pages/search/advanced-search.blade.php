@@ -67,6 +67,8 @@
                     query: '',
                     searchType: 'flexible_match',
                     wordOrder: 'any_order',
+                    wordMatch: 'all_words',
+                    sortBy: 'relevance',
                     perPage: 10,
                     page: 1,
 
@@ -125,7 +127,9 @@
                                 per_page: this.perPage,
                                 page: this.page,
                                 search_type: this.searchType,
-                                word_order: this.wordOrder
+                                word_order: this.wordOrder,
+                                word_match: this.wordMatch,
+                                sort_by: this.sortBy
                             });
 
                             // Add filters

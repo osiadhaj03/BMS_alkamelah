@@ -435,6 +435,35 @@
                         </div>
                     </div>
 
+                    <!-- Word Match Section -->
+                    <div class="px-4 pb-4">
+                        <div class="space-y-3">
+                            <h4
+                                class="font-bold text-gray-700 text-xs uppercase tracking-wider border-b border-gray-100 pb-2">
+                                شرط الكلمات
+                            </h4>
+                            <div class="flex flex-col gap-1">
+                                <label
+                                    class="flex items-center gap-3 p-2 rounded-md hover:bg-gray-50 cursor-pointer transition-colors group">
+                                    <input type="radio" name="wordMatch" value="all_words"
+                                        x-model="$store.search.wordMatch" @change="$store.search.performSearch()"
+                                        class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300">
+                                    <span class="text-sm text-gray-700 group-hover:text-purple-700 font-medium">كل
+                                        الكلمات (AND)</span>
+                                </label>
+
+                                <label
+                                    class="flex items-center gap-3 p-2 rounded-md hover:bg-gray-50 cursor-pointer transition-colors group">
+                                    <input type="radio" name="wordMatch" value="some_words"
+                                        x-model="$store.search.wordMatch" @change="$store.search.performSearch()"
+                                        class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300">
+                                    <span class="text-sm text-gray-700 group-hover:text-purple-700 font-medium">بعض
+                                        الكلمات (OR)</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Dropdown Footer -->
                     <div
                         class="bg-gray-50 px-4 py-2 border-t border-gray-100 flex justify-between items-center text-[10px] text-gray-400">
@@ -475,44 +504,55 @@
                         class="absolute top-full left-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-100 z-50 overflow-hidden"
                         style="display: none;">
                         <div class="py-1">
-                            <button @click="sortBy = 'relevance'; sortOpen = false"
+                            <button @click="$store.search.sortBy = 'relevance'; sortOpen = false; $store.search.performSearch()"
                                 class="w-full text-right px-4 py-2.5 text-sm hover:bg-gray-50 flex items-center justify-between group"
-                                :class="sortBy === 'relevance' ? 'text-green-600 bg-green-50' : 'text-gray-700'">
+                                :class="$store.search.sortBy === 'relevance' ? 'text-green-600 bg-green-50' : 'text-gray-700'">
                                 <span>أقرب صلة</span>
-                                <svg x-show="sortBy === 'relevance'" class="w-4 h-4 text-green-600" fill="none"
+                                <svg x-show="$store.search.sortBy === 'relevance'" class="w-4 h-4 text-green-600" fill="none"
                                     stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M5 13l4 4L19 7"></path>
                                 </svg>
                             </button>
 
-                            <button @click="sortBy = 'death_year_asc'; sortOpen = false"
+                            <button @click="$store.search.sortBy = 'book_title_asc'; sortOpen = false; $store.search.performSearch()"
                                 class="w-full text-right px-4 py-2.5 text-sm hover:bg-gray-50 flex items-center justify-between group"
-                                :class="sortBy === 'death_year_asc' ? 'text-green-600 bg-green-50' : 'text-gray-700'">
-                                <span>سنة الوفاة أولا</span>
-                                <svg x-show="sortBy === 'death_year_asc'" class="w-4 h-4 text-green-600" fill="none"
+                                :class="$store.search.sortBy === 'book_title_asc' ? 'text-green-600 bg-green-50' : 'text-gray-700'">
+                                <span>اسم الكتاب (أ-ي)</span>
+                                <svg x-show="$store.search.sortBy === 'book_title_asc'" class="w-4 h-4 text-green-600" fill="none"
                                     stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M5 13l4 4L19 7"></path>
                                 </svg>
                             </button>
 
-                            <button @click="sortBy = 'death_year_desc'; sortOpen = false"
+                            <button @click="$store.search.sortBy = 'book_title_desc'; sortOpen = false; $store.search.performSearch()"
                                 class="w-full text-right px-4 py-2.5 text-sm hover:bg-gray-50 flex items-center justify-between group"
-                                :class="sortBy === 'death_year_desc' ? 'text-green-600 bg-green-50' : 'text-gray-700'">
-                                <span>سنة الوفاة الاحدث أولا</span>
-                                <svg x-show="sortBy === 'death_year_desc'" class="w-4 h-4 text-green-600" fill="none"
+                                :class="$store.search.sortBy === 'book_title_desc' ? 'text-green-600 bg-green-50' : 'text-gray-700'">
+                                <span>اسم الكتاب (ي-أ)</span>
+                                <svg x-show="$store.search.sortBy === 'book_title_desc'" class="w-4 h-4 text-green-600" fill="none"
                                     stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M5 13l4 4L19 7"></path>
                                 </svg>
                             </button>
 
-                            <button @click="sortBy = 'alphabet'; sortOpen = false"
+                            <button @click="$store.search.sortBy = 'page_number_asc'; sortOpen = false; $store.search.performSearch()"
                                 class="w-full text-right px-4 py-2.5 text-sm hover:bg-gray-50 flex items-center justify-between group"
-                                :class="sortBy === 'alphabet' ? 'text-green-600 bg-green-50' : 'text-gray-700'">
-                                <span>اسم الكتاب أبجديا</span>
-                                <svg x-show="sortBy === 'alphabet'" class="w-4 h-4 text-green-600" fill="none"
+                                :class="$store.search.sortBy === 'page_number_asc' ? 'text-green-600 bg-green-50' : 'text-gray-700'">
+                                <span>رقم الصفحة (تصاعدي)</span>
+                                <svg x-show="$store.search.sortBy === 'page_number_asc'" class="w-4 h-4 text-green-600" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+
+                            <button @click="$store.search.sortBy = 'page_number_desc'; sortOpen = false; $store.search.performSearch()"
+                                class="w-full text-right px-4 py-2.5 text-sm hover:bg-gray-50 flex items-center justify-between group"
+                                :class="$store.search.sortBy === 'page_number_desc' ? 'text-green-600 bg-green-50' : 'text-gray-700'">
+                                <span>رقم الصفحة (تنازلي)</span>
+                                <svg x-show="$store.search.sortBy === 'page_number_desc'" class="w-4 h-4 text-green-600" fill="none"
                                     stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M5 13l4 4L19 7"></path>
