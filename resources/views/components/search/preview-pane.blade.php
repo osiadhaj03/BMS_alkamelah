@@ -65,7 +65,7 @@
         wrapper.style.top = '-9999px';
         wrapper.style.left = '-9999px';
         wrapper.style.width = '800px';
-        wrapper.style.backgroundColor = '#fbf7ee';
+        wrapper.style.backgroundColor = '#fffbf2';
         wrapper.style.padding = '40px';
         wrapper.style.direction = 'rtl';
         wrapper.style.fontFamily = 'serif';
