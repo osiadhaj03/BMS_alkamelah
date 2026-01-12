@@ -110,7 +110,7 @@
             const canvas = await html2canvas(wrapper, {
                 scale: 2,
                 useCORS: true,
-                backgroundColor: '#fbf7ee'
+                backgroundColor: '#fffbf2'
             });
 
             const fileName = `${this.result.book_title || 'page'}-${this.result.page_number || 'unknown'}`;
