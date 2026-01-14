@@ -29,8 +29,7 @@
                             <!-- Category Icon/Logo -->
                             <div
                                 class="w-20 h-20 flex-shrink-0 flex items-center justify-center bg-[#f8faf9] rounded-2xl group-hover:bg-[#e8f5e9] transition-colors p-3">
-                                <img src="{{ $section->logo_path ? asset($section->logo_path) : asset('images/group1.svg') }}"
-                                    alt="{{ $section->name }}"
+                                <img src="{{ $section->logo_url }}" alt="{{ $section->name }}"
                                     class="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-500">
                             </div>
 

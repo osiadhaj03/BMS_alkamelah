@@ -109,4 +109,16 @@ class BookSection extends Model
             ->limit($limit)
             ->get();
     }
+
+    /**
+     * Get the URL for the section logo
+     */
+    public function getLogoUrlAttribute(): string
+    {
+        if ($this->logo_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($this->logo_path)) {
+            return asset('storage/' . $this->logo_path);
+        }
+
+        return asset('images/group1.svg');
+    }
 }
