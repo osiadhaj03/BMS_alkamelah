@@ -408,7 +408,7 @@
                                 <label
                                     class="flex items-center gap-3 p-2 rounded-md hover:bg-gray-50 cursor-pointer transition-colors group">
                                     <input type="radio" name="wordOrder" value="consecutive"
-                                        x-model="$store.search.wordOrder" @change="$store.search.performSearch()"
+                                        x-model="$store.search.wordOrder"
                                         class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
                                     <span class="text-sm text-gray-700 group-hover:text-blue-700 font-medium">كلمات
                                         متتالية</span>
@@ -417,7 +417,7 @@
                                 <label
                                     class="flex items-center gap-3 p-2 rounded-md hover:bg-gray-50 cursor-pointer transition-colors group">
                                     <input type="radio" name="wordOrder" value="same_paragraph"
-                                        x-model="$store.search.wordOrder" @change="$store.search.performSearch()"
+                                        x-model="$store.search.wordOrder"
                                         class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
                                     <span class="text-sm text-gray-700 group-hover:text-blue-700 font-medium">في نفس
                                         الفقرة</span>
@@ -426,7 +426,7 @@
                                 <label
                                     class="flex items-center gap-3 p-2 rounded-md hover:bg-gray-50 cursor-pointer transition-colors group">
                                     <input type="radio" name="wordOrder" value="any_order"
-                                        x-model="$store.search.wordOrder" @change="$store.search.performSearch()"
+                                        x-model="$store.search.wordOrder"
                                         class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
                                     <span class="text-sm text-gray-700 group-hover:text-blue-700 font-medium">أي
                                         ترتيب</span>
@@ -446,7 +446,7 @@
                                 <label
                                     class="flex items-center gap-3 p-2 rounded-md hover:bg-gray-50 cursor-pointer transition-colors group">
                                     <input type="radio" name="wordMatch" value="all_words"
-                                        x-model="$store.search.wordMatch" @change="$store.search.performSearch()"
+                                        x-model="$store.search.wordMatch"
                                         class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300">
                                     <span class="text-sm text-gray-700 group-hover:text-purple-700 font-medium">كل
                                         الكلمات (AND)</span>
@@ -455,7 +455,7 @@
                                 <label
                                     class="flex items-center gap-3 p-2 rounded-md hover:bg-gray-50 cursor-pointer transition-colors group">
                                     <input type="radio" name="wordMatch" value="some_words"
-                                        x-model="$store.search.wordMatch" @change="$store.search.performSearch()"
+                                        x-model="$store.search.wordMatch"
                                         class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300">
                                     <span class="text-sm text-gray-700 group-hover:text-purple-700 font-medium">بعض
                                         الكلمات (OR)</span>
@@ -466,9 +466,13 @@
 
                     <!-- Dropdown Footer -->
                     <div
-                        class="bg-gray-50 px-4 py-2 border-t border-gray-100 flex justify-between items-center text-[10px] text-gray-400">
+                        class="bg-gray-50 px-4 py-3 border-t border-gray-100 flex justify-between items-center gap-3">
                         <button @click="settingsOpen = false"
-                            class="text-gray-500 hover:text-gray-700 font-bold">إغلاق</button>
+                            class="text-gray-500 hover:text-gray-700 font-medium text-sm px-3 py-1.5 rounded-lg hover:bg-gray-100 transition-colors">إغلاق</button>
+                        <button @click="$store.search.performSearch(); settingsOpen = false"
+                            class="bg-green-600 hover:bg-green-700 text-white font-medium text-sm px-4 py-1.5 rounded-lg transition-colors">
+                            تطبيق البحث
+                        </button>
                     </div>
                 </div>
             </div>
