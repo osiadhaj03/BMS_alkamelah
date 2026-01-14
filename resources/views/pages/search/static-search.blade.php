@@ -56,7 +56,7 @@
                                 </path>
                             </svg>
                             <span x-show="getActiveFiltersCount() > 0"
-                                class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center"
+                                class="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] text-white font-bold"
                                 x-text="getActiveFiltersCount()"></span>
                         </button>
 
@@ -86,15 +86,15 @@
                                         <div class="flex flex-col gap-1">
                                             <label
                                                 class="flex items-center gap-3 p-2 rounded-md hover:bg-gray-50 cursor-pointer">
-                                                <input type="radio" name="searchType" value="exact" x-model="searchType"
-                                                    class="h-4 w-4" style="color: #2C6E4A;">
+                                                <input type="radio" name="searchType" value="exact_match"
+                                                    x-model="searchType" class="h-4 w-4" style="color: #2C6E4A;">
                                                 <span class="text-sm font-medium">البحث المطابق</span>
                                             </label>
                                             <label
                                                 class="flex items-center gap-3 p-2 rounded-md hover:bg-gray-50 cursor-pointer">
-                                                <input type="radio" name="searchType" value="flexible" x-model="searchType"
-                                                    class="h-4 w-4" style="color: #2C6E4A;">
-                                                <span class="text-sm font-medium">البحث الغير مطابق</span>
+                                                <input type="radio" name="searchType" value="flexible_match"
+                                                    x-model="searchType" class="h-4 w-4" style="color: #2C6E4A;">
+                                                <span class="text-sm font-medium">البحث المرن</span>
                                             </label>
                                         </div>
                                     </div>
@@ -112,9 +112,29 @@
                                             </label>
                                             <label
                                                 class="flex items-center gap-3 p-2 rounded-md hover:bg-gray-50 cursor-pointer">
-                                                <input type="radio" name="wordOrder" value="any" x-model="wordOrder"
+                                                <input type="radio" name="wordOrder" value="any_order" x-model="wordOrder"
                                                     class="h-4 w-4" style="color: #2C6E4A;">
                                                 <span class="text-sm font-medium">أي ترتيب</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <!-- Word Match -->
+                                    <div class="space-y-2">
+                                        <h4
+                                            class="font-bold text-gray-700 text-xs uppercase tracking-wider border-b border-gray-100 pb-2">
+                                            شرط الكلمات</h4>
+                                        <div class="flex flex-col gap-1">
+                                            <label
+                                                class="flex items-center gap-3 p-2 rounded-md hover:bg-gray-50 cursor-pointer">
+                                                <input type="radio" name="wordMatch" value="all_words" x-model="wordMatch"
+                                                    class="h-4 w-4" style="color: #2C6E4A;">
+                                                <span class="text-sm font-medium">كل الكلمات (AND)</span>
+                                            </label>
+                                            <label
+                                                class="flex items-center gap-3 p-2 rounded-md hover:bg-gray-50 cursor-pointer">
+                                                <input type="radio" name="wordMatch" value="some_words" x-model="wordMatch"
+                                                    class="h-4 w-4" style="color: #2C6E4A;">
+                                                <span class="text-sm font-medium">بعض الكلمات (OR)</span>
                                             </label>
                                         </div>
                                     </div>
@@ -167,8 +187,8 @@
 
         </div>
 
-        <!-- Filter Modal for Books -->
-        <div x-show="filterModalOpen && searchMode === 'books'" style="display: none;"
+        <!-- Filter Modal for Books and Content -->
+        <div x-show="filterModalOpen && (searchMode === 'books' || searchMode === 'content')" style="display: none;"
             class="fixed inset-0 z-[100] overflow-y-auto" aria-modal="true">
 
             <div class="fixed inset-0 bg-gray-500 bg-opacity-75 backdrop-blur-sm" @click="filterModalOpen = false"></div>
@@ -241,7 +261,8 @@
                         <div x-show="booksFilterTab === 'authors'">
                             <div class="mb-3">
                                 <input type="text" x-model="authorSearch" @input.debounce.300ms="fetchAuthorsForFilter()"
-                                    placeholder="بحث في {{ number_format($authorsCount) }} المؤلفين..." class="w-full rounded-lg border-gray-300 text-sm">
+                                    placeholder="بحث في {{ number_format($authorsCount) }} المؤلفين..."
+                                    class="w-full rounded-lg border-gray-300 text-sm">
                             </div>
                             <ul class="space-y-1">
                                 <template x-for="author in authorsForFilter" :key="author.id">
@@ -416,8 +437,9 @@
                 settingsOpen: false,
                 filterModalOpen: false,
                 showDropdown: false,
-                searchType: 'flexible',
-                wordOrder: 'any',
+                searchType: 'flexible_match',
+                wordOrder: 'any_order',
+                wordMatch: 'all_words',
 
                 // Suggestions
                 suggestions: [],
@@ -524,6 +546,12 @@
                         params.set('q', this.query);
                         params.set('search_type', this.searchType);
                         params.set('word_order', this.wordOrder);
+                        params.set('word_match', this.wordMatch);
+
+                        // Add filters for content search
+                        if (this.sectionFilters.length > 0) params.set('section_id', this.sectionFilters.join(','));
+                        if (this.authorFilters.length > 0) params.set('author_id', this.authorFilters.join(','));
+                        // Optionally add book filters if we add that tab
                     }
 
                     window.location.href = url + '?' + params.toString();
@@ -574,7 +602,7 @@
                 },
 
                 getActiveFiltersCount() {
-                    if (this.searchMode === 'books') {
+                    if (this.searchMode === 'books' || this.searchMode === 'content') {
                         return this.sectionFilters.length + this.authorFilters.length;
                     } else if (this.searchMode === 'authors') {
                         let count = this.madhhabFilters.length + this.centuryFilters.length;
