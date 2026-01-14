@@ -102,8 +102,10 @@ class UltraFastSearchService
 					'size' => $perPage,
 					'sort' => $this->buildSort($filters['sort_by'] ?? 'relevance'),
 					'track_total_hits' => true, // إصلاح مشكلة الـ 10,000
+					'timeout' => '3s', // Query-level timeout (faster than request timeout)
+					'terminate_after' => 100000, // Stop after examining 100k docs to prevent long searches
 				],
-				'timeout' => '5s',
+				'timeout' => '5s', // Request-level timeout
 				'preference' => '_local',
 			];
 
@@ -272,12 +274,19 @@ class UltraFastSearchService
 
 		// If any_order, use match with specified operator
 		if ($wordOrder === 'any_order') {
+			// Use minimum_should_match for better performance
+			// For 'all_words': 75% of words must match (faster than 100%)
+			// For 'some_words': at least 1 word
+			$minimumMatch = ($wordMatch === 'some_words') ? '1' : '75%';
+			
 			return [
 				'match' => [
 					'content.flexible' => [
 						'query' => $searchTerm,
 						'operator' => $operator,
-						'minimum_should_match' => ($wordMatch === 'some_words') ? '1' : null
+						'minimum_should_match' => $minimumMatch,
+						'fuzziness' => 'AUTO', // Add fuzziness for better results
+						'max_expansions' => 50 // Limit expansions to prevent slow queries
 					]
 				]
 			];
