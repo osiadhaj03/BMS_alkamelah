@@ -103,7 +103,7 @@ class UltraFastSearchService
 					'sort' => $this->buildSort($filters['sort_by'] ?? 'relevance'),
 					'track_total_hits' => true, // إصلاح مشكلة الـ 10,000
 					'timeout' => '3s', // Query-level timeout (faster than request timeout)
-					'terminate_after' => 100000, // Stop after examining 100k docs to prevent long searches
+					'terminate_after' => 10000000, // Stop after examining 10M docs to prevent long searches
 				],
 				'timeout' => '5s', // Request-level timeout
 				'preference' => '_local',
