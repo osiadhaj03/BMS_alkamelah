@@ -77,16 +77,7 @@
             <div class="group relative bg-white hover:bg-gray-50 rounded-lg p-3 cursor-pointer border border-gray-100 hover:border-gray-300 transition-all"
                  @click="$store.search.selectResult(result)">
                  
-                 <div class="flex justify-between items-start mb-1">
-                     <h4 class="font-bold text text-gray-800 line-clamp-1" x-text="result.book_title || result.title || 'بدون عنوان'"></h4>
-                     <span class="text-[10px] bg-gray-100 px-1.5 py-0.5 rounded text-gray-500 whitespace-nowrap">
-                         صـ <span x-text="result.page_number || '-'"></span>
-                     </span>
-                 </div>
-                 
-                 <p class="text-xs text-gray-500 mb-1.5" x-text="result.author_name || ''"></p>
-                 
-                 <!-- Matched Terms (الكلمات المطابقة) -->
+                 <!-- Matched Terms (الكلمات المطابقة) - في الأعلى -->
                  <div x-show="result.matched_terms && result.matched_terms.length > 0" 
                       class="flex flex-wrap gap-1 mb-2">
                      <template x-for="term in result.matched_terms" :key="term">
@@ -98,6 +89,15 @@
                          </span>
                      </template>
                  </div>
+                 
+                 <div class="flex justify-between items-start mb-1">
+                     <h4 class="font-bold text text-gray-800 line-clamp-1" x-text="result.book_title || result.title || 'بدون عنوان'"></h4>
+                     <span class="text-[10px] bg-gray-100 px-1.5 py-0.5 rounded text-gray-500 whitespace-nowrap">
+                         صـ <span x-text="result.page_number || '-'"></span>
+                     </span>
+                 </div>
+                 
+                 <p class="text-xs text-gray-500 mb-1.5" x-text="result.author_name || 'غير محدد'"></p>
                  
                  <div class="text-xs text-gray-600 leading-relaxed font-serif line-clamp-2" x-html="result.highlighted_content || result.content || ''"></div>
             </div>

@@ -149,7 +149,11 @@
                             const data = await response.json();
 
                             console.log('Search response:', data);
-                            console.log('First result matched_terms:', data.data?.[0]?.matched_terms);
+                            if (data.data && data.data.length > 0) {
+                                console.log('First result:', data.data[0]);
+                                console.log('First result matched_terms:', data.data[0].matched_terms);
+                                console.log('First result author_name:', data.data[0].author_name);
+                            }
 
                             this.searchTime = Math.round(performance.now() - startTime);
 
