@@ -11,12 +11,12 @@ use App\Services\MetadataParserService;
 use App\Services\TurathScraperService;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Placeholder;
-use Filament\Forms\Components\Section;
+use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page as FilamentPage;
 use Filament\Support\Icons\Heroicon;
@@ -76,10 +76,10 @@ class ImportTurathBook extends FilamentPage implements HasForms
     /**
      * تعريف النموذج
      */
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Section::make('رابط الكتاب')
                     ->description('أدخل رابط الكتاب من موقع Turath.io')
                     ->schema([
@@ -220,6 +220,7 @@ class ImportTurathBook extends FilamentPage implements HasForms
      */
     protected function performImport(int $bookId, ?Book $existingBook): void
     {
+        set_time_limit(0); // إلغاء حد وقت التنفيذ للعمليات الطويلة
         $scraper = app(TurathScraperService::class);
         $parser = app(MetadataParserService::class);
 
@@ -254,7 +255,7 @@ class ImportTurathBook extends FilamentPage implements HasForms
             $this->addLog("📑 الفصول: " . count($chapters));
             $this->addLog("📄 الصفحات: {$this->totalPages}");
 
-            DB::transaction(function () use ($bookId, $meta, $parsedInfo, $authorData, $volumes, $chapters, $existingBook, $scraper, $parser) {
+            $createdBook = DB::transaction(function () use ($bookId, $meta, $parsedInfo, $authorData, $volumes, $chapters, $existingBook, $scraper, $parser) {
                 // حذف الكتاب القديم
                 if ($existingBook && $this->forceReimport) {
                     $this->addLog('🗑️ حذف الكتاب القديم...');
@@ -282,7 +283,7 @@ class ImportTurathBook extends FilamentPage implements HasForms
                 }
 
                 // إنشاء الكتاب
-                $book = $this->createBook($bookId, $meta, $parsedInfo, $parser);
+                $book = $this->createBook($bookId, $meta, $parser);
                 $this->addLog("✅ تم إنشاء الكتاب");
 
                 // ربط المؤلف
@@ -311,12 +312,14 @@ class ImportTurathBook extends FilamentPage implements HasForms
                 $this->createChapters($book, $chapters, $volumeModels);
                 $this->addLog("✅ تم إنشاء " . count($chapters) . " فصل");
 
-                // استيراد الصفحات
-                if (!$this->skipPages && $this->totalPages > 0) {
-                    $this->addLog("📄 جاري استيراد الصفحات...");
-                    $this->importPages($book, $bookId, $volumeModels, $scraper);
-                }
+                return ['book' => $book, 'volumeModels' => $volumeModels];
             });
+
+            // استيراد الصفحات خارج المعاملة الأساسية لتفادي timeout قاعدة البيانات
+            if (!$this->skipPages && $this->totalPages > 0) {
+                $this->addLog("📄 جاري استيراد الصفحات...");
+                $this->importPages($createdBook['book'], $bookId, $createdBook['volumeModels'], $scraper);
+            }
 
             $this->addLog('');
             $this->addLog('═══════════════════════════════════════');
@@ -376,30 +379,16 @@ class ImportTurathBook extends FilamentPage implements HasForms
     /**
      * إنشاء الكتاب
      */
-    protected function createBook(int $turathId, array $meta, array $parsedInfo, MetadataParserService $parser): Book
+    protected function createBook(int $turathId, array $meta, MetadataParserService $parser): Book
     {
         $title = $parser->cleanBookName($meta['name']);
-        $slug = $parser->generateSlug($title);
-
-        // التأكد من فرادة الـ slug
-        $originalSlug = $slug;
-        $counter = 1;
-        while (Book::where('slug', $slug)->exists()) {
-            $slug = "{$originalSlug}-{$counter}";
-            $counter++;
-        }
 
         return Book::create([
             'shamela_id' => (string) $turathId,
             'title' => $title,
             'description' => $meta['info'] ?? null,
-            'slug' => $slug,
             'visibility' => 'public',
-            'status' => 'published',
-            'pages_count' => $this->totalPages,
-            'volumes_count' => max(1, count($this->bookInfo['indexes']['volumes'] ?? [1])),
             'has_original_pagination' => true,
-            'source_url' => "https://app.turath.io/book/{$turathId}",
         ]);
     }
 
@@ -470,7 +459,7 @@ class ImportTurathBook extends FilamentPage implements HasForms
     protected function importPages(Book $book, int $turathBookId, array $volumeModels, TurathScraperService $scraper): void
     {
         $pages = [];
-        $batchSize = 100;
+        $batchSize = 25; // تقليل حجم الدفعة لضمان تكرار التواصل مع قاعدة البيانات
 
         foreach ($scraper->getAllPages($turathBookId, 1, $this->totalPages) as $pageData) {
             // تحديد المجلد
@@ -506,6 +495,13 @@ class ImportTurathBook extends FilamentPage implements HasForms
 
             // حفظ دفعة
             if (count($pages) >= $batchSize) {
+                // التأكد من أن الاتصال بقاعدة البيانات لا يزال قائماً
+                try {
+                    DB::connection()->getPdo();
+                } catch (\Exception $e) {
+                    DB::reconnect();
+                }
+
                 Page::insert($pages);
                 $pages = [];
                 $this->addLog("📄 تم استيراد {$this->importedPages} صفحة...");

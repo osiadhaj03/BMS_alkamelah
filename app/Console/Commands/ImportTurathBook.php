@@ -72,6 +72,7 @@ class ImportTurathBook extends Command
         $force = $this->option('force');
         $delay = (int) $this->option('delay');
 
+        set_time_limit(0);
         $this->scraper->setDelay($delay);
 
         $this->printHeader($bookId);
@@ -165,7 +166,7 @@ class ImportTurathBook extends Command
                 }
 
                 // 6.3 إنشاء الكتاب
-                $book = $this->createBook($bookId, $meta, $parsedInfo, $totalPages, count($volumes));
+                $book = $this->createBook($bookId, $meta);
 
                 // 6.4 ربط المؤلف
                 if ($author) {
@@ -237,30 +238,16 @@ class ImportTurathBook extends Command
     /**
      * إنشاء سجل الكتاب
      */
-    protected function createBook(int $turathId, array $meta, array $parsedInfo, int $totalPages, int $volumesCount): Book
+    protected function createBook(int $turathId, array $meta): Book
     {
         $title = $this->parser->cleanBookName($meta['name']);
-        $slug = $this->parser->generateSlug($title);
-
-        // التأكد من فرادة الـ slug
-        $originalSlug = $slug;
-        $counter = 1;
-        while (Book::where('slug', $slug)->exists()) {
-            $slug = "{$originalSlug}-{$counter}";
-            $counter++;
-        }
 
         $book = Book::create([
             'shamela_id' => (string) $turathId,
             'title' => $title,
             'description' => $meta['info'] ?? null,
-            'slug' => $slug,
             'visibility' => 'public',
-            'status' => 'published',
-            'pages_count' => $totalPages,
-            'volumes_count' => max(1, $volumesCount),
             'has_original_pagination' => true,
-            'source_url' => "https://app.turath.io/book/{$turathId}",
         ]);
 
         $this->info("✅ تم إنشاء الكتاب: {$book->title}");

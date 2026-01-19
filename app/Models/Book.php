@@ -24,6 +24,7 @@ class Book extends Model
         'publisher_id',
         'has_original_pagination',
         'additional_notes',
+        'source',
     ];
 
     protected $casts = [

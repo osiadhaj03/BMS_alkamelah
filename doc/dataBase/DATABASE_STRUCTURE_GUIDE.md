@@ -46,16 +46,12 @@ pages (الصفحات)
 | `shamela_id` | varchar(50) | ❌ | معرف الكتاب في الشاملة/المصدر الخارجي |
 | `title` | varchar(255) | ✅ | عنوان الكتاب |
 | `description` | text | ❌ | وصف الكتاب |
-| `slug` | varchar(200) | ✅ | الرابط الصديق (فريد) |
-| `cover_image` | varchar(255) | ❌ | مسار صورة الغلاف |
 | `visibility` | enum | ✅ | `public`, `private`, `restricted` |
-| `status` | enum | ✅ | `draft`, `review`, `published`, `archived` |
+| `is_reviewed` | boolean | ❌ | تم مراجعته |
+| `reviewed_by` | varchar(255) | ❌ | المستخدم الذي قام بالمراجعة |
 | `book_section_id` | bigint | ❌ | FK → `book_sections.id` |
 | `publisher_id` | bigint | ❌ | FK → `publishers.id` |
 | `has_original_pagination` | boolean | ❌ | هل له ترقيم أصلي |
-| `pages_count` | int | ❌ | عدد الصفحات |
-| `volumes_count` | int | ❌ | عدد المجلدات (افتراضي: 1) |
-| `source_url` | varchar(255) | ❌ | رابط المصدر |
 | `additional_notes` | text | ❌ | ملاحظات إضافية |
 
 ---

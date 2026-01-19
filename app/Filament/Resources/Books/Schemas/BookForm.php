@@ -26,7 +26,7 @@ class BookForm
                             ->label('عنوان الكتاب')
                             ->required()
                             ->columnSpanFull(),
-                        
+
 
 
                         RichEditor::make('description')
@@ -55,6 +55,16 @@ class BookForm
                             ->label('رابط الكتاب من المكتبة الشاملة')
                             ->default(null),
 
+                        Select::make('source')
+                            ->label('المصدر')
+                            ->options([
+                                'shamela' => 'الشاملة',
+                                'alkamelah' => 'الكاملة',
+                                'moswarat' => 'جامع الكتب الاسلامية',
+                                'other' => 'آخرى'
+                            ])
+                            ->default(null),
+
                         Select::make('visibility')
                             ->label('الظهور')
                             ->options([
@@ -78,7 +88,7 @@ class BookForm
                             ->label('اسم المراجع')
                             ->disabled()
                             ->dehydrated()
-                            ->default(fn () => auth()->user()->name)
+                            ->default(fn() => auth()->user()->name)
                             ->helperText('يتم ملؤه تلقائياً من بيانات المستخدم'),
                     ])
                     ->columns(2)
@@ -107,7 +117,7 @@ class BookForm
                         TextInput::make('edition_year')
                             ->label('سنة الطبعة')
                             ->placeholder('سنة الطبعة(مثال: 1999)')
-                            ->numeric(),    
+                            ->numeric(),
                     ])
                     ->columns(3)
                     ->columnSpanFull(),
@@ -128,7 +138,7 @@ class BookForm
                                 Select::make('author_id')
                                     ->label('المؤلف')
                                     ->relationship('author', 'full_name')
-                                    ->getOptionLabelFromRecordUsing(fn ($record) => $record->full_name ?? $record->first_name ?? 'بدون اسم')
+                                    ->getOptionLabelFromRecordUsing(fn($record) => $record->full_name ?? $record->first_name ?? 'بدون اسم')
                                     ->placeholder('اختر مؤلفاً')
                                     ->searchable()
                                     ->preload()
@@ -194,7 +204,7 @@ class BookForm
                                                     ->label('تاريخ الوفاة')
                                                     ->placeholder('ادخل التاريخ الهجري')
                                                     ->helperText('مثال: 204 هـ')
-                                                    ->hidden(fn ($get) => $get('is_living') == 1),
+                                                    ->hidden(fn($get) => $get('is_living') == 1),
                                             ]),
                                         FileUpload::make('image')
                                             ->label('صورة المؤلف')
@@ -207,7 +217,7 @@ class BookForm
                                             ->placeholder('اكتب السيرة الذاتية...')
                                             ->columnSpanFull(),
                                     ]),
-                                
+
                                 Select::make('role')
                                     ->label('الدور')
                                     ->options([
@@ -220,7 +230,7 @@ class BookForm
                                     ])
                                     ->default('author')
                                     ->required(),
-                                
+
                                 Select::make('is_main')
                                     ->label('مؤلف رئيسي')
                                     ->options([
@@ -294,8 +304,8 @@ class BookForm
                                     ->default(true)
                                     ->required(),
                             ]),
-                        
-                       
+
+
                     ])
                     ->columnSpanFull(),
 
@@ -334,7 +344,7 @@ class BookForm
                             ])
                             ->columns(4)
                             ->collapsible()
-                            ->itemLabel(fn (array $state): ?string => $state['title'] ?? 'فيديو جديد')
+                            ->itemLabel(fn(array $state): ?string => $state['title'] ?? 'فيديو جديد')
                             ->addActionLabel('إضافة فيديو')
                             ->reorderable()
                             ->columnSpanFull()
@@ -346,30 +356,30 @@ class BookForm
                             ->label('روابط التحميل')
                             ->schema([
                                 TextInput::make('url')
-                                ->label('الرابط')
-                                ->url()
-                                ->required(),
+                                    ->label('الرابط')
+                                    ->url()
+                                    ->required(),
                                 Select::make('platform')
-                                ->label('منصة التحميل')
-                                ->options([
-                                    'google_drive' => 'Google Drive',
-                                    'dropbox' => 'Dropbox',
-                                    'one_drive' => 'One Drive',
-                                    'telegram' => 'Telegram',
-                                    'alkamelah' => 'موقع المكتبةالكاملة',
-                                    'Mega' => 'Mega',
-                                    'archive_org' => 'Archive.org',
-                                    'other' => 'آخر',
-                                ])
-                                ->required(),
+                                    ->label('منصة التحميل')
+                                    ->options([
+                                        'google_drive' => 'Google Drive',
+                                        'dropbox' => 'Dropbox',
+                                        'one_drive' => 'One Drive',
+                                        'telegram' => 'Telegram',
+                                        'alkamelah' => 'موقع المكتبةالكاملة',
+                                        'Mega' => 'Mega',
+                                        'archive_org' => 'Archive.org',
+                                        'other' => 'آخر',
+                                    ])
+                                    ->required(),
                                 Select::make('type')
-                                ->label('صيغة الملف')
-                                ->options([
-                                    'pdf' => 'PDF',
-                                    'word' => 'Word',
-                                    'web' => 'WEB(Html)',
-                                    'other' => 'آخر',
-                                ]),
+                                    ->label('صيغة الملف')
+                                    ->options([
+                                        'pdf' => 'PDF',
+                                        'word' => 'Word',
+                                        'web' => 'WEB(Html)',
+                                        'other' => 'آخر',
+                                    ]),
                                 TextInput::make('notes')
                                     ->label('ملاحظات إضافية')
                                     ->placeholder('مثال: نسخة عالية الجودة، نسخة مصورة، ...')
@@ -378,14 +388,14 @@ class BookForm
                             ])
                             ->columns(3)
                             ->collapsible()
-                            ->itemLabel(fn (array $state): ?string => $state['title'] ?? 'فيديو جديد')
+                            ->itemLabel(fn(array $state): ?string => $state['title'] ?? 'فيديو جديد')
                             ->addActionLabel('إضافة رابط تحميل')
                             ->reorderable()
                             ->columnSpanFull()
                             ->defaultItems(0),
 
-                        
-                    ])->collapsed() ->columnSpanFull(),
+
+                    ])->collapsed()->columnSpanFull(),
                 Section::make('معلومات إضافية')
                     ->schema([
                         Textarea::make('additional_notes')
@@ -396,9 +406,9 @@ class BookForm
                             ->label('بيانات إضافية')
                             ->keyLabel('المفتاح')
                             ->valueLabel('القيمة')
-                            ->columnSpanFull(),    
+                            ->columnSpanFull(),
                     ])
-                    ->collapsed() ->columnSpanFull(),
+                    ->collapsed()->columnSpanFull(),
             ]);
     }
 }

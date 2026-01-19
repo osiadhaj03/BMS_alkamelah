@@ -237,7 +237,7 @@ class BooksTable extends Component
     public function getCurrentSection()
     {
         if ($this->section) {
-            return BookSection::where('slug', $this->section)->first();
+            return BookSection::where('id', $this->section)->first();
         }
         return null;
     }

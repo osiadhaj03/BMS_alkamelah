@@ -142,14 +142,14 @@ class HomeController extends Controller
 
         // التصفية حسب القسم إذا تم تحديده
         if ($section) {
-            $bookSection = BookSection::where('slug', $section)->first();
+            $bookSection = BookSection::where('id', $section)->first();
             if ($bookSection) {
                 $query->where('book_section_id', $bookSection->id);
             }
         }
 
         $books = $query->paginate(20);
-        $currentSection = $section ? BookSection::where('slug', $section)->first() : null;
+        $currentSection = $section ? BookSection::where('id', $section)->first() : null;
 
         return view('components.superduper.pages.show-all-books', compact('books', 'currentSection'));
     }
