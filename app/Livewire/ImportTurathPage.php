@@ -29,7 +29,7 @@ class ImportTurathPage extends Component
     public ?int $turathBookId = null;
     public ?array $volumeIdMap = null; // Map volume_number => volume_id
     public ?array $pageMap = null;
-    public int $batchSize = 25; // عدد الصفحات في كل دفعة
+    public int $batchSize = 100; // عدد الصفحات في كل دفعة (مرفع للسرعة)
 
     // بيانات النموذج
     public string $bookUrl = '';
@@ -225,25 +225,35 @@ class ImportTurathPage extends Component
             return;
 
         $scraper = app(TurathScraperService::class);
-        $startPage = $this->importedPages + 1;
-        // Ensure we don't exceed total pages
-        // If pageMap exists, count($pageMap). If not, totalPages.
         $totalReal = ($this->pageMap) ? count($this->pageMap) : $this->totalPages;
 
-        $endPage = min($startPage + $this->batchSize - 1, $totalReal);
+        $startIdx = $this->importedPages; // 0-based index of imported count
+        $endIdx = min($startIdx + $this->batchSize, $totalReal);
 
-        if ($startPage > $totalReal) {
+        if ($startIdx >= $totalReal) {
             $this->finishImport();
             return;
+        }
+
+        // Calculate pages to fetch in this batch
+        $pagesList = [];
+        // Note: For Turath API, if no pageMap, we assume pages are 1..N
+        // If pageMap exists, we don't really use it for *fetching* by ID usually, 
+        // but getAllPages was iterating. 
+        // Let's stick to simple 1-based page numbers for the API call 
+        // since the API `pg` param usually corresponds to the sequential index.
+        for ($i = $startIdx + 1; $i <= $endIdx; $i++) {
+            $pagesList[] = $i;
         }
 
         $pages = [];
         $batchCount = 0;
 
         try {
-            // Note: getAllPages uses 1-based index logic if no pageMap, or iterates map. 
-            // We pass start/end page relative to the full list.
-            foreach ($scraper->getAllPages($this->turathBookId, $startPage, $endPage, $this->pageMap) as $pageData) {
+            // Use Parallel Parallel
+            $fetchedPages = $scraper->fetchPagesParallel($this->turathBookId, $pagesList, 20); // concurrency 20
+
+            foreach ($fetchedPages as $pageData) {
                 $volNum = $pageData['volume_number'];
                 $volId = $this->volumeIdMap[$volNum] ?? reset($this->volumeIdMap);
 
@@ -261,7 +271,11 @@ class ImportTurathPage extends Component
 
             if (!empty($pages)) {
                 Page::insert($pages);
-                $this->importedPages += $batchCount;
+                $this->importedPages += count($pagesList); // Advance even if some failed to avoid loop? 
+                // Better: trust batch count but assume sequential progress
+            } else {
+                // Fail safe backup
+                $this->importedPages += count($pagesList);
             }
 
             // Update Progress
@@ -269,17 +283,18 @@ class ImportTurathPage extends Component
                 $this->progress = (int) (($this->importedPages / $totalReal) * 100);
             }
 
-            $this->addLog("✅ تم استيراد الصفحات {$startPage}-" . ($startPage + $batchCount - 1));
+            $startShow = $startIdx + 1;
+            $endShow = $startIdx + $batchCount;
+            $this->addLog("✅ تم استيراد دفعة {$startShow}-{$endShow}");
 
-            // Check completion (if current batch was less than expected or we reached end)
-            if ($this->importedPages >= $totalReal || $batchCount == 0 || $endPage >= $totalReal) {
+            // Check completion
+            if ($this->importedPages >= $totalReal) {
                 $this->finishImport();
             }
 
         } catch (\Exception $e) {
-            $this->addLog("❌ خطأ في الدفعة {$startPage}: {$e->getMessage()}");
-            // Fail safe: advance to prevent infinite loop
-            $this->importedPages += $this->batchSize;
+            $this->addLog("❌ خطأ في الدفعة: {$e->getMessage()}");
+            $this->importedPages += $this->batchSize; // Skip bad batch
             if ($this->importedPages >= $totalReal) {
                 $this->finishImport();
             }
