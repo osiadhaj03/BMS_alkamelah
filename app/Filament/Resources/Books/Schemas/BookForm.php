@@ -52,7 +52,7 @@ class BookForm
                             ->columnSpanFull(),
 
                         TextInput::make('shamela_id')
-                            ->label('رابط الكتاب من المكتبة الشاملة')
+                            ->label('رابط الكتاب من المصدر')
                             ->default(null),
 
                         Select::make('book_source_id')
