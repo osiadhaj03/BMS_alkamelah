@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Author;
 use App\Models\Book;
+use App\Models\BookMetadata;
 use App\Models\BookSection;
 use App\Models\BookSource;
 use App\Models\Chapter;
@@ -220,6 +221,9 @@ class ImportTurathPage extends Component
             // Create Chapters
             $this->createChapters($book, $chapters, $volumeModels);
             $this->addLog("✅ تم إنشاء " . count($chapters) . " فصل");
+
+            // Save PDF Link if available
+            $this->savePdfLink($book, $meta);
         });
 
         // If skip pages, finish immediately
@@ -423,6 +427,45 @@ class ImportTurathPage extends Component
                 'page_start' => $chapterData['page_start'],
             ]);
         }
+    }
+
+    /**
+     * Save PDF link if available in book metadata from Turath API
+     */
+    protected function savePdfLink(Book $book, array $meta): void
+    {
+        // Check if pdf_links exists in meta
+        if (!isset($meta['pdf_links']) || empty($meta['pdf_links'])) {
+            return;
+        }
+
+        $pdfLinks = $meta['pdf_links'];
+        $root = $pdfLinks['root'] ?? null;
+        $files = $pdfLinks['files'] ?? [];
+
+        if (empty($root) || empty($files)) {
+            return;
+        }
+
+        // Build the PDF URL: https://files.turath.io/pdf/{root}/{file}
+        $pdfFile = $files[0]; // Usually only one PDF file
+        $pdfUrl = 'https://files.turath.io/pdf/' . rawurlencode($root) . '/' . rawurlencode($pdfFile);
+
+        // Create or update BookMetadata with download_links
+        $bookMetadata = BookMetadata::firstOrNew(['book_id' => $book->id]);
+
+        $downloadLinks = $bookMetadata->download_links ?? [];
+        $downloadLinks[] = [
+            'url' => $pdfUrl,
+            'platform' => 'other',
+            'type' => 'pdf',
+            'notes' => 'صور المطبوع من موقع تراث - Turath.io',
+        ];
+
+        $bookMetadata->download_links = $downloadLinks;
+        $bookMetadata->save();
+
+        $this->addLog('📄 تم حفظ رابط PDF: ' . $pdfFile);
     }
 
     protected function addLog(string $message): void
