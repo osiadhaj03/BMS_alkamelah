@@ -4,6 +4,8 @@ namespace App\Livewire;
 
 use App\Models\Author;
 use App\Models\Book;
+use App\Models\BookSection;
+use App\Models\BookSource;
 use App\Models\Chapter;
 use App\Models\Page;
 use App\Models\Volume;
@@ -334,12 +336,30 @@ class ImportTurathPage extends Component
     protected function createBook(int $turathId, array $meta, MetadataParserService $parser): Book
     {
         $title = $parser->cleanBookName($meta['name']);
+
+        // 1. التعامل مع المصدر (تراث)
+        $source = BookSource::firstOrCreate(
+            ['name' => 'موقع تراث (Turath.io)'],
+            ['name' => 'موقع تراث (Turath.io)']
+        );
+
+        // 2. محاولة تحديد القسم (اختياري - سنستخدم القسم غير المصنف مبدئياً إذا لم نجد)
+        // بما أن Turath API يعيد cat_id ولا يعيد الاسم، سنحاول البحث عن قسم بهذا المعرف كـ 'shamela_id' إذا كنا قد خزنا الأقسام سابقاً
+        // أو نتركه فارغاً ليقوم المستخدم بتحديده لاحقاً
+        $sectionId = null;
+        if (isset($meta['cat_id'])) {
+            // يمكن هنا إضافة منطق للبحث عن القسم إذا كان لدينا جدول ربط
+        }
+
         return Book::create([
             'shamela_id' => (string) $turathId,
             'title' => $title,
             'description' => $meta['info'] ?? null,
             'visibility' => 'public',
             'has_original_pagination' => true,
+            'book_source_id' => $source->id,
+            'additional_notes' => "رابط المصدر: {$this->bookUrl}", // حفظ الرابط كما طلب المستخدم
+            'book_section_id' => $sectionId,
         ]);
     }
 
