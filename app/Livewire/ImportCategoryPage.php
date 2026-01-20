@@ -428,10 +428,10 @@ class ImportCategoryPage extends Component
 
         // Parse metadata
         $metadataParser = new MetadataParserService();
-        $parsedMeta = $metadataParser->parse($meta['info'] ?? '');
+        $parsedMeta = $metadataParser->parseBookInfo($meta['info'] ?? '');
 
         // Create or find author
-        $authorName = $parsedMeta['author'] ?? 'مؤلف غير معروف';
+        $authorName = $parsedMeta['author_name'] ?? 'مؤلف غير معروف';
         $author = \App\Models\Author::firstOrCreate(
             ['name' => $authorName],
             ['bio' => '', 'death_year' => null]
@@ -444,8 +444,8 @@ class ImportCategoryPage extends Component
         }
 
         // Handle editor/reviewer
-        if (!empty($parsedMeta['editor'])) {
-            $this->addLog("✅ المحقق: " . $parsedMeta['editor']);
+        if (!empty($parsedMeta['editor_name'])) {
+            $this->addLog("✅ المحقق: " . $parsedMeta['editor_name']);
         }
 
         // Calculate total pages
@@ -470,9 +470,9 @@ class ImportCategoryPage extends Component
         $newBook->authors()->attach($author->id, ['role' => 'author', 'display_order' => 1]);
 
         // Attach editor if exists
-        if (!empty($parsedMeta['editor'])) {
+        if (!empty($parsedMeta['editor_name'])) {
             $editor = \App\Models\Author::firstOrCreate(
-                ['name' => $parsedMeta['editor']],
+                ['name' => $parsedMeta['editor_name']],
                 ['bio' => '', 'death_year' => null]
             );
             $newBook->authors()->attach($editor->id, ['role' => 'editor', 'display_order' => 2]);
