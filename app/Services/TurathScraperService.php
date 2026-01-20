@@ -268,7 +268,7 @@ class TurathScraperService
             foreach ($responses as $key => $response) {
                 $pageNum = (int) str_replace('page_', '', $key);
 
-                if ($response->successful()) {
+                if ($response instanceof \Illuminate\Http\Client\Response && $response->successful()) {
                     $pageData = $response->json();
 
                     // Parse Meta
@@ -286,7 +286,8 @@ class TurathScraperService
                         'content' => $text,
                     ];
                 } else {
-                    Log::warning("Turath Parallel: Failed page {$pageNum}", ['status' => $response->status()]);
+                    $error = ($response instanceof \Exception) ? $response->getMessage() : "HTTP " . $response->status();
+                    Log::warning("Turath Parallel: Failed page {$pageNum} - Reason: {$error}");
                 }
             }
 
