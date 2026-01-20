@@ -146,6 +146,24 @@ class ImportTurathPage extends Component
             $this->isImporting = false;
             $this->addLog("❌ خطأ في التهيئة: {$e->getMessage()}");
             $this->statusMessage = "فشل: {$e->getMessage()}";
+
+            // Handle batch mode error - mark as failed and continue
+            if ($this->batchMode && $this->currentBatchIndex > 0) {
+                $batchIdx = $this->currentBatchIndex - 1;
+                if (isset($this->batchBooks[$batchIdx])) {
+                    $this->batchBooks[$batchIdx]['status'] = 'error';
+                    $this->batchBooks[$batchIdx]['message'] = mb_substr($e->getMessage(), 0, 50);
+                    $this->batchFailedCount++;
+                }
+
+                // Continue to next book
+                if ($this->currentBatchIndex < count($this->batchBooks)) {
+                    $this->importNextFromBatch();
+                } else {
+                    $this->addLog('🎉 اكتملت عملية الاستيراد للجميع!');
+                    $this->addLog("📊 النتيجة: {$this->batchCompletedCount} نجاح، {$this->batchFailedCount} فشل");
+                }
+            }
         }
     }
 
@@ -176,6 +194,16 @@ class ImportTurathPage extends Component
             $this->totalPages = count($this->pageMap);
         } else {
             $this->totalPages = $scraper->getTotalPages($indexes['volume_bounds'] ?? []);
+        }
+
+        // Update batch table if in batch mode
+        if ($this->batchMode && $this->currentBatchIndex > 0) {
+            $batchIdx = $this->currentBatchIndex - 1;
+            if (isset($this->batchBooks[$batchIdx])) {
+                $this->batchBooks[$batchIdx]['name'] = $meta['name'] ?? "كتاب {$turathId}";
+                $this->batchBooks[$batchIdx]['author'] = mb_substr($parsedInfo['author_name'] ?? '؟', 0, 50);
+                $this->batchBooks[$batchIdx]['pages'] = $this->totalPages ?: '؟';
+            }
         }
 
         $volumes = $scraper->parseVolumes($indexes['volume_bounds'] ?? []);
@@ -510,7 +538,7 @@ class ImportTurathPage extends Component
     }
 
     /**
-     * Load books info from batch IDs
+     * Load books info from batch IDs (simplified - no API calls to avoid timeout)
      */
     public function loadBatchBooks()
     {
@@ -531,64 +559,29 @@ class ImportTurathPage extends Component
             return;
         }
 
-        $this->addLog("📚 تم العثور على " . count($ids) . " كتاب");
+        // Just add IDs to list without API calls (info will be fetched during import)
+        foreach ($ids as $bookId) {
+            // Check if already exists in database
+            $existingBook = Book::where('shamela_id', (string) $bookId)->first();
 
-        $scraper = app(TurathScraperService::class);
-        $parser = app(MetadataParserService::class);
-
-        foreach ($ids as $index => $bookId) {
-            $this->addLog("📖 جلب معلومات الكتاب {$bookId} (" . ($index + 1) . "/" . count($ids) . ")...");
-
-            try {
-                $bookInfo = $scraper->getBookInfo((int) $bookId);
-
-                if ($bookInfo) {
-                    $meta = $bookInfo['meta'] ?? [];
-                    $indexes = $bookInfo['indexes'] ?? [];
-
-                    // Extract author
-                    $parsedInfo = $parser->parseBookInfo($meta['info'] ?? '');
-                    $authorName = $parsedInfo['author_name'] ?? '؟';
-                    $authorName = mb_substr($authorName, 0, 50);
-
-                    // Calculate pages
-                    $totalPages = $scraper->getTotalPages($indexes['volume_bounds'] ?? []);
-
-                    $this->batchBooks[] = [
-                        'id' => $bookId,
-                        'name' => $meta['name'] ?? "كتاب {$bookId}",
-                        'author' => $authorName,
-                        'pages' => $totalPages ?: '؟',
-                        'status' => 'pending', // pending, importing, done, error, skipped
-                        'message' => '',
-                    ];
-
-                    $this->addLog("✅ " . ($meta['name'] ?? $bookId));
-                } else {
-                    $this->batchBooks[] = [
-                        'id' => $bookId,
-                        'name' => "كتاب {$bookId}",
-                        'author' => '؟',
-                        'pages' => '؟',
-                        'status' => 'pending',
-                        'message' => '',
-                    ];
-                    $this->addLog("⚠️ لم يتم جلب معلومات الكتاب {$bookId}");
-                }
-            } catch (\Exception $e) {
-                $this->batchBooks[] = [
-                    'id' => $bookId,
-                    'name' => "كتاب {$bookId}",
-                    'author' => '؟',
-                    'pages' => '؟',
-                    'status' => 'pending',
-                    'message' => '',
-                ];
-                $this->addLog("❌ خطأ: " . $e->getMessage());
-            }
+            $this->batchBooks[] = [
+                'id' => $bookId,
+                'name' => $existingBook ? $existingBook->title : "كتاب {$bookId}",
+                'author' => $existingBook ? ($existingBook->authors->first()?->full_name ?? '؟') : '؟',
+                'pages' => $existingBook ? ($existingBook->pages()->count() ?: '؟') : '؟',
+                'status' => $existingBook && !$this->forceReimport ? 'skipped' : 'pending',
+                'message' => $existingBook && !$this->forceReimport ? 'موجود مسبقاً' : '',
+            ];
         }
 
-        $this->addLog("📊 تم تحميل " . count($this->batchBooks) . " كتاب");
+        $pendingCount = collect($this->batchBooks)->where('status', 'pending')->count();
+        $skippedCount = collect($this->batchBooks)->where('status', 'skipped')->count();
+
+        $this->addLog("📚 تم العثور على " . count($ids) . " كتاب");
+        if ($skippedCount > 0) {
+            $this->addLog("⏭️ سيتم تخطي {$skippedCount} كتاب (موجود مسبقاً)");
+        }
+        $this->addLog("📊 جاهز لاستيراد {$pendingCount} كتاب");
     }
 
     /**
