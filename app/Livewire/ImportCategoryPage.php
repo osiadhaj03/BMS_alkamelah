@@ -254,19 +254,16 @@ class ImportCategoryPage extends Component
             $existingBook->delete();
         }
 
-        // Fetch book data from Turath API
+        // Fetch book data from Turath API (use TurathScraperService for proper handling)
         $this->addLog("📡 جاري جلب معلومات الكتاب...");
 
-        $response = Http::timeout(30)->get("https://api.turath.io/book", [
-            'id' => $book['id'],
-            'ver' => 3
-        ]);
+        $scraper = app(TurathScraperService::class);
+        $data = $scraper->getBookInfo((int) $book['id']);
 
-        if (!$response->successful()) {
+        if (!$data) {
             throw new \Exception("فشل في جلب بيانات الكتاب من API");
         }
 
-        $data = $response->json();
         $meta = $data['meta'] ?? [];
         $indexes = $data['indexes'] ?? [];
 
@@ -426,9 +423,21 @@ class ImportCategoryPage extends Component
         $meta = $apiData['meta'] ?? [];
         $indexes = $apiData['indexes'] ?? [];
 
-        // Parse metadata
+        // Use TurathScraperService for correct parsing
+        $scraper = app(TurathScraperService::class);
         $metadataParser = new MetadataParserService();
+
+        // Parse metadata
         $parsedMeta = $metadataParser->parseBookInfo($meta['info'] ?? '');
+
+        // Parse volumes and chapters using service methods
+        $volumeBounds = $indexes['volume_bounds'] ?? [];
+        $volumes = $scraper->parseVolumes($volumeBounds);
+        $chapters = $scraper->parseChapters($indexes['headings'] ?? []);
+
+        // Calculate total pages
+        $totalPages = $scraper->getTotalPages($volumeBounds);
+        $this->currentBookData['total_pages'] = $totalPages;
 
         // Create or find author
         $authorName = $parsedMeta['author_name'] ?? 'مؤلف غير معروف';
@@ -446,13 +455,6 @@ class ImportCategoryPage extends Component
         // Handle editor/reviewer
         if (!empty($parsedMeta['editor_name'])) {
             $this->addLog("✅ المحقق: " . $parsedMeta['editor_name']);
-        }
-
-        // Calculate total pages
-        $volumeBounds = $indexes['volume_bounds'] ?? [];
-        $totalPages = 0;
-        foreach ($volumeBounds as $bounds) {
-            $totalPages += ($bounds[1] - $bounds[0] + 1);
         }
 
         // Create book
@@ -478,29 +480,28 @@ class ImportCategoryPage extends Component
             $newBook->authors()->attach($editor->id, ['role' => 'editor', 'display_order' => 2]);
         }
 
-        // Create volumes
-        foreach ($volumeBounds as $volIndex => $bounds) {
+        // Create volumes using parsed data
+        foreach ($volumes as $vol) {
             \App\Models\Volume::create([
                 'book_id' => $newBook->id,
-                'number' => $volIndex + 1,
-                'title' => 'الجزء ' . ($volIndex + 1),
-                'start_page' => $bounds[0],
-                'end_page' => $bounds[1],
+                'number' => $vol['number'] + 1, // number is 0-indexed from parseVolumes
+                'title' => 'الجزء ' . ($vol['number'] + 1),
+                'start_page' => $vol['page_start'],
+                'end_page' => $vol['page_end'],
             ]);
         }
-        $this->addLog("✅ تم إنشاء " . count($volumeBounds) . " مجلد");
+        $this->addLog("✅ تم إنشاء " . count($volumes) . " مجلد");
 
-        // Create chapters from headings
-        $headings = $indexes['headings'] ?? [];
-        foreach ($headings as $heading) {
+        // Create chapters using parsed data
+        foreach ($chapters as $chapter) {
             \App\Models\Chapter::create([
                 'book_id' => $newBook->id,
-                'title' => $heading['title'] ?? '',
-                'page_number' => $heading['pg'] ?? 1,
-                'level' => $heading['level'] ?? 1,
+                'title' => $chapter['title'] ?? '',
+                'page_number' => $chapter['page_start'] ?? 1,
+                'level' => $chapter['level'] ?? 1,
             ]);
         }
-        $this->addLog("✅ تم إنشاء " . count($headings) . " فصل");
+        $this->addLog("✅ تم إنشاء " . count($chapters) . " فصل");
 
         // Handle PDF links
         $this->savePdfLink($newBook, $meta);
