@@ -398,7 +398,7 @@ class ImportTurathPage extends Component
 
         return Book::create([
             'shamela_id' => (string) $turathId,
-            'title' => $title,
+            'title' => mb_substr($title, 0, 250),
             'description' => $meta['info'] ?? null,
             'visibility' => 'public',
             'has_original_pagination' => true,
@@ -446,7 +446,7 @@ class ImportTurathPage extends Component
             Chapter::create([
                 'book_id' => $book->id,
                 'volume_id' => $volumeId,
-                'title' => $chapterData['title'],
+                'title' => mb_substr($chapterData['title'], 0, 250),
                 'level' => $chapterData['level'],
                 'order' => $chapterData['order'],
                 'page_start' => $chapterData['page_start'],
