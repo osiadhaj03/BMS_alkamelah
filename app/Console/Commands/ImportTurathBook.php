@@ -288,11 +288,15 @@ class ImportTurathBook extends Command
     }
 
     /**
-     * إنشاء الفصول
+     * إنشاء الفصول (مع دعم التداخل)
      */
     protected function createChapters(Book $book, array $chapters, array $volumeModels): void
     {
+        $lastChapterByLevel = [];
+
         foreach ($chapters as $chapterData) {
+            $level = $chapterData['level'] ?? 1;
+
             // تحديد المجلد حسب رقم الصفحة
             $volumeId = null;
             if ($chapterData['page_start']) {
@@ -312,79 +316,101 @@ class ImportTurathBook extends Command
             // استخدام أول مجلد إذا لم يتم تحديده
             $volumeId = $volumeId ?? reset($volumeModels)?->id;
 
-            Chapter::create([
+            // تحديد الأب بناءً على المستوى
+            $parentId = null;
+            if ($level > 1) {
+                // الأب هو آخر فصل تم إنشاؤه في المستوى السابق مباشرة
+                $parentId = $lastChapterByLevel[$level - 1] ?? null;
+            }
+
+            $chapter = Chapter::create([
                 'book_id' => $book->id,
                 'volume_id' => $volumeId,
-                'title' => $chapterData['title'],
-                'level' => $chapterData['level'],
+                'parent_id' => $parentId,
+                'title' => mb_substr($chapterData['title'], 0, 250),
+                'level' => $level,
                 'order' => $chapterData['order'],
                 'page_start' => $chapterData['page_start'],
             ]);
+
+            // حفظ معرف هذا الفصل لهذا المستوى لاستخدامه كأب للفصول القادمة في المستوى الأدنى
+            $lastChapterByLevel[$level] = $chapter->id;
+
+            // عند إنشاء فصل في مستوى معين، يجب مسح أي فصول "باقية" من مستويات أعمق
+            // لضمان عدم ربط فصول جديدة بأباء قدامى من أفرع أخرى
+            foreach ($lastChapterByLevel as $l => $id) {
+                if ($l > $level) {
+                    unset($lastChapterByLevel[$l]);
+                }
+            }
         }
 
         $this->stats['chapters_imported'] = count($chapters);
-        $this->info("✅ تم إنشاء {$this->stats['chapters_imported']} فصل");
+        $this->info("✅ تم إنشاء {$this->stats['chapters_imported']} فصل (هيكل شجري)");
     }
 
     /**
-     * استيراد الصفحات
+     * استيراد الصفحات (جلب متوازي)
      */
     protected function importPages(Book $book, int $turathBookId, int $totalPages, array $volumeModels): void
     {
         $this->newLine();
-        $this->info("📄 جاري استيراد {$totalPages} صفحة...");
+        $this->info("📄 جاري استيراد الصفحات ({$totalPages} صفحة)...");
 
-        $progressBar = $this->output->createProgressBar($totalPages);
-        $progressBar->start();
+        $batchSize = 100; // جلب 100 صفحة معاً (10 طلبات متوازية × 10 = 100)
+        $pageNumbers = range(1, $totalPages);
+        $chunks = array_chunk($pageNumbers, $batchSize);
+        $batchIndex = 0;
 
-        $this->scraper->setProgressCallback(function ($current, $total) use ($progressBar) {
-            $progressBar->setProgress($current);
-        });
+        foreach ($chunks as $chunk) {
+            $batchStart = $chunk[0];
+            $batchEnd = end($chunk);
 
-        $pages = [];
-        $batchSize = 500;
+            // جلب الصفحات بشكل متوازي (10 طلبات في نفس الوقت)
+            $fetchedPages = $this->scraper->fetchPagesParallel($turathBookId, $chunk, 10);
 
-        foreach ($this->scraper->getAllPages($turathBookId, 1, $totalPages) as $pageData) {
-            // تحديد المجلد
-            $volumeId = null;
-            foreach ($volumeModels as $num => $volume) {
-                if ($volume->page_start && $volume->page_end) {
-                    if (
-                        $pageData['page_number'] >= $volume->page_start
-                        && $pageData['page_number'] <= $volume->page_end
-                    ) {
-                        $volumeId = $volume->id;
-                        break;
+            // تجهيز البيانات للإدخال
+            $insertData = [];
+            foreach ($fetchedPages as $pageNum => $pageData) {
+                // تحديد المجلد
+                $volumeId = null;
+                foreach ($volumeModels as $num => $volume) {
+                    if ($volume->page_start && $volume->page_end) {
+                        if (
+                            $pageData['page_number'] >= $volume->page_start
+                            && $pageData['page_number'] <= $volume->page_end
+                        ) {
+                            $volumeId = $volume->id;
+                            break;
+                        }
                     }
                 }
+                $volumeId = $volumeId ?? reset($volumeModels)?->id;
+
+                $insertData[] = [
+                    'book_id' => $book->id,
+                    'volume_id' => $volumeId,
+                    'page_number' => $pageData['page_number'],
+                    'original_page_number' => $pageData['original_page_number'] ?? $pageData['page_number'],
+                    'content' => $pageData['content'],
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
             }
-            $volumeId = $volumeId ?? reset($volumeModels)?->id;
 
-            $pages[] = [
-                'book_id' => $book->id,
-                'volume_id' => $volumeId,
-                'page_number' => $pageData['page_number'],
-                'content' => $pageData['content'],
-                'created_at' => now(),
-                'updated_at' => now(),
-            ];
+            // إدخال الدفعة
+            if (!empty($insertData)) {
+                Page::insert($insertData);
+                $this->stats['pages_imported'] += count($insertData);
 
-            $this->stats['pages_imported']++;
-
-            // حفظ دفعة
-            if (count($pages) >= $batchSize) {
-                Page::insert($pages);
-                $pages = [];
+                $timestamp = now()->format('H:i:s');
+                $this->line("[{$timestamp}] ✅ تم استيراد دفعة {$batchStart}-{$batchEnd}");
             }
+
+            $batchIndex++;
         }
 
-        // حفظ الباقي
-        if (!empty($pages)) {
-            Page::insert($pages);
-        }
-
-        $progressBar->finish();
-        $this->newLine(2);
+        $this->newLine();
         $this->info("✅ تم استيراد {$this->stats['pages_imported']} صفحة");
     }
 

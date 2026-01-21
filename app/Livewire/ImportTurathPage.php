@@ -429,7 +429,11 @@ class ImportTurathPage extends Component
 
     protected function createChapters(Book $book, array $chapters, array $volumeModels): void
     {
+        $lastChapterByLevel = [];
+
         foreach ($chapters as $chapterData) {
+            $level = $chapterData['level'] ?? 1;
+
             $volumeId = null;
             if ($chapterData['page_start']) {
                 foreach ($volumeModels as $volume) {
@@ -443,14 +447,32 @@ class ImportTurathPage extends Component
             }
             $volumeId = $volumeId ?? reset($volumeModels)?->id;
 
-            Chapter::create([
+            // تحديد الأب بناءً على المستوى
+            $parentId = null;
+            if ($level > 1) {
+                // الأب هو آخر فصل تم إنشاؤه في المستوى السابق مباشرة
+                $parentId = $lastChapterByLevel[$level - 1] ?? null;
+            }
+
+            $chapter = Chapter::create([
                 'book_id' => $book->id,
                 'volume_id' => $volumeId,
+                'parent_id' => $parentId,
                 'title' => mb_substr($chapterData['title'], 0, 250),
-                'level' => $chapterData['level'],
+                'level' => $level,
                 'order' => $chapterData['order'],
                 'page_start' => $chapterData['page_start'],
             ]);
+
+            // حفظ معرف هذا الفصل لهذا المستوى ليستعمل كأب لاحقاً
+            $lastChapterByLevel[$level] = $chapter->id;
+
+            // تنظيف المستويات الأعمق
+            foreach ($lastChapterByLevel as $l => $id) {
+                if ($l > $level) {
+                    unset($lastChapterByLevel[$l]);
+                }
+            }
         }
     }
 
