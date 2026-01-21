@@ -157,13 +157,14 @@
     </main>
 </div>
 
-<style>
-    .custom-scrollbar::-webkit-scrollbar { width: 8px; }
-    .custom-scrollbar::-webkit-scrollbar-track { bg-color: #1e1e1e; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { bg-color: #4a4a4a; border-radius: 4px; }
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover { bg-color: #5a5a5a; }
-    @keyframes shimmer {
-        0% { transform: translateX(-150%) skewX(-20deg); }
-        100% { transform: translateX(150%) skewX(-20deg); }
-    }
-</style>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { bg-color: #1e1e1e; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { bg-color: #4a4a4a; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { bg-color: #5a5a5a; }
+        @keyframes shimmer {
+            0% { transform: translateX(-150%) skewX(-20deg); }
+            100% { transform: translateX(150%) skewX(-20deg); }
+        }
+    </style>
+</div>
