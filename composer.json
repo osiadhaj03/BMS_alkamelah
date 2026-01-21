@@ -21,7 +21,9 @@
         "laravel/framework": "^12.0",
         "laravel/scout": "^10.23",
         "laravel/tinker": "^2.10.1",
-        "naturalgroove/laravel-filament-rich-editor-source-ai": "^1.0"
+        "naturalgroove/laravel-filament-rich-editor-source-ai": "^1.0",
+        "symfony/css-selector": "7.0",
+        "symfony/dom-crawler": "7.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
