@@ -136,9 +136,10 @@ class ImportTurathCategories extends Command
                 $existingBook->delete();
             }
 
-            // Import book using existing command
+            // Import book using existing command (with full output)
             try {
-                $exitCode = Artisan::call('turath:import', [
+                $this->newLine();
+                $exitCode = $this->call('turath:import', [
                     'book_id' => $bookId,
                     '--force' => true,
                     '--delay' => $delay,
