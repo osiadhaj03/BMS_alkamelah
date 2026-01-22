@@ -23,7 +23,7 @@
                 </div>
                 <div>
                     <h3 class="font-bold text-lg">مساعد المكتبة الذكي</h3>
-                    <p class="text-xs text-white/80">متصل الآن - كيف يمكنني مساعدتك؟</p>
+                    <p class="text-xs text-white/80">قريبا سيتم تفعيل هذا الميزة</p>
                 </div>
             </div>
             
@@ -45,6 +45,7 @@
                     <p class="text-s text-gray-700 leading-relaxed">
                         مرحباً بك في المكتبة الكاملة! أنا مساعدك الذكي. يمكنك الرغبة في البحث عن كتاب معين، أو الاستفسار عن مؤلف، أو تصفح الأقسام. كيف يمكنني خدمتك اليوم؟
                     </p>
+                    
                 </div>
             </div>
         </div>
@@ -61,7 +62,7 @@
                     </svg>
                 </button>
             </form>
-            <p class="text-[10px] text-gray-400 text-center mt-3">مدعوم بالذكاء الاصطناعي - المكتبة الكاملة</p>
+            <p class="text-[10px] text-gray-400 text-center mt-3">المكتبة الكاملة</p>
         </div>
     </div>
 

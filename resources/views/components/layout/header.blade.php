@@ -65,6 +65,14 @@
                 </a>
             </nav>
 
+            <!-- Feedback Button (Left Side) -->
+            <div class="hidden md:flex items-center">
+                <a href="/feedback"
+                    class="px-5 py-2 border border-[#2C6E4A] text-[#2C6E4A] rounded-full text-sm font-bold hover:bg-[#2C6E4A] hover:text-white transition-colors duration-300">
+                    رأيك يهمنا
+                </a>
+            </div>
+
             <!-- Mobile menu button -->
             <div class="md:hidden">
                 <button type="button"
