@@ -175,7 +175,7 @@
         </div>
     </div>
 
-    <!-- Filter Modal for Books -->
+    <!-- Filter Modal for Books 
     <div x-show="filterModalOpen && searchMode === 'books'" style="display: none;"
         class="fixed inset-0 z-[9999] overflow-y-auto" aria-modal="true" x-cloak>
 
@@ -185,7 +185,6 @@
             <div x-transition
                 class="relative transform overflow-hidden rounded-xl bg-white text-right shadow-xl w-full max-w-lg flex flex-col max-h-[80vh]">
 
-                <!-- Header -->
                 <div class="bg-white px-6 pt-5 pb-4 border-b border-gray-100">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-xl font-bold text-gray-900">تصفية الكتب</h3>
@@ -197,7 +196,6 @@
                         </button>
                     </div>
 
-                    <!-- Tabs -->
                     <div class="flex border-b border-gray-200">
                         <button @click="booksFilterTab = 'sections'"
                             class="flex-1 pb-3 text-sm font-bold text-center border-b-2 transition-colors"
@@ -218,9 +216,7 @@
                     </div>
                 </div>
 
-                <!-- Content -->
                 <div class="flex-1 overflow-y-auto p-4 bg-gray-50 max-h-72">
-                    <!-- Sections Tab -->
                     <div x-show="booksFilterTab === 'sections'">
                         <div class="mb-3">
                             <input type="text" x-model="sectionSearch" @input.debounce.300ms="fetchSections()"
@@ -248,7 +244,7 @@
                         </ul>
                     </div>
 
-                    <!-- Authors Tab -->
+                    
                     <div x-show="booksFilterTab === 'authors'">
                         <div class="mb-3">
                             <input type="text" x-model="authorSearch" @input.debounce.300ms="fetchAuthorsForFilter()"
@@ -282,7 +278,7 @@
                     </div>
                 </div>
 
-                <!-- Footer -->
+                
                 <div class="bg-white px-6 py-3 gap-3 flex flex-row-reverse border-t border-gray-100">
                     <button @click="filterModalOpen = false"
                         class="px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-500 transition-colors">تطبيق</button>
@@ -294,6 +290,7 @@
                 </div>
             </div>
         </div>
+        -->
     </div>
 
     <!-- Filter Modal for Authors -->
