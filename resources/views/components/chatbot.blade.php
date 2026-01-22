@@ -42,7 +42,7 @@
                     <span class="text-lg">🤖</span>
                 </div>
                 <div class="bg-white p-4 rounded-2xl rounded-tr-none shadow-sm border border-gray-100 max-w-[80%]">
-                    <p class="text-sm text-gray-700 leading-relaxed">
+                    <p class="text-s text-gray-700 leading-relaxed">
                         مرحباً بك في المكتبة الكاملة! أنا مساعدك الذكي. يمكنك الرغبة في البحث عن كتاب معين، أو الاستفسار عن مؤلف، أو تصفح الأقسام. كيف يمكنني خدمتك اليوم؟
                     </p>
                 </div>
