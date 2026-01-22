@@ -155,7 +155,6 @@
         </div>
         @endif
     </main>
-</div>
 
     <style>
         .custom-scrollbar::-webkit-scrollbar { width: 8px; }
