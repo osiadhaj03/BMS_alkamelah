@@ -63,6 +63,8 @@
 <body class="bg-gray-50 text-gray-900 antialiased">
     @yield('content')
     
+    <x-chatbot />
+
     @stack('scripts')
 </body>
 </html>
