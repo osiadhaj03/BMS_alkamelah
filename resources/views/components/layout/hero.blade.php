@@ -67,7 +67,7 @@
                     </button>
 
                     <!-- Settings Button (Visible only for Content Search) -->
-                    <div class="relative h-full flex items-center" x-show="searchMode === 'content'">
+                    <div class="relative h-full flex items-center" x-show="searchMode === 'content'" x-cloak style="display: none;">
                         <button @click="settingsOpen = !settingsOpen" @click.outside="settingsOpen = false"
                             class="p-2 ml-2 rounded-full hover:bg-gray-100 transition-colors"
                             :class="{'bg-gray-100': settingsOpen}" style="color: #2C6E4A;" title="إعدادات البحث">
@@ -81,7 +81,7 @@
                         </button>
 
                         <!-- Settings Dropdown -->
-                        <div x-show="settingsOpen" x-transition
+                        <div x-show="settingsOpen" x-transition x-cloak style="display: none;"
                             class="absolute top-full left-0 mt-4 w-[300px] sm:w-[400px] bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden text-right">
                             <div class="p-4 grid grid-cols-1 gap-4 text-right">
                                 <!-- Search Type -->
@@ -132,7 +132,7 @@
 
             <!-- Suggestions Dropdown -->
             <div x-show="showDropdown && suggestions.length > 0 && (searchMode === 'books' || searchMode === 'authors')"
-                x-transition
+                x-transition x-cloak style="display: none;"
                 class="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden max-h-80 overflow-y-auto">
                 <template x-for="item in suggestions" :key="item.id">
                     <a :href="getSuggestionUrl(item)"
