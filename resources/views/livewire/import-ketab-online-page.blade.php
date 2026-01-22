@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-gray-50 flex flex-col" dir="rtl">
+<div class="min-h-screen bg-gray-50 flex flex-col" dir="rtl" @if($isImporting) wire:poll.1s="importBatch" @endif>
     {{-- Header --}}
     <div class="bg-white border-b border-gray-200 sticky top-0 z-10 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -155,12 +155,13 @@
         </div>
         @endif
     </main>
+</div>
 
     <style>
         .custom-scrollbar::-webkit-scrollbar { width: 8px; }
-        .custom-scrollbar::-webkit-scrollbar-track { bg-color: #1e1e1e; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { bg-color: #4a4a4a; border-radius: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { bg-color: #5a5a5a; }
+        .custom-scrollbar::-webkit-scrollbar-track { background-color: #1e1e1e; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #4a4a4a; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background-color: #5a5a5a; }
         @keyframes shimmer {
             0% { transform: translateX(-150%) skewX(-20deg); }
             100% { transform: translateX(150%) skewX(-20deg); }

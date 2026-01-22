@@ -36,7 +36,7 @@ class ImportKetabOnlinePage extends Component
     public function render()
     {
         return view('livewire.import-ketab-online-page')
-            ->layout('layouts.app');
+            ->layout('components.layouts.app');
     }
 
     public function startImport()
@@ -155,8 +155,8 @@ class ImportKetabOnlinePage extends Component
         }
     }
 
-    protected $currentBookId;
-    protected $createdVolumes = [];
+    public $currentBookId;
+    public $createdVolumes = [];
 
     protected function setupBookStructure()
     {
