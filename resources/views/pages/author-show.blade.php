@@ -1,6 +1,21 @@
 @extends('layouts.app')
 
-@section('title', $author->full_name)
+@section('seo_title', $author->full_name . ' | المكتبة الكاملة')
+@section('seo_description', 'تصفح كتب ' . $author->full_name . ' في المكتبة الكاملة. ' . Str::limit($author->biography, 150))
+
+@push('schema')
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "{{ $author->full_name }}",
+  "description": "{{ Str::limit(strip_tags($author->biography), 200) }}",
+  @if($author->image)"image": "{{ asset($author->image) }}",@endif
+  "deathDate": "{{ $author->death_date ? $author->death_date->format('Y-01-01') : '' }}",
+  "knowsAbout": ["{{ $author->madhhab }}", "التراث العربي", "التاريخ الإسلامي"]
+}
+</script>
+@endpush
 
 @section('content')
     <!-- Header -->

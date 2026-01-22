@@ -5,10 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    <!-- Primary Meta Tags -->
+    <title>@yield('seo_title', 'المكتبة الكاملة | أكبر مشروع لرقمنة التراث العلمي والأدبي')</title>
+    <meta name="title" content="@yield('seo_title', 'المكتبة الكاملة | أكبر مشروع لرقمنة التراث العلمي والأدبي')">
+    <meta name="description" content="@yield('seo_description', 'استكشف آلاف الكتب في الفقه، الأدب، التاريخ والأنساب. المكتبة الكاملة توفر بحثاً ذكياً في المحتوى ووصولاً سهلاً لأمهات الكتب العربية.')">
+    <meta name="keywords" content="مكتبة رقمية, كتب عربية, تراث إسلامي, فقه, تاريخ, أدب, بحث في الكتب, مؤلفين عرب, المكتبة الكاملة">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="Arabic">
+    <meta name="author" content="BMS - المكتبة الكاملة">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:title" content="@yield('seo_title', 'المكتبة الكاملة | أكبر مشروع لرقمنة التراث العلمي والأدبي')">
+    <meta property="og:description" content="@yield('seo_description', 'استكشف آلاف الكتب في الفقه، الأدب، التاريخ والأنساب. المكتبة الكاملة توفر بحثاً ذكياً في المحتوى.')">
+    <meta property="og:image" content="{{ asset('images/المكتبة الكاملة.png') }}">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ url()->current() }}">
+    <meta property="twitter:title" content="@yield('seo_title', 'المكتبة الكاملة | أكبر مشروع لرقمنة التراث العلمي والأدبي')">
+    <meta property="twitter:description" content="@yield('seo_description', 'استكشف آلاف الكتب في الفقه، الأدب، التاريخ والأنساب. المكتبة الكاملة توفر بحثاً ذكياً في المحتوى.')">
+    <meta property="twitter:image" content="{{ asset('images/المكتبة الكاملة.png') }}">
+
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
 
-    <title>@yield('title', 'المكتبة الكاملة') | BMS</title>
+    <!-- Schema.org (JSON-LD) for AI Engines -->
+    @stack('schema')
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

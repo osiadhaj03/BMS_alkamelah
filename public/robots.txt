@@ -1,2 +1,6 @@
+# robots.txt for BMS - المكتبة الكاملة
 User-agent: *
-Disallow:
+Allow: /
+
+# Sitemaps
+Sitemap: https://alkamelah.com/sitemap.xml

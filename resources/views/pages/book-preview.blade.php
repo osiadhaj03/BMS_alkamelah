@@ -3,8 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $book->title }} </title> 
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>{{ $book->title }} | المكتبة الكاملة</title> 
+    <meta name="description" content="اقرأ كتاب {{ $book->title }} للمؤلف {{ $book->author->full_name ?? 'غير معروف' }} في المكتبة الكاملة. {{ Str::limit(strip_tags($book->description ?? ''), 150) }}">
+    <meta name="keywords" content="{{ $book->title }}, كتب تراثية, {{ $book->author->full_name ?? '' }}, المكتبة الكاملة">
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="book">
+    <meta property="og:title" content="{{ $book->title }} | المكتبة الكاملة">
+    <meta property="og:description" content="اقرأ كتاب {{ $book->title }} في أقوى محرك بحث في التراث العربي.">
+    
+    <!-- Schema.org Book -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Book",
+      "name": "{{ $book->title }}",
+      "author": {
+        "@type": "Person",
+        "name": "{{ $book->author->full_name ?? 'غير معروف' }}"
+      },
+      "description": "{{ Str::limit(strip_tags($book->description ?? ''), 200) }}",
+      "genre": "{{ $book->bookSection->name ?? 'تراث' }}"
+    }
+    </script>    <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     
     <!-- Arabic Fonts -->
