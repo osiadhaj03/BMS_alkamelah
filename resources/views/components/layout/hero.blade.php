@@ -296,7 +296,8 @@
     --}}
 
 
-    <!-- Filter Modal for Authors -->
+    {{-- Filter Modal for Authors - INCOMPLETE, TODO: Add header and content sections --}}
+    {{--
     <div x-show="filterModalOpen && searchMode === 'authors'" style="display: none;"
         class="fixed inset-0 z-[9999] overflow-y-auto" aria-modal="true" x-cloak>
 
@@ -319,7 +320,8 @@
                 </div>
             </div>
         </div>
-    </div>
+   </div>
+    --}}
 </div>
 
 <script>

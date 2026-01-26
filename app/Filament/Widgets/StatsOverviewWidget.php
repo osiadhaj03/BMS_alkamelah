@@ -45,7 +45,7 @@ class StatsOverviewWidget extends BaseWidget
 
             Stat::make('الناشرين - معلومات كاملة', Publisher::whereNotNull('name')->whereNotNull('country')->whereNotNull('address')->where('name', '!=', '')->count())->description('ناشرين لديهم معلومات كاملة')->descriptionIcon('heroicon-m-building-storefront')->color('warning')->icon('heroicon-o-building-library'),
 
-            Stat::make('إجمالي المستخدمين', User::count())->description('عدد المستخدمين المسجلين')->descriptionIcon('heroicon-m-users')->color('primary')->icon('heroicon-o-users'),
+            Stat::make('إجمالي المستخدمين', User::count())->description('عدد المستخدمين العاملين في المكتبة')->descriptionIcon('heroicon-m-users')->color('primary')->icon('heroicon-o-users'),
         ];
     }
 }
