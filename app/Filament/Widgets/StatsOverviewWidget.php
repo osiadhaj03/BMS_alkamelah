@@ -12,6 +12,8 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class StatsOverviewWidget extends BaseWidget
 {
+    protected int|array|null $columns = 4;
+    
     protected function getStats(): array
     {
         return [
