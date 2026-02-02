@@ -267,22 +267,17 @@ class UltraFastSearchService
 		// Determine operator based on word_match
 		$operator = ($wordMatch === 'some_words') ? 'or' : 'and';
 
-		// If any_order, use match with specified operator
+		// If any_order, use simple_query_string for better Arabic tokenization
 		if ($wordOrder === 'any_order') {
-			// Use minimum_should_match for better performance
-			// For 'all_words': 75% of words must match (faster than 100%)
-			// For 'some_words': at least 1 word
-			$minimumMatch = ($wordMatch === 'some_words') ? '1' : '75%';
-			
 			return [
-				'match' => [
-					'content' => [
-						'query' => $searchTerm,
-						'operator' => $operator,
-						'minimum_should_match' => $minimumMatch,
-						'fuzziness' => 'AUTO',
-						'prefix_length' => 1
-					]
+				'simple_query_string' => [
+					'query' => $searchTerm,
+					'fields' => ['content'],
+					'default_operator' => $operator,
+					'analyze_wildcard' => false,
+					'fuzzy_transpositions' => true,
+					'fuzzy_max_expansions' => 50,
+					'fuzzy_prefix_length' => 1
 				]
 			];
 		}
@@ -299,6 +294,7 @@ class UltraFastSearchService
 				]
 			]
 		];
+	}
 	protected function getSlop(string $wordOrder): int
 	{
 		switch ($wordOrder) {
