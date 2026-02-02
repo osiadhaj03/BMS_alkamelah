@@ -328,3 +328,30 @@ Route::prefix('api')->name('api.')->group(function () {
         }
     })->name('page');
 });
+
+// Simple Search API for testing
+Route::get('/api/search', function () {
+    $query = request()->input('q', '');
+    $page = request()->input('page', 1);
+    $size = request()->input('size', 10);
+    
+    if (empty($query)) {
+        return response()->json([
+            'error' => 'Search query is required',
+            'status' => 'error'
+        ]);
+    }
+    
+    try {
+        $searchService = new \App\Services\UltraFastSearchService();
+        $results = $searchService->search($query, [], $page, $size);
+        
+        return response()->json(array_merge($results, ['status' => 'success']));
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => $e->getMessage(),
+            'status' => 'error',
+            'trace' => config('app.debug') ? $e->getTraceAsString() : null
+        ], 500);
+    }
+})->name('api.search');

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار البحث - المكتبة الكاملة</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .search-section {
+            padding: 40px 20px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .search-box input {
+            flex: 1;
+            padding: 15px 20px;
+            font-size: 1.1em;
+            border: 2px solid #667eea;
+            border-radius: 5px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        .search-box input:focus {
+            border-color: #764ba2;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+        }
+        
+        .search-box button {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .search-box button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .search-box button:active {
+            transform: translateY(0);
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .results-section {
+            padding: 30px 20px;
+        }
+        
+        .stats {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        
+        .stats-item {
+            display: inline-block;
+            margin-right: 40px;
+            color: #1976D2;
+            font-weight: 500;
+        }
+        
+        .result-item {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .result-item:hover {
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+        
+        .result-title {
+            color: #667eea;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .result-meta {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-bottom: 12px;
+        }
+        
+        .result-content {
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 10px;
+            font-size: 0.95em;
+        }
+        
+        .result-highlight {
+            background: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 3px;
+            color: #856404;
+        }
+        
+        .score {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.85em;
+        }
+        
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        
+        .pagination button {
+            padding: 8px 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .pagination button:hover {
+            background: #764ba2;
+        }
+        
+        .pagination button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 البحث في المكتبة الكاملة</h1>
+            <p>ابحث في ملايين الصفحات من المراجع الإسلامية</p>
+        </div>
+        
+        <div class="search-section">
+            <div class="search-box">
+                <input 
+                    type="text" 
+                    id="queryInput" 
+                    placeholder="اكتب كلمة للبحث..." 
+                    value="الصلاة"
+                    autocomplete="off"
+                >
+                <button onclick="performSearch()">ابحث</button>
+            </div>
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p style="margin-top: 10px;">جاري البحث...</p>
+            </div>
+        </div>
+        
+        <div class="results-section">
+            <div id="error"></div>
+            <div id="stats"></div>
+            <div id="results"></div>
+        </div>
+    </div>
+
+    <script>
+        const apiUrl = '/api/search';
+        
+        function performSearch(page = 1) {
+            const query = document.getElementById('queryInput').value.trim();
+            if (!query) {
+                alert('Please enter a search query');
+                return;
+            }
+            
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('error').innerHTML = '';
+            document.getElementById('results').innerHTML = '';
+            document.getElementById('stats').innerHTML = '';
+            
+            // Simulate API call - replace with actual API endpoint
+            fetch(`/api/search?q=${encodeURIComponent(query)}&page=${page}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('loading').style.display = 'none';
+                    
+                    if (data.status === 'error') {
+                        document.getElementById('error').innerHTML = 
+                            `<div class="error">❌ خطأ: ${data.error || 'حدث خطأ في البحث'}</div>`;
+                        return;
+                    }
+                    
+                    // Show stats
+                    const stats = document.getElementById('stats');
+                    stats.innerHTML = `
+                        <div class="stats">
+                            <div class="stats-item">📊 النتائج: <strong>${data.total?.toLocaleString('ar-SA') || 0}</strong></div>
+                            <div class="stats-item">⏱️ الوقت: <strong>${data.took || 0} ms</strong></div>
+                            <div class="stats-item">📁 من إجمالي: <strong>${data.index_total?.toLocaleString('ar-SA') || 0}</strong></div>
+                        </div>
+                    `;
+                    
+                    // Show results
+                    const resultsDiv = document.getElementById('results');
+                    if (!data.results || data.results.length === 0) {
+                        resultsDiv.innerHTML = '<div class="no-results">لم يتم العثور على نتائج</div>';
+                        return;
+                    }
+                    
+                    let html = '';
+                    data.results.forEach((result, index) => {
+                        html += `
+                            <div class="result-item">
+                                <div class="result-title">${result.book_title}</div>
+                                <div class="result-meta">
+                                    📄 الصفحة: ${result.page_number}
+                                    <span class="score">النقاط: ${(result.score || 0).toFixed(2)}</span>
+                                </div>
+                                <div class="result-content">
+                                    ${result.highlight || result.content.substring(0, 150) + '...'}
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    resultsDiv.innerHTML = html;
+                })
+                .catch(error => {
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('error').innerHTML = 
+                        `<div class="error">❌ خطأ في الاتصال: ${error.message}</div>`;
+                });
+        }
+        
+        // Search on Enter key
+        document.getElementById('queryInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+        
+        // Initial search
+        window.addEventListener('load', () => {
+            performSearch();
+        });
+    </script>
+</body>
+</html>

@@ -276,26 +276,29 @@ class UltraFastSearchService
 			
 			return [
 				'match' => [
-				'content.advanced' => [
+					'content' => [
+						'query' => $searchTerm,
+						'operator' => $operator,
+						'minimum_should_match' => $minimumMatch,
+						'fuzziness' => 'AUTO',
+						'prefix_length' => 1
+					]
+				]
+			];
+		}
+
+		// For consecutive: slop=0 (words must be adjacent)
+		// For same_paragraph: slop=50 (words can have up to 50 words between them)
+		$slop = ($wordOrder === 'consecutive') ? 0 : 50;
+
+		return [
+			'match_phrase' => [
+				'content' => [
 					'query' => $searchTerm,
-					'operator' => $operator,
-					'minimum_should_match' => $minimumMatch,
-					'analyzer' => 'arabic_search_analyzer'
+					'slop' => $slop
 				]
 			]
 		];
-	}
-
-	// For consecutive: slop=0 (words must be adjacent)
-	// For same_paragraph: slop=50 (words can have up to 50 words between them)
-	$slop = ($wordOrder === 'consecutive') ? 0 : 50;
-
-	return [
-		'match_phrase' => [
-			'content.advanced' => [
-				'query' => $searchTerm,
-				'slop' => $slop,
-				'analyzer' => 'arabic_search_analyzer'
 	protected function getSlop(string $wordOrder): int
 	{
 		switch ($wordOrder) {
