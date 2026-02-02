@@ -55,22 +55,17 @@ class UltraFastSearchService
 				];
 			}
 
-			// Use new search index first, then fallback to old ones
-			$indices = ['pages_new_search', 'pages', 'pages_test', 'pages_optimized'];
-			$indexToUse = null;
+// Use pages index directly (indexed via Logstash)
+		$indexToUse = 'pages';
 
-			foreach ($indices as $index) {
-				try {
-					if ($this->elasticsearch->indices()->exists(['index' => $index])) {
-						$indexToUse = $index;
-						break;
-					}
-				} catch (\Exception $e) {
-					continue;
-				}
+		// Verify index exists
+		try {
+			if (!$this->elasticsearch->indices()->exists(['index' => $indexToUse])) {
+				\Illuminate\Support\Facades\Log::warning('Elasticsearch index not found, using fallback');
+				return $this->scoutFallback($query, $filters, $page, $perPage);
 			}
-
-			if (!$indexToUse) {
+		} catch (\Exception $e) {
+			\Illuminate\Support\Facades\Log::warning('Elasticsearch connection failed: ' . $e->getMessage());
 				return $this->scoutFallback($query, $filters, $page, $perPage);
 			}
 
@@ -965,16 +960,14 @@ class UltraFastSearchService
 	 */
 	private function getActiveIndex(): ?string
 	{
-		$indices = ['pages_new_search', 'pages', 'pages_test', 'pages_optimized'];
+		$index = 'pages';
 
-		foreach ($indices as $index) {
-			try {
-				if ($this->elasticsearch->indices()->exists(['index' => $index])) {
-					return $index;
-				}
-			} catch (\Exception $e) {
-				continue;
+		try {
+			if ($this->elasticsearch->indices()->exists(['index' => $index])) {
+				return $index;
 			}
+		} catch (\Exception $e) {
+			\Illuminate\Support\Facades\Log::warning('Elasticsearch index check failed: ' . $e->getMessage());
 		}
 
 		return null;
