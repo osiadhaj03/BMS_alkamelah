@@ -282,7 +282,7 @@ Route::prefix('api')->name('api.')->group(function () {
                 ], 404);
             }
 
-            $content = $page->html_content ?? $page->content ?? '';
+            $content = $page->html_content ?? nl2br(e($page->content ?? ''));
 
             // Highlight search query if provided
             $searchQuery = $request->input('q', '');

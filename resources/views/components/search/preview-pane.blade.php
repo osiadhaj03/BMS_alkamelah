@@ -187,7 +187,7 @@ class="h-full w-full flex flex-col bg-white">
                          style="background-color: #f5f1e8; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);">
                         
                         <!-- Content -->
-                        <div class="prose prose-lg max-w-none text-justify leading-loose text-gray-800 font-serif space-y-6" style="line-height: 2;">
+                        <div class="prose prose-lg max-w-none text-justify leading-loose text-gray-800 font-serif" style="line-height: 2;">
                             <div x-html="result.highlighted_content || result.content || 'لا يوجد محتوى'"></div>
                         </div>
 
