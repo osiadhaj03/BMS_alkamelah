@@ -336,6 +336,67 @@
                 
                 markModified() {
                     this.isModified = true;
+                },
+                
+                async insertPageBefore() {
+                    if (!confirm('هل تريد إدراج صفحة جديدة قبل الصفحة الحالية؟\n\nسيتم إعادة ترقيم جميع الصفحات التالية تلقائياً.')) {
+                        return;
+                    }
+                    
+                    const bookId = {{ $book->id ?? 0 }};
+                    const pageNumber = {{ $currentPageNum ?? 1 }};
+                    
+                    try {
+                        const response = await fetch(`/editBook/${bookId}/page/${pageNumber}/insert-before`, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                'Accept': 'application/json'
+                            }
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (data.success) {
+                            // Redirect to the new page
+                            window.location.href = `/editBook/${bookId}/${pageNumber}`;
+                        } else {
+                            alert('خطأ: ' + (data.message || 'فشل إدراج الصفحة'));
+                        }
+                    } catch (error) {
+                        alert('خطأ: ' + error.message);
+                    }
+                },
+                
+                async insertPageAfter() {
+                    if (!confirm('هل تريد إدراج صفحة جديدة بعد الصفحة الحالية؟\n\nسيتم إعادة ترقيم جميع الصفحات التالية تلقائياً.')) {
+                        return;
+                    }
+                    
+                    const bookId = {{ $book->id ?? 0 }};
+                    const pageNumber = {{ $currentPageNum ?? 1 }};
+                    const newPageNumber = pageNumber + 1;
+                    
+                    try {
+                        const response = await fetch(`/editBook/${bookId}/page/${pageNumber}/insert-after`, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                'Accept': 'application/json'
+                            }
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (data.success) {
+                            // Redirect to the new page
+                            window.location.href = `/editBook/${bookId}/${newPageNumber}`;
+                        } else {
+                            alert('خطأ: ' + (data.message || 'فشل إدراج الصفحة'));
+                        }
+                    } catch (error) {
+                        alert('خطأ: ' + error.message);
+                    }
                 }
             }
         }

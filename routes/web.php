@@ -105,6 +105,15 @@ Route::prefix('editBook/{bookId}/chapters')->name('chapter.')->group(function ()
     Route::post('/{chapterId}/move-down', [ChapterController::class, 'moveDown'])->name('moveDown');
 });
 
+// Page Insertion Routes
+Route::post('/editBook/{bookId}/page/{pageNumber}/insert-before', [BookEditorController::class, 'insertPageBefore'])
+    ->name('book.insertPageBefore')
+    ->where(['bookId' => '[0-9]+', 'pageNumber' => '[0-9]+']);
+
+Route::post('/editBook/{bookId}/page/{pageNumber}/insert-after', [BookEditorController::class, 'insertPageAfter'])
+    ->name('book.insertPageAfter')
+    ->where(['bookId' => '[0-9]+', 'pageNumber' => '[0-9]+']);
+
 // Static Book Preview Route
 Route::get('/preview/book-static', function () {
     return view('pages.book-preview');

@@ -115,4 +115,95 @@ class BookEditorController extends Controller
             'page_number' => $page->page_number,
         ]);
     }
+
+    /**
+     * Insert a new blank page before the current page
+     * 
+     * @param Request $request
+     * @param int $bookId
+     * @param int $pageNumber
+     */
+    public function insertPageBefore(Request $request, $bookId, $pageNumber)
+    {
+        $book = Book::findOrFail($bookId);
+        
+        // 1. Increment page_number for all pages >= pageNumber
+        Page::where('book_id', $bookId)
+            ->where('page_number', '>=', $pageNumber)
+            ->increment('page_number');
+        
+        // 2. Update chapter ranges
+        Chapter::where('book_id', $bookId)
+            ->where('page_start', '>=', $pageNumber)
+            ->increment('page_start');
+        
+        Chapter::where('book_id', $bookId)
+            ->where('page_end', '>=', $pageNumber)
+            ->increment('page_end');
+        
+        // 3. Create new blank page at pageNumber
+        $newPage = Page::create([
+            'book_id' => $bookId,
+            'page_number' => $pageNumber,
+            'content' => '',
+            'html_content' => '<p></p>',
+        ]);
+        
+        // 4. Update total pages count
+        $totalPages = Page::where('book_id', $bookId)->count();
+        $book->update(['total_pages' => $totalPages]);
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'تم إدراج صفحة جديدة قبل الصفحة الحالية',
+            'page' => $newPage,
+            'new_page_number' => $pageNumber,
+        ]);
+    }
+
+    /**
+     * Insert a new blank page after the current page
+     * 
+     * @param Request $request
+     * @param int $bookId
+     * @param int $pageNumber
+     */
+    public function insertPageAfter(Request $request, $bookId, $pageNumber)
+    {
+        $book = Book::findOrFail($bookId);
+        $newPageNumber = $pageNumber + 1;
+        
+        // 1. Increment page_number for all pages > pageNumber
+        Page::where('book_id', $bookId)
+            ->where('page_number', '>=', $newPageNumber)
+            ->increment('page_number');
+        
+        // 2. Update chapter ranges
+        Chapter::where('book_id', $bookId)
+            ->where('page_start', '>=', $newPageNumber)
+            ->increment('page_start');
+        
+        Chapter::where('book_id', $bookId)
+            ->where('page_end', '>=', $newPageNumber)
+            ->increment('page_end');
+        
+        // 3. Create new blank page at newPageNumber
+        $newPage = Page::create([
+            'book_id' => $bookId,
+            'page_number' => $newPageNumber,
+            'content' => '',
+            'html_content' => '<p></p>',
+        ]);
+        
+        // 4. Update total pages count
+        $totalPages = Page::where('book_id', $bookId)->count();
+        $book->update(['total_pages' => $totalPages]);
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'تم إدراج صفحة جديدة بعد الصفحة الحالية',
+            'page' => $newPage,
+            'new_page_number' => $newPageNumber,
+        ]);
+    }
 }

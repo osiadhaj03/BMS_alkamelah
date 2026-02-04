@@ -137,6 +137,26 @@
             <span>صفحة {{ $currentPageNum }} من {{ $totalPages }}</span>
         </div>
         
+        <!-- Page Insertion Buttons -->
+        <div class="flex gap-2">
+            <button @click="insertPageBefore()" 
+                    class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all flex items-center gap-2"
+                    style="font-family: var(--font-ui); font-size: 0.9rem;">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                <span>إدراج قبل</span>
+            </button>
+            <button @click="insertPageAfter()" 
+                    class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all flex items-center gap-2"
+                    style="font-family: var(--font-ui); font-size: 0.9rem;">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                <span>إدراج بعد</span>
+            </button>
+        </div>
+        
         <!-- Save Button -->
         <button @click="saveContent()" class="save-button">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
