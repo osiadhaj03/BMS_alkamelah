@@ -94,12 +94,11 @@
         
         <!-- Main Layout -->
         <div class="flex" style="padding-top: 0px;">
-            <!-- Sidebar Component - Pass chapters data (Read-only) -->
-            <x-book.table-of-contents 
+            <!-- Editable TOC Sidebar -->
+            <x-book-editor.toc-editor 
                 :chapters="$chapters ?? collect()" 
                 :book="$book ?? null"
                 :currentPage="$currentPage ?? null"
-                :editMode="true"
             />
             
             <!-- Main Content Editor Component -->
