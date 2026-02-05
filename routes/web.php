@@ -10,6 +10,7 @@ use App\Http\Controllers\NewsController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ArticleCommentController;
 use App\Http\Controllers\BookEditorController;
+use App\Http\Controllers\ChapterController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/import-turath', \App\Livewire\ImportTurathPage::class)->name('import.turath');
@@ -87,10 +88,18 @@ Route::get('/book/{bookId}/search', [BookReaderController::class, 'search'])
 
 // Book Editor Routes
 Route::middleware(['auth'])->group(function () {
-    Route::get('/editBook/{bookId}/{pageNumber?}', [BookEditorController::class, 'show'])->name('book-editor.show');
-    Route::post('/editBook/{bookId}/{pageNumber}/update', [BookEditorController::class, 'updatePage'])->name('book-editor.update-page');
-    Route::post('/editBook/{bookId}/{pageNumber}/insert-before', [BookEditorController::class, 'insertPageBefore'])->name('book-editor.insert-page-before');
-    Route::post('/editBook/{bookId}/{pageNumber}/insert-after', [BookEditorController::class, 'insertPageAfter'])->name('book-editor.insert-page-after');
+    Route::get('/editBook/{bookId}/{pageNumber?}', [BookEditorController::class, 'show'])->name('book.edit');
+    Route::post('/editBook/{bookId}/{pageNumber}/update', [BookEditorController::class, 'updatePage'])->name('book.updatePage');
+    Route::post('/editBook/{bookId}/page/{pageNumber}/insert-before', [BookEditorController::class, 'insertPageBefore'])->name('book.insertPageBefore');
+    Route::post('/editBook/{bookId}/page/{pageNumber}/insert-after', [BookEditorController::class, 'insertPageAfter'])->name('book.insertPageAfter');
+
+    // Chapter Management Routes
+    Route::post('/editBook/{bookId}/chapters', [ChapterController::class, 'store'])->name('chapters.store');
+    Route::put('/editBook/{bookId}/chapters/{chapterId}', [ChapterController::class, 'update'])->name('chapters.update');
+    Route::delete('/editBook/{bookId}/chapters/{chapterId}', [ChapterController::class, 'delete'])->name('chapters.delete');
+    Route::post('/editBook/{bookId}/chapters/{chapterId}/reorder', [ChapterController::class, 'reorder'])->name('chapters.reorder');
+    Route::post('/editBook/{bookId}/chapters/{chapterId}/move-up', [ChapterController::class, 'moveUp'])->name('chapters.move-up');
+    Route::post('/editBook/{bookId}/chapters/{chapterId}/move-down', [ChapterController::class, 'moveDown'])->name('chapters.move-down');
 });
 
 // Static Book Preview Route

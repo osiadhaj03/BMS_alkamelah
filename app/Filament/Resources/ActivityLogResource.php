@@ -30,12 +30,17 @@ class ActivityLogResource extends Resource
     {
         return $schema
             ->components([
-                Section::make('البيانات')
+                Section::make('تفاصيل النشاط')
                     ->schema([
-                        KeyValue::make('properties.attributes')
-                            ->label('البيانات الجديدة'),
-                        KeyValue::make('properties.old')
-                            ->label('البيانات القديمة'),
+                        \Filament\Forms\Components\Grid::make(2)
+                            ->schema([
+                                KeyValue::make('properties.old')
+                                    ->label('البيانات القديمة')
+                                    ->columnSpan(1),
+                                KeyValue::make('properties.attributes')
+                                    ->label('البيانات الجديدة')
+                                    ->columnSpan(1),
+                            ]),
                     ]),
             ]);
     }
@@ -47,7 +52,8 @@ class ActivityLogResource extends Resource
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('التوقيت')
                     ->dateTime('d/m/Y H:i:s')
-                    ->sortable(),
+                    ->sortable()
+                    ->width('150px'),
                     
                 Tables\Columns\TextColumn::make('causer.name')
                     ->label('المستخدم')
@@ -70,20 +76,44 @@ class ActivityLogResource extends Resource
                     }),
                     
                 Tables\Columns\TextColumn::make('subject_type')
-                    ->label('النوع')
-                    ->formatStateUsing(function ($state) {
-                        return match ($state) {
+                    ->label('العنصر')
+                    ->formatStateUsing(function ($record) {
+                        $type = match ($record->subject_type) {
                             'App\Models\Book' => 'كتاب',
                             'App\Models\Author' => 'مؤلف',
                             'App\Models\User' => 'مستخدم',
-                            default => class_basename($state),
+                            default => class_basename($record->subject_type),
                         };
-                    }),
+                        
+                        $name = $record->subject?->title 
+                            ?? $record->subject?->name 
+                            ?? $record->subject?->full_name 
+                            ?? $record->properties['attributes']['title'] 
+                            ?? $record->properties['attributes']['name'] 
+                            ?? $record->description;
+                            
+                        return $type . ': ' . \Illuminate\Support\Str::limit($name, 30);
+                    })
+                    ->description(fn ($record) => $record->subject_type),
                     
-                Tables\Columns\TextColumn::make('description')
-                    ->label('الوصف')
-                    ->searchable()
-                    ->limit(50),
+                Tables\Columns\TextColumn::make('changes')
+                    ->label('التغييرات')
+                    ->state(function ($record) {
+                        if ($record->event === 'updated' && isset($record->properties['attributes'])) {
+                            $changes = array_keys($record->properties['attributes']);
+                            // Filter out ignored internal fields if any
+                            $changes = array_filter($changes, fn($key) => !in_array($key, ['updated_at']));
+                            return empty($changes) ? 'تحديث' : 'تعديل: ' . implode(', ', $changes);
+                        }
+                        return match ($record->event) {
+                            'created' => 'تم الإنشاء',
+                            'deleted' => 'تم الحذف',
+                            default => $record->description,
+                        };
+                    })
+                    ->wrap()
+                    ->badge()
+                    ->color('gray'),
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
