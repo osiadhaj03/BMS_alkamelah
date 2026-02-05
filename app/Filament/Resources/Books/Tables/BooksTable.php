@@ -83,6 +83,10 @@ class BooksTable
                     ->getStateUsing(fn ($record) => $record->pages()->count())
                     ->toggleable()
                     ->sortable(),
+                TextColumn::make('views_count')
+                    ->label('المشاهدات')
+                    ->sortable()
+                    ->toggleable(),
 
             ])
             ->filters([

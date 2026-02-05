@@ -16,4 +16,11 @@ class ListBooks extends ListRecords
             CreateAction::make(),
         ];
     }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            \App\Filament\Resources\Books\Widgets\BookStatsOverview::class,
+        ];
+    }
 }
