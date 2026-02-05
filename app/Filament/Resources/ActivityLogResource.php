@@ -4,33 +4,39 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ActivityLogResource\Pages;
 use App\Models\ActivityLog;
-use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use BackedEnum;
+use UnitEnum;
+use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\KeyValue;
 
 class ActivityLogResource extends Resource
 {
     protected static ?string $model = ActivityLog::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
+    protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-clipboard-document-list';
 
     protected static ?string $navigationLabel = 'سجل النشاطات';
 
-    protected static ?string $navigationGroup = 'النظام';
+    protected static UnitEnum|string|null $navigationGroup = 'النظام';
     
     protected static ?int $navigationSort = 100;
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\KeyValue::make('properties.attributes')
-                    ->label('البيانات الجديدة'),
-                Forms\Components\KeyValue::make('properties.old')
-                    ->label('البيانات القديمة'),
+        return $schema
+            ->components([
+                Section::make('البيانات')
+                    ->schema([
+                        KeyValue::make('properties.attributes')
+                            ->label('البيانات الجديدة'),
+                        KeyValue::make('properties.old')
+                            ->label('البيانات القديمة'),
+                    ]),
             ]);
     }
 
