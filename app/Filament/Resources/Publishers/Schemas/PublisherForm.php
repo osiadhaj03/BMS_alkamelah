@@ -10,6 +10,7 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\Select;
+use Illuminate\Support\Facades\Storage;
 
 class PublisherForm
 {
@@ -48,7 +49,11 @@ class PublisherForm
                             ->label('شعار الناشر')
                             ->image()
                             ->imageEditor()
+                            ->disk('public')
                             ->directory('publishers')
+                            ->saveUploadedFileUsing(function ($file, $record) {
+                                return Storage::disk('public')->putFile('publishers', $file);
+                            })
                             ->columnSpanFull(),
 
                         RichEditor::make('description')

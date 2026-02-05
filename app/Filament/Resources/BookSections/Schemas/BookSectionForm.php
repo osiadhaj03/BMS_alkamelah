@@ -10,6 +10,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Storage;
 
 class BookSectionForm
 {
@@ -57,7 +58,11 @@ class BookSectionForm
                         FileUpload::make('logo_path')
                             ->label('أيقونة القسم')
                             ->image()
+                            ->disk('public')
                             ->directory('book-sections-logos')
+                            ->saveUploadedFileUsing(function ($file, $record) {
+                                return Storage::disk('public')->putFile('book-sections-logos', $file);
+                            })
                             ->columnSpanFull(),
 
                         

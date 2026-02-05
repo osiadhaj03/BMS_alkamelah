@@ -13,6 +13,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\RichEditor;
+use Illuminate\Support\Facades\Storage;
 
 class BookForm
 {
@@ -213,7 +214,11 @@ class BookForm
                                             ->label('صورة المؤلف')
                                             ->image()
                                             ->imageEditor()
+                                            ->disk('public')
                                             ->directory('authors')
+                                            ->saveUploadedFileUsing(function ($file, $record) {
+                                                return Storage::disk('public')->putFile('authors', $file);
+                                            })
                                             ->columnSpanFull(),
                                         Textarea::make('biography')
                                             ->label('السيرة الذاتية')
@@ -322,7 +327,11 @@ class BookForm
                             ->multiple()
                             ->image()
                             ->maxFiles(3)
+                            ->disk('public')
                             ->directory('book-images')
+                            ->saveUploadedFileUsing(function ($file, $record) {
+                                return Storage::disk('public')->putFile('book-images', $file);
+                            })
                             ->columnSpanFull(),
 
                         Repeater::make('video_links')

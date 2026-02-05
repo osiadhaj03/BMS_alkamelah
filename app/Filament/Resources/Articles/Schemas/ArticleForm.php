@@ -8,6 +8,7 @@ use Filament\Forms\Components\RichEditor;
 use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Illuminate\Support\Facades\Storage;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\TagsInput;
@@ -122,8 +123,12 @@ class ArticleForm
                         ->label('صورة الغلاف')
                         ->image()
                         ->maxSize(2048)
+                        ->disk('public')
                         ->directory('article-images')
                         ->imageEditor()
+                        ->saveUploadedFileUsing(function ($file, $record) {
+                            return Storage::disk('public')->putFile('article-images', $file);
+                        })
                         ->columnSpanFull(),
                 ])->collapsible(),
 

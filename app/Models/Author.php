@@ -12,6 +12,15 @@ class Author extends Model
 {
     use HasFactory;
     use \App\Traits\HasSimpleStats;
+    use \Spatie\Activitylog\Traits\LogsActivity;
+
+    public function getActivitylogOptions(): \Spatie\Activitylog\LogOptions
+    {
+        return \Spatie\Activitylog\LogOptions::defaults()
+            ->logAll()
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 
     protected $fillable = [
         'first_name',

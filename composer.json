@@ -22,6 +22,7 @@
         "laravel/scout": "^10.23",
         "laravel/tinker": "^2.10.1",
         "naturalgroove/laravel-filament-rich-editor-source-ai": "^1.0",
+        "spatie/laravel-activitylog": "*",
         "spatie/laravel-sitemap": "^7.3",
         "symfony/css-selector": "7.0",
         "symfony/dom-crawler": "7.0"

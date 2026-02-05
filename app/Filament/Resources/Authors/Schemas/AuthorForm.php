@@ -11,6 +11,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Storage;
 
 class AuthorForm
 {
@@ -65,7 +66,11 @@ class AuthorForm
                             ->label('صورة المؤلف')
                             ->image()
                             ->imageEditor()
+                            ->disk('public')
                             ->directory('authors')
+                            ->saveUploadedFileUsing(function ($file, $record) {
+                                return Storage::disk('public')->putFile('authors', $file);
+                            })
                             ->columnSpanFull(),
 
                         RichEditor::make('biography')

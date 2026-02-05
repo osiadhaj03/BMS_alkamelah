@@ -9,6 +9,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Storage;
 
 class FeedbackComplaintForm
 {
@@ -87,6 +88,9 @@ class FeedbackComplaintForm
                             ->label('المرفق')
                             ->disk('public')
                             ->directory('feedback-attachments')
+                            ->saveUploadedFileUsing(function ($file, $record) {
+                                return Storage::disk('public')->putFile('feedback-attachments', $file);
+                            })
                             ->nullable(),
                     ])
                     ->columns(3),
