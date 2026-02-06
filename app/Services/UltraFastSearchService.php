@@ -55,8 +55,8 @@ class UltraFastSearchService
 				];
 			}
 
-// Use pages index directly (indexed via Logstash)
-		$indexToUse = 'pages';
+// Use pages_active alias for zero-downtime switching
+		$indexToUse = 'pages_active';
 
 		// Verify index exists
 		try {
@@ -272,7 +272,7 @@ class UltraFastSearchService
 			return [
 				'simple_query_string' => [
 					'query' => $searchTerm,
-					'fields' => ['content'],
+					'fields' => ['content', 'content.ngram^0.5'],  // Add ngram for partial matching
 					'default_operator' => $operator,
 					'analyze_wildcard' => false,
 					'fuzzy_transpositions' => true,
@@ -610,12 +610,16 @@ class UltraFastSearchService
 
 		// Add filters - Context7 Best Practice: Use correct field types
 
-		// Author filter - NOTE: author_ids field does NOT exist in indexed data
-		// We need to filter by book_id and then join with books table to get author
-		// For now, author filter is disabled until re-indexing
+		// Author filter - Now using author_ids field from enhanced indexing
 		if (!empty($filters['author_id'])) {
-			\Illuminate\Support\Facades\Log::warning('Author filter requested but author_ids field does not exist in Elasticsearch index. Skipping author filter.');
-			// TODO: Re-index with author_ids field OR use post-filter with database join
+			$authorIds = is_array($filters['author_id'])
+				? $filters['author_id']
+				: [$filters['author_id']];
+			
+			// author_ids is keyword type (array of strings)
+			$boolQuery['bool']['filter'][] = [
+				'terms' => ['author_ids' => array_map('strval', $authorIds)]
+			];
 		}
 
 		// Section filter - use keyword type (not integer!)
