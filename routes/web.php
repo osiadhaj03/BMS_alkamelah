@@ -307,6 +307,69 @@ Route::prefix('api')->name('api.')->group(function () {
         }
     })->name('ultra-search');
 
+    // API route with /api prefix (used by frontend)
+    Route::get('/api/ultra-search', function (\Illuminate\Http\Request $request) {
+        try {
+            $searchService = new \App\Services\UltraFastSearchService();
+
+            $query = $request->input('q', '');
+            $page = (int) $request->input('page', 1);
+            $perPage = (int) $request->input('per_page', 10);
+
+            // Build filters array
+            $filters = [
+                'search_type' => $request->input('search_type', 'flexible_match'),
+                'word_order' => $request->input('word_order', 'any_order'),
+            ];
+
+            // Add optional filters
+            if ($request->filled('book_id')) {
+                $filters['book_id'] = explode(',', $request->input('book_id'));
+            }
+            if ($request->filled('author_id')) {
+                $filters['author_id'] = explode(',', $request->input('author_id'));
+            }
+            if ($request->filled('section_id')) {
+                $filters['section_id'] = explode(',', $request->input('section_id'));
+            }
+
+            $results = $searchService->search($query, $filters, $page, $perPage);
+
+            // Transform to API response format
+            return response()->json([
+                'success' => true,
+                'data' => collect($results['results'] ?? [])->map(function ($item) {
+                    return [
+                        'id' => $item['id'] ?? null,
+                        'book_title' => $item['book_title'] ?? '',
+                        'page_number' => $item['page_number'] ?? 0,
+                        'content' => $item['content'] ?? '',
+                        'book_id' => $item['book_id'] ?? null,
+                    ];
+                }),
+                'pagination' => [
+                    'current_page' => $results['current_page'] ?? 1,
+                    'last_page' => $results['last_page'] ?? 1,
+                    'per_page' => $results['per_page'] ?? 10,
+                    'total' => $results['total'] ?? 0,
+                ]
+            ]);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Ultra-search API error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+                'data' => [],
+                'pagination' => [
+                    'current_page' => 1,
+                    'last_page' => 1,
+                    'per_page' => 10,
+                    'total' => 0,
+                ]
+            ], 500);
+        }
+    })->name('api.ultra-search');
+
     // Get Full Page Content API (for preview pane)
     Route::get('/page/{id}', function (\Illuminate\Http\Request $request, $id) {
         try {
