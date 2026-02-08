@@ -55,8 +55,8 @@ class UltraFastSearchService
 				];
 			}
 
-// Use pages_active alias for zero-downtime switching
-		$indexToUse = 'pages_active';
+// Use pages_simple_v1 - new clean index with simple analyzers
+		$indexToUse = 'pages_simple_v1';
 
 		// Verify index exists
 		try {
@@ -158,7 +158,7 @@ class UltraFastSearchService
 		}
 
 		// Validate filter types and values
-		$allowedFilters = ['book_id', 'section_id', 'author_id', 'search_type', 'word_order'];
+		$allowedFilters = ['book_id', 'section_id', 'author_id', 'search_type', 'word_order', 'word_match'];
 		foreach ($filters as $key => $value) {
 			if (!in_array($key, $allowedFilters)) {
 				continue; // Skip unknown filters instead of failing
@@ -259,25 +259,23 @@ class UltraFastSearchService
 	}
 
 	/**
-	 * Build flexible match query - allows prefixes without stemming
+	 * Build flexible match query - Clean simple search
 	 * Supports word_match: 'all_words' (AND) or 'some_words' (OR)
+	 * Uses arabic_standard analyzer (standard tokenizer + lowercase)
 	 */
 	protected function buildFlexibleMatchQuery(string $searchTerm, string $wordOrder = 'any_order', string $wordMatch = 'some_words'): array
 	{
 		// Determine operator based on word_match
-		$operator = ($wordMatch === 'some_words') ? 'or' : 'and';
+		$operator = ($wordMatch === 'all_words') ? 'and' : 'or';
 
-		// If any_order, use simple_query_string for better Arabic tokenization
+		// If any_order, use match query with operator control
 		if ($wordOrder === 'any_order') {
 			return [
-				'simple_query_string' => [
-					'query' => $searchTerm,
-					'fields' => ['content', 'content.ngram^0.5'],  // Add ngram for partial matching
-					'default_operator' => $operator,
-					'analyze_wildcard' => false,
-					'fuzzy_transpositions' => true,
-					'fuzzy_max_expansions' => 50,
-					'fuzzy_prefix_length' => 1
+				'match' => [
+					'content' => [
+						'query' => $searchTerm,
+						'operator' => $operator
+					]
 				]
 			];
 		}
@@ -310,23 +308,41 @@ class UltraFastSearchService
 	}
 
 	/**
-	 * Build morphological query - root-based search with derivatives
-	 * Context7 Best Practice: Apply word_order logic to morphological search too
-	 * TEMPORARY FIX: Using query_string instead of match due to analyzer issues
+	 * Build morphological query - Root-based search using arabic_stem filter
+	 * Hybrid approach: Boost exact matches over stemmed matches
+	 * Uses content.stemmed field with arabic_stemmed analyzer
 	 */
 	protected function buildMorphologicalQuery(string $searchTerm, string $wordOrder = 'any_order', string $wordMatch = 'some_words'): array
 	{
-		// For any_order: use query_string with configurable operator
+		$operator = ($wordMatch === 'all_words') ? 'and' : 'or';
+
+		// For any_order: use hybrid bool query (exact + stemmed)
 		if ($wordOrder === 'any_order') {
-			// Determine operator based on word_match setting
-			$operator = ($wordMatch === 'all_words') ? 'AND' : 'OR';
-			
 			return [
-				'query_string' => [
-					'query' => $searchTerm,
-					'default_field' => 'content',
-					'default_operator' => $operator,
-					'analyze_wildcard' => false
+				'bool' => [
+					'should' => [
+						// Exact match on standard field (higher boost)
+						[
+							'match' => [
+								'content' => [
+									'query' => $searchTerm,
+									'operator' => $operator,
+									'boost' => 3.0
+								]
+							]
+						],
+						// Stemmed match on stemmed field (lower boost)
+						[
+							'match' => [
+								'content.stemmed' => [
+									'query' => $searchTerm,
+									'operator' => $operator,
+									'boost' => 1.0
+								]
+							]
+						]
+					],
+					'minimum_should_match' => 1
 				]
 			];
 		}
@@ -339,16 +355,16 @@ class UltraFastSearchService
 				'should' => [
 					[
 						'match_phrase' => [
-							'content.stemmed' => [
+							'content' => [
 								'query' => $searchTerm,
 								'slop' => $slop,
-								'boost' => 2.0
+								'boost' => 3.0
 							]
 						]
 					],
 					[
 						'match_phrase' => [
-							'content.flexible' => [
+							'content.stemmed' => [
 								'query' => $searchTerm,
 								'slop' => $slop,
 								'boost' => 1.0

@@ -99,8 +99,8 @@
                 Alpine.store('search', {
                     // Search State
                     query: '',
-                    searchType: 'flexible_match',
-                    wordOrder: 'any_order',
+                    searchType: 'exact_match',
+                    wordOrder: 'consecutive',
                     wordMatch: 'all_words',
                     sortBy: 'relevance',
                     perPage: 10,
@@ -127,8 +127,9 @@
                         const params = new URLSearchParams(window.location.search);
                         if (params.has('q')) {
                             this.query = params.get('q');
-                            this.searchType = params.get('search_type') || 'flexible_match';
-                            this.wordOrder = params.get('word_order') || 'any_order';
+                            this.searchType = params.get('search_type') || 'exact_match';
+                            this.wordOrder = params.get('word_order') || 'consecutive';
+                            this.wordMatch = params.get('word_match') || 'all_words';
 
                             // Handle filters if present
                             if (params.has('book_id')) this.selectedFilters.books = params.get('book_id').split(',');

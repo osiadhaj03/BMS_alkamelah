@@ -1,7 +1,8 @@
 <div class="px-4 py-3 md:px-6 md:py-4 bg-white" x-data="{ 
     settingsOpen: false, 
-    searchType: 'flexible_match',
-    wordOrder: 'any_order',
+    searchType: 'exact_match',
+    wordOrder: 'consecutive',
+    wordMatch: 'all_words',
     query: '',
     filterModalOpen: false,
     helpModalOpen: false,
@@ -333,7 +334,7 @@
                             </h4>
                             <div class="flex flex-col gap-1">
                                 <label
-                                    class="flex items-center gap-3 p-2 rounded-md hover:bg-gray-50 cursor-pointer transition-colors group">
+                                    class="flex items-center gap-3 p-2 rounded-md hover:bg-gray-50 cursor-pointer transition-colors group" style="line-height: 1.35rem;">
                                     <div class="relative flex items-center">
                                         <input type="radio" name="searchType" value="exact_match"
                                             x-model="$store.search.searchType"
@@ -361,42 +362,37 @@
                                         الصرفي</span>
                                 </label>
 
+                                <!-- Disabled Options 
                                 <label
-                                    class="flex items-center gap-3 p-2 rounded-md hover:bg-gray-50 cursor-pointer transition-colors group">
-                                    <input type="radio" name="searchType" value="fuzzy"
-                                        x-model="$store.search.searchType"
-                                        class="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300">
-                                    <span class="text-sm text-gray-700 group-hover:text-green-700 font-medium">تصحيح
-                                        الأخطاء</span>
+                                    class="flex items-center gap-3 p-2 rounded-md bg-gray-50 opacity-50 cursor-not-allowed" style="line-height: 1.35rem;">
+                                    <input type="radio" name="searchType" value="fuzzy" disabled
+                                        class="h-4 w-4 text-gray-400 border-gray-300 cursor-not-allowed">
+                                    <div class="flex-1 flex items-center justify-between">
+                                        <span class="text-sm text-gray-500 font-medium">تصحيح الأخطاء</span>
+                                        <span class="text-xs bg-red-500 text-white px-2 py-0.5 rounded-full">قريباً</span>
+                                    </div>
                                 </label>
 
                                 <label
-                                    class="flex items-center gap-3 p-2 rounded-md hover:bg-gray-50 cursor-pointer transition-colors group">
-                                    <input type="radio" name="searchType" value="prefix"
-                                        x-model="$store.search.searchType"
-                                        class="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300">
-                                    <span class="text-sm text-gray-700 group-hover:text-green-700 font-medium">البحث
-                                        بالبداية</span>
+                                    class="flex items-center gap-3 p-2 rounded-md bg-gray-50 opacity-50 cursor-not-allowed">
+                                    <input type="radio" name="searchType" value="prefix" disabled
+                                        class="h-4 w-4 text-gray-400 border-gray-300 cursor-not-allowed">
+                                    <div class="flex-1 flex items-center justify-between">
+                                        <span class="text-sm text-gray-500 font-medium">البحث بالبداية</span>
+                                        <span class="text-xs bg-red-500 text-white px-2 py-0.5 rounded-full">قريباً</span>
+                                    </div>
                                 </label>
 
                                 <label
-                                    class="flex items-center gap-3 p-2 rounded-md hover:bg-gray-50 cursor-pointer transition-colors group">
-                                    <input type="radio" name="searchType" value="wildcard"
-                                        x-model="$store.search.searchType"
-                                        class="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300">
-                                    <span class="text-sm text-gray-700 group-hover:text-orange-700 font-medium">الرموز
-                                        البديلة <span class="text-xs text-gray-400">(*,?)</span></span>
+                                    class="flex items-center gap-3 p-2 rounded-md bg-gray-50 opacity-50 cursor-not-allowed">
+                                    <input type="radio" name="searchType" value="wildcard" disabled
+                                        class="h-4 w-4 text-gray-400 border-gray-300 cursor-not-allowed">
+                                    <div class="flex-1 flex items-center justify-between">
+                                        <span class="text-sm text-gray-500 font-medium">الرموز البديلة <span class="text-xs text-gray-400">(*,?)</span></span>
+                                        <span class="text-xs bg-red-500 text-white px-2 py-0.5 rounded-full">قريباً</span>
+                                    </div>
                                 </label>
-
-                                <label
-                                    class="flex items-center gap-3 p-2 rounded-md hover:bg-gray-50 cursor-pointer transition-colors group">
-                                    <input type="radio" name="searchType" value="boolean"
-                                        x-model="$store.search.searchType"
-                                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
-                                    <span class="text-sm text-gray-700 group-hover:text-blue-700 font-medium">البحث
-                                        المتقدم <span class="text-xs text-gray-400">(AND,OR,NOT)</span></span>
-                                </label>
-
+-->
                             </div>
                         </div>
 
@@ -411,7 +407,7 @@
                                     class="flex items-center gap-3 p-2 rounded-md hover:bg-gray-50 cursor-pointer transition-colors group">
                                     <input type="radio" name="wordOrder" value="consecutive"
                                         x-model="$store.search.wordOrder"
-                                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300" checked>
                                     <span class="text-sm text-gray-700 group-hover:text-blue-700 font-medium">كلمات
                                         متتالية</span>
                                 </label>
@@ -442,25 +438,29 @@
                         <div class="space-y-3">
                             <h4
                                 class="font-bold text-gray-700 text-xs uppercase tracking-wider border-b border-gray-100 pb-2">
-                                شرط الكلمات
+                                مطابقة الكلمات
                             </h4>
                             <div class="flex flex-col gap-1">
                                 <label
                                     class="flex items-center gap-3 p-2 rounded-md hover:bg-gray-50 cursor-pointer transition-colors group">
-                                    <input type="radio" name="wordMatch" value="all_words"
+                                    <input type="radio" name="wordMatch" value="some_words"
                                         x-model="$store.search.wordMatch"
-                                        class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300">
-                                    <span class="text-sm text-gray-700 group-hover:text-purple-700 font-medium">كل
-                                        الكلمات (AND)</span>
+                                        class="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300">
+                                    <div class="flex-1 text-right">
+                                        <span class="text-sm text-gray-700 group-hover:text-emerald-700 font-medium block">بعض الكلمات</span>
+                                        <span class="text-xs text-gray-500 block">يكفي وجود أي كلمة من كلمات البحث (OR)</span>
+                                    </div>
                                 </label>
 
                                 <label
                                     class="flex items-center gap-3 p-2 rounded-md hover:bg-gray-50 cursor-pointer transition-colors group">
-                                    <input type="radio" name="wordMatch" value="some_words"
+                                    <input type="radio" name="wordMatch" value="all_words"
                                         x-model="$store.search.wordMatch"
-                                        class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300">
-                                    <span class="text-sm text-gray-700 group-hover:text-purple-700 font-medium">بعض
-                                        الكلمات (OR)</span>
+                                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300" checked>
+                                    <div class="flex-1 text-right">
+                                        <span class="text-sm text-gray-700 group-hover:text-blue-700 font-medium block">جميع الكلمات</span>
+                                        <span class="text-xs text-gray-500 block">يجب أن توجد كل كلمات البحث (AND)</span>
+                                    </div>
                                 </label>
                             </div>
                         </div>
@@ -963,7 +963,7 @@
                             </div>
                             <div class="p-4 bg-gradient-to-r from-green-50 to-blue-50">
                                 <h4 class="font-bold text-lg text-gray-800 mb-2">شاهد الفيديو التعليمي</h4>
-                                <p class="text-gray-600">تعلم كيفية استخدام جميع ميزات البحث المتقدم في مكتبة الكاملة</p>
+                                <p class="text-gray-600">تعلم كيفية استخدام جميع ميزات البحث في مكتبة الكاملة</p>
                             </div>
                         </div>
                     </div>
@@ -1014,62 +1014,58 @@
                             </div>
                         </div>
 
-                        <!-- Fuzzy -->
-                        <div class="bg-white rounded-lg shadow-md p-5 border-r-4 border-orange-500">
-                            <div class="flex items-center gap-3 mb-3">
-                                <span class="text-3xl">✏️</span>
-                                <h4 class="text-xl font-bold text-gray-800">تصحيح الأخطاء</h4>
+                        <!-- Fuzzy - Disabled -->
+                        <div class="bg-gray-100 rounded-lg shadow-md p-5 border-r-4 border-gray-400 opacity-60 relative">
+                            <div class="absolute top-3 left-3 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                                غير متوفر حالياً
                             </div>
-                            <p class="text-gray-700 mb-3">يجد الكلمات حتى لو كانت بها أخطاء إملائية بسيطة</p>
-                            <div class="bg-orange-50 p-3 rounded-lg">
-                                <p class="font-semibold text-orange-800 mb-2">مثال:</p>
-                                <p class="text-gray-700">🔍 البحث: <code class="bg-orange-100 px-2 py-1 rounded">المسلمين</code></p>
-                                <p class="text-gray-600 mt-1">✅ سيجد: "المسلمين"، "المسملين"، "المسلمون"</p>
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="text-3xl grayscale">✏️</span>
+                                <h4 class="text-xl font-bold text-gray-600">تصحيح الأخطاء</h4>
+                            </div>
+                            <p class="text-gray-500 mb-3">يجد الكلمات حتى لو كانت بها أخطاء إملائية بسيطة</p>
+                            <div class="bg-gray-200 p-3 rounded-lg">
+                                <p class="font-semibold text-gray-600 mb-2">مثال:</p>
+                                <p class="text-gray-500">🔍 البحث: <code class="bg-gray-300 px-2 py-1 rounded">المسلمين</code></p>
+                                <p class="text-gray-500 mt-1">✅ سيجد: "المسلمين"، "المسملين"، "المسلمون"</p>
                             </div>
                         </div>
 
-                        <!-- Prefix -->
-                        <div class="bg-white rounded-lg shadow-md p-5 border-r-4 border-teal-500">
-                            <div class="flex items-center gap-3 mb-3">
-                                <span class="text-3xl">▶️</span>
-                                <h4 class="text-xl font-bold text-gray-800">البحث بالبداية</h4>
+                        <!-- Prefix - Disabled -->
+                        <div class="bg-gray-100 rounded-lg shadow-md p-5 border-r-4 border-gray-400 opacity-60 relative">
+                            <div class="absolute top-3 left-3 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                                غير متوفر حالياً
                             </div>
-                            <p class="text-gray-700 mb-3">يبحث عن الكلمات التي تبدأ بالحروف المحددة</p>
-                            <div class="bg-teal-50 p-3 rounded-lg">
-                                <p class="font-semibold text-teal-800 mb-2">مثال:</p>
-                                <p class="text-gray-700">🔍 البحث: <code class="bg-teal-100 px-2 py-1 rounded">صل</code></p>
-                                <p class="text-gray-600 mt-1">✅ سيجد: "صلاة"، "صلى"، "صلح"، "صلاح"</p>
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="text-3xl grayscale">▶️</span>
+                                <h4 class="text-xl font-bold text-gray-600">البحث بالبداية</h4>
+                            </div>
+                            <p class="text-gray-500 mb-3">يبحث عن الكلمات التي تبدأ بالحروف المحددة</p>
+                            <div class="bg-gray-200 p-3 rounded-lg">
+                                <p class="font-semibold text-gray-600 mb-2">مثال:</p>
+                                <p class="text-gray-500">🔍 البحث: <code class="bg-gray-300 px-2 py-1 rounded">صل</code></p>
+                                <p class="text-gray-500 mt-1">✅ سيجد: "صلاة"، "صلى"، "صلح"، "صلاح"</p>
                             </div>
                         </div>
 
-                        <!-- Wildcard -->
-                        <div class="bg-white rounded-lg shadow-md p-5 border-r-4 border-yellow-500">
-                            <div class="flex items-center gap-3 mb-3">
-                                <span class="text-3xl">⭐</span>
-                                <h4 class="text-xl font-bold text-gray-800">الرموز البديلة</h4>
+                        <!-- Wildcard - Disabled -->
+                        <div class="bg-gray-100 rounded-lg shadow-md p-5 border-r-4 border-gray-400 opacity-60 relative">
+                            <div class="absolute top-3 left-3 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                                غير متوفر حالياً
                             </div>
-                            <p class="text-gray-700 mb-3">استخدم * للبحث عن أي عدد من الأحرف، و ? لحرف واحد</p>
-                            <div class="bg-yellow-50 p-3 rounded-lg">
-                                <p class="font-semibold text-yellow-800 mb-2">أمثلة:</p>
-                                <p class="text-gray-700">🔍 <code class="bg-yellow-100 px-2 py-1 rounded">الصل*</code> → "الصلاة"، "الصلح"</p>
-                                <p class="text-gray-700 mt-1">🔍 <code class="bg-yellow-100 px-2 py-1 rounded">كت?ب</code> → "كتاب"، "كتيب"</p>
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="text-3xl grayscale">⭐</span>
+                                <h4 class="text-xl font-bold text-gray-600">الرموز البديلة</h4>
+                            </div>
+                            <p class="text-gray-500 mb-3">استخدم * للبحث عن أي عدد من الأحرف، و ? لحرف واحد</p>
+                            <div class="bg-gray-200 p-3 rounded-lg">
+                                <p class="font-semibold text-gray-600 mb-2">أمثلة:</p>
+                                <p class="text-gray-500">🔍 <code class="bg-gray-300 px-2 py-1 rounded">الصل*</code> → "الصلاة"، "الصلح"</p>
+                                <p class="text-gray-500 mt-1">🔍 <code class="bg-gray-300 px-2 py-1 rounded">كت?ب</code> → "كتاب"، "كتيب"</p>
                             </div>
                         </div>
 
-                        <!-- Boolean -->
-                        <div class="bg-white rounded-lg shadow-md p-5 border-r-4 border-indigo-500">
-                            <div class="flex items-center gap-3 mb-3">
-                                <span class="text-3xl">🧮</span>
-                                <h4 class="text-xl font-bold text-gray-800">البحث المتقدم (Boolean)</h4>
-                            </div>
-                            <p class="text-gray-700 mb-3">استخدم AND, OR, NOT للبحث المتقدم</p>
-                            <div class="bg-indigo-50 p-3 rounded-lg space-y-2">
-                                <p class="font-semibold text-indigo-800">أمثلة:</p>
-                                <p class="text-gray-700">🔍 <code class="bg-indigo-100 px-2 py-1 rounded">الصلاة AND الزكاة</code> → كلاهما معاً</p>
-                                <p class="text-gray-700">🔍 <code class="bg-indigo-100 px-2 py-1 rounded">الصلاة OR الصوم</code> → أي منهما</p>
-                                <p class="text-gray-700">🔍 <code class="bg-indigo-100 px-2 py-1 rounded">الصلاة NOT الجمعة</code> → الأول بدون الثاني</p>
-                            </div>
-                        </div>
+
                     </div>
 
                     <!-- Filters Tab -->
@@ -1205,7 +1201,6 @@
                                 <p class="text-gray-700">• للبحث عن حديث محدد → استخدم <span class="font-bold text-green-600">البحث المطابق</span></p>
                                 <p class="text-gray-700">• للبحث عن موضوع → استخدم <span class="font-bold text-blue-600">البحث المرن</span></p>
                                 <p class="text-gray-700">• للبحث عن كل استخدامات كلمة → استخدم <span class="font-bold text-purple-600">البحث الصرفي</span></p>
-                                <p class="text-gray-700">• إذا نسيت الكتابة الصحيحة → استخدم <span class="font-bold text-orange-600">تصحيح الأخطاء</span></p>
                             </div>
                         </div>
                     </div>

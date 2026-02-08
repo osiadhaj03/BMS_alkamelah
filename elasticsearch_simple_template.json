@@ -1,0 +1,87 @@
+{
+  "index_patterns": ["pages_simple*"],
+  "priority": 300,
+  "template": {
+    "settings": {
+      "number_of_shards": 1,
+      "number_of_replicas": 0,
+      "refresh_interval": "30s",
+      "analysis": {
+        "filter": {
+          "arabic_stemmer_filter": {
+            "type": "stemmer",
+            "language": "arabic"
+          }
+        },
+        "analyzer": {
+          "arabic_standard": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": ["lowercase"]
+        },
+        "arabic_stemmed": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": [
+            "lowercase",
+            "decimal_digit",
+            "arabic_normalization",
+            "arabic_stemmer_filter"
+          ]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "id": {
+        "type": "long"
+      },
+      "page_number": {
+        "type": "integer"
+      },
+      "content": {
+        "type": "text",
+        "analyzer": "arabic_standard",
+        "fields": {
+          "stemmed": {
+            "type": "text",
+            "analyzer": "arabic_stemmed"
+          }
+        }
+      },
+      "book_id": {
+        "type": "long"
+      },
+      "book_title": {
+        "type": "text",
+        "analyzer": "arabic_standard",
+        "fields": {
+          "keyword": {
+            "type": "keyword"
+          }
+        }
+      },
+      "book_author": {
+        "type": "text",
+        "analyzer": "arabic_standard"
+      },
+      "book_section": {
+        "type": "text",
+        "analyzer": "arabic_standard",
+        "fields": {
+          "keyword": {
+            "type": "keyword"
+          }
+        }
+      },
+      "book_section_id": {
+        "type": "long"
+      },
+      "@timestamp": {
+        "type": "date"
+      }
+    }
+  }
+  }
+}
