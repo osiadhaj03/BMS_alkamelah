@@ -167,6 +167,14 @@
                                 phone: '',
                                 attachment: null,
                             },
+                            
+                            init() {
+                                const params = new URLSearchParams(window.location.search);
+                                if (params.has('type')) this.form.type = params.get('type');
+                                if (params.has('category')) this.form.category = params.get('category');
+                                if (params.has('subject')) this.form.subject = params.get('subject');
+                                if (params.has('message')) this.form.message = params.get('message');
+                            },
                             errors: [],
                             successMessage: '',
                             loading: false,
