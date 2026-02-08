@@ -59,15 +59,10 @@
         this.isNavigating = true;
         
         try {
-            const response = await fetch(`/api/book/${this.result.book_id}/page/${pageNumber}`);
+            const response = await fetch(`/api/page/${this.result.book_id}/${pageNumber}/full-content`);
             
             if (!response.ok) {
-                if (response.status === 404) {
-                    alert('الصفحة غير موجودة');
-                } else {
-                    alert('حدث خطأ أثناء تحميل الصفحة');
-                }
-                return;
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
             
             const data = await response.json();
@@ -79,19 +74,19 @@
                     id: data.page.id,
                     page_number: data.page.page_number,
                     original_page_number: data.page.original_page_number,
-                    content: data.page.content,
-                    highlighted_content: data.page.content,
+                    content: data.page.full_content,
+                    highlighted_content: data.page.full_content,
                     book_id: data.page.book_id,
                     book_title: data.page.book_title,
                     volume_title: data.page.volume_title,
                     chapter_title: data.page.chapter_title
                 };
             } else {
-                alert('فشل في تحميل الصفحة');
+                alert(data.error || 'فشل في تحميل الصفحة');
             }
         } catch (error) {
             console.error('Error loading page:', error);
-            alert('حدث خطأ أثناء تحميل الصفحة');
+            alert('حدث خطأ أثناء تحميل الصفحة: ' + error.message);
         } finally {
             this.isNavigating = false;
         }
