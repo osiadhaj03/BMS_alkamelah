@@ -100,6 +100,11 @@ Route::get('/book/{bookId}/{pageNumber?}', [BookReaderController::class, 'show']
     ->name('book.read')
     ->where(['bookId' => '[0-9]+', 'pageNumber' => '[0-9]+']);
 
+// Get page data for preview pane navigation (داخلي - ليس API خارجي)
+Route::get('/book/{bookId}/page/{pageNumber}/data', [BookReaderController::class, 'getPageData'])
+    ->name('book.page.data')
+    ->where(['bookId' => '[0-9]+', 'pageNumber' => '[0-9]+']);
+
 // Book Search API (for in-book search)
 Route::get('/book/{bookId}/search', [BookReaderController::class, 'search'])
     ->name('book.search')

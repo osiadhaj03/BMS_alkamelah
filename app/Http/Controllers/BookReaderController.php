@@ -208,4 +208,41 @@ class BookReaderController extends Controller
 
         return $snippet;
     }
+
+    /**
+     * Get page data for preview pane navigation
+     * 
+     * @param int $bookId
+     * @param int $pageNumber
+     */
+    public function getPageData($bookId, $pageNumber)
+    {
+        $page = Page::where('book_id', $bookId)
+            ->where('page_number', $pageNumber)
+            ->with(['book', 'volume', 'chapter'])
+            ->first();
+
+        if (!$page) {
+            return response()->json([
+                'success' => false,
+                'error' => 'الصفحة غير موجودة'
+            ], 404);
+        }
+
+        $content = $page->html_content ?? nl2br(e($page->content ?? ''));
+
+        return response()->json([
+            'success' => true,
+            'page' => [
+                'id' => $page->id,
+                'page_number' => $page->page_number,
+                'original_page_number' => $page->original_page_number,
+                'content' => $content,
+                'book_id' => $page->book_id,
+                'book_title' => $page->book->title ?? '',
+                'volume_title' => $page->volume->title ?? null,
+                'chapter_title' => $page->chapter->title ?? null,
+            ]
+        ]);
+    }
 }
