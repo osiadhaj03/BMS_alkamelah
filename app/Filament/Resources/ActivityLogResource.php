@@ -120,7 +120,7 @@ class ActivityLogResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                \Filament\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 //
