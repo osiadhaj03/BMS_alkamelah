@@ -16,7 +16,7 @@
 
             <!-- Author Header Card -->
             <div
-                class="bg-white rounded-[2rem] shadow-xl shadow-green-900/5 overflow-hidden border border-gray-100 p-8 md:p-12 mb-8">
+                class="bg-white rounded-[2rem] shadow-xl shadow-green-900/5 overflow-hidden border border-gray-100 p-8 md:p-12 mb-4">
                 <div class="flex flex-col md:flex-row gap-8 items-start">
 
                     <!-- Author Image -->
@@ -101,7 +101,7 @@
                 </div>
                 
                 <!-- Interaction Buttons & Stats -->
-                <div class="mt-8 pt-8 border-t border-gray-100 flex flex-wrap items-center justify-between gap-4">
+                <div class="mt-4 pt-4 border-t border-gray-100 flex flex-wrap items-center justify-between gap-4">
                     <!-- Favorite Button -->
                     <livewire:components.favorite-button :model="$author" />
 
@@ -121,7 +121,7 @@
             <!-- Biography Card -->
             @if($author->biography)
                 <div
-                    class="bg-white rounded-[2rem] shadow-xl shadow-green-900/5 overflow-hidden border border-gray-100 p-8 md:p-12 mb-8">
+                    class="bg-white rounded-[2rem] shadow-xl shadow-green-900/5 overflow-hidden border border-gray-100 p-8 md:p-12 mb-4">
                     <div class="flex items-center gap-4 mb-6">
                         <div class="w-10 h-10 flex items-center justify-center bg-[#e8f5e9] rounded-xl">
                             <svg class="w-5 h-5 text-[#2C6E4A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">

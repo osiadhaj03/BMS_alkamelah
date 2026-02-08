@@ -1,0 +1,77 @@
+{
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 0,
+    "refresh_interval": "30s",
+    "analysis": {
+      "filter": {
+        "arabic_stemmer_filter": {
+          "type": "stemmer",
+          "language": "arabic"
+        }
+      },
+      "analyzer": {
+        "arabic_standard": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": ["lowercase"]
+        },
+        "arabic_stemmed": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": [
+            "lowercase",
+            "decimal_digit",
+            "arabic_normalization",
+            "arabic_stemmer_filter"
+          ]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "book_id": {
+        "type": "integer"
+      },
+      "page_number": {
+        "type": "integer"
+      },
+      "content": {
+        "type": "text",
+        "analyzer": "arabic_standard",
+        "fields": {
+          "stemmed": {
+            "type": "text",
+            "analyzer": "arabic_stemmed"
+          }
+        }
+      },
+      "book_title": {
+        "type": "text",
+        "analyzer": "arabic_standard"
+      },
+      "author_name": {
+        "type": "text",
+        "analyzer": "arabic_standard"
+      },
+      "volume_id": {
+        "type": "integer"
+      },
+      "volume_title": {
+        "type": "text",
+        "analyzer": "arabic_standard"
+      },
+      "chapter_id": {
+        "type": "integer"
+      },
+      "chapter_title": {
+        "type": "text",
+        "analyzer": "arabic_standard"
+      },
+      "original_page_number": {
+        "type": "integer"
+      }
+    }
+  }
+}
