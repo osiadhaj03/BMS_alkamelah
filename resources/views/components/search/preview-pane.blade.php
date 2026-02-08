@@ -191,7 +191,7 @@
         qrContainer.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
         
         // رابط الصفحة الكامل
-        const pageUrl = window.location.origin + '/book/' + this.result.book_id + '/' + this.result.page_number;
+        const pageUrl = 'https://alkamelah.com/book/' + this.result.book_id + '/' + this.result.page_number;
         
         // إنشاء QR code
         new QRCode(qrContainer, {
