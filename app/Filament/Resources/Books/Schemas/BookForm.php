@@ -93,6 +93,11 @@ class BookForm
                             ->disabled()
                             ->dehydrated()
                             ->default(fn() => auth()->user()->name)
+                            ->afterStateHydrated(function ($component, $state) {
+                                if (blank($state)) {
+                                    $component->state(auth()->user()->name);
+                                }
+                            })
                             ->helperText('يتم ملؤه تلقائياً من بيانات المستخدم'),
                     ])
                     ->columns(2)
