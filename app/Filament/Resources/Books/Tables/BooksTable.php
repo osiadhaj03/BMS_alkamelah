@@ -156,6 +156,12 @@ class BooksTable
                 ViewAction::make()
                     ->url(fn ($record) => "https://alkamelah1.anwaralolmaa.com/book/{$record->id}")
                     ->openUrlInNewTab(),
+                \Filament\Actions\Action::make('edit_content')
+                    ->label('تعديل المحتوى')
+                    ->icon('heroicon-o-pencil-square')
+                    ->url(fn ($record) => route('book.edit', ['bookId' => $record->id]))
+                    ->openUrlInNewTab()
+                    ->color('success'),
                 EditAction::make(),
             ])
             ->toolbarActions([
