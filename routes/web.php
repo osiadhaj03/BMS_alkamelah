@@ -469,6 +469,46 @@ Route::prefix('api')->name('api.')->group(function () {
             ], 500);
         }
     })->name('api.page.navigation');
+
+    // API بسيط للحصول على بيانات الصفحة (للتنقل في preview-pane)
+    Route::get('/api/book/{bookId}/page/{pageNumber}', function ($bookId, $pageNumber) {
+        try {
+            $page = \App\Models\Page::with(['book', 'volume', 'chapter'])
+                ->where('book_id', $bookId)
+                ->where('page_number', $pageNumber)
+                ->first();
+
+            if (!$page) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'الصفحة غير موجودة'
+                ], 404);
+            }
+
+            $content = $page->html_content ?? nl2br(e($page->content ?? ''));
+
+            return response()->json([
+                'success' => true,
+                'page' => [
+                    'id' => $page->id,
+                    'page_number' => $page->page_number,
+                    'original_page_number' => $page->original_page_number,
+                    'content' => $content,
+                    'book_id' => $page->book_id,
+                    'book_title' => $page->book->title ?? '',
+                    'volume_title' => $page->volume->title ?? null,
+                    'chapter_title' => $page->chapter->title ?? null,
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Book page API error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'error' => 'فشل في تحميل الصفحة'
+            ], 500);
+        }
+    })->name('api.book.page');
 });
 
 // Simple Search API for testing
