@@ -135,14 +135,16 @@ class AuthorForm
                         Grid::make(2)
                             ->schema([
                                 TextInput::make('birth_date')
-                                    ->label('تاريخ الولادة')
-                                    ->placeholder('ادخل التاريخ الهجري')
-                                    ->helperText('مثال: 150 هـ'),
+                                    ->label('سنة الولادة (هجري)')
+                                    ->numeric()
+                                    ->placeholder('150')
+                                    ->helperText('أدخل السنة الهجرية فقط'),
 
                                 TextInput::make('death_date')
-                                    ->label('تاريخ الوفاة')
-                                    ->placeholder('ادخل التاريخ الهجري')
-                                    ->helperText('مثال: 204 هـ')
+                                    ->label('سنة الوفاة (هجري)')
+                                    ->numeric()
+                                    ->placeholder('204')
+                                    ->helperText('أدخل السنة الهجرية فقط')
                                     ->hidden(fn ($get) => $get('is_living') == 1),
                             ]),
                     ])

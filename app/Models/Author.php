@@ -40,8 +40,8 @@ class Author extends Model
     ];
 
     protected $casts = [
-        'birth_date' => 'date',
-        'death_date' => 'date',
+        'birth_date' => 'integer',
+        'death_date' => 'integer',
         'is_living' => 'boolean',
         'video_links' => 'array',
     ];
