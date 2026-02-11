@@ -100,9 +100,49 @@ class AuthorsTable extends Component
         }
     }
 
+    // تتبع آخر بحث مسجل لمنع التكرار
+    protected static string $lastLoggedAuthorSearch = '';
+
     public function updatingSearch()
     {
         $this->resetPage();
+    }
+
+    public function updatedSearch($value)
+    {
+        if (!empty($value) && $value !== static::$lastLoggedAuthorSearch) {
+            static::$lastLoggedAuthorSearch = $value;
+            $this->logAuthorSearch($value);
+        }
+    }
+
+    protected function logAuthorSearch(string $query): void
+    {
+        try {
+            $ip = request()->ip();
+            $lastVisit = \App\Models\PageVisit::where('ip_address', $ip)
+                ->latest('visited_at')
+                ->first();
+
+            $resultsCount = Author::where(function ($q) use ($query) {
+                $q->where('first_name', 'like', '%' . $query . '%')
+                    ->orWhere('last_name', 'like', '%' . $query . '%')
+                    ->orWhere('laqab', 'like', '%' . $query . '%');
+            })->count();
+
+            \App\Models\SearchLog::create([
+                'query'         => $query,
+                'search_type'   => 'authors',
+                'results_count' => $resultsCount,
+                'page_visit_id' => $lastVisit?->id,
+                'ip_address'    => $ip,
+                'filters'       => !empty($this->madhhabFilters) || !empty($this->centuryFilters)
+                    ? ['madhhab' => $this->madhhabFilters, 'centuries' => $this->centuryFilters]
+                    : null,
+            ]);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('SearchLog error (authors-table): ' . $e->getMessage());
+        }
     }
 
     public function updatingPerPage()

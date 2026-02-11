@@ -77,9 +77,47 @@ class BooksTable extends Component
         }
     }
 
+    // تتبع آخر بحث مسجل لمنع التكرار
+    protected static string $lastLoggedBookSearch = '';
+
     public function updatingSearch()
     {
         $this->resetPage();
+    }
+
+    public function updatedSearch($value)
+    {
+        if (!empty($value) && $value !== static::$lastLoggedBookSearch) {
+            static::$lastLoggedBookSearch = $value;
+            $this->logBookSearch($value);
+        }
+    }
+
+    protected function logBookSearch(string $query): void
+    {
+        try {
+            $ip = request()->ip();
+            $lastVisit = \App\Models\PageVisit::where('ip_address', $ip)
+                ->latest('visited_at')
+                ->first();
+
+            $resultsCount = Book::where('title', 'like', '%' . $query . '%')
+                ->orWhere('description', 'like', '%' . $query . '%')
+                ->count();
+
+            \App\Models\SearchLog::create([
+                'query'         => $query,
+                'search_type'   => 'books',
+                'results_count' => $resultsCount,
+                'page_visit_id' => $lastVisit?->id,
+                'ip_address'    => $ip,
+                'filters'       => !empty($this->sectionFilters) || !empty($this->authorFilters)
+                    ? ['sections' => $this->sectionFilters, 'authors' => $this->authorFilters]
+                    : null,
+            ]);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('SearchLog error (books-table): ' . $e->getMessage());
+        }
     }
 
     public function updatingPerPage()
