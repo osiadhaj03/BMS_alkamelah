@@ -307,7 +307,7 @@
                     const url = this.editMode 
                         ? `/editBook/${bookId}/chapters/${this.formData.id}`
                         : `/editBook/${bookId}/chapters`;
-                    const method = this.editMode ? 'PUT' : 'POST';
+                    const method = 'POST';
                     
                     try {
                         const response = await fetch(url, {
@@ -428,7 +428,7 @@
                     
                     try {
                         const response = await fetch('{{ route("book.updatePage", ["bookId" => $book->id, "pageNumber" => $currentPageNum]) }}', {
-                            method: 'PUT',
+                            method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
                                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,

@@ -222,7 +222,7 @@ class BookForm
                                                     ->label('سنة الوفاة (هجري)')
                                                     ->numeric()
                                                     ->placeholder('204')
-                                                    ->helperText('أدخل السنة الهجرية فقط')
+                                                 ->helperText('أدخل السنة الهجرية فقط')
                                                     ->hidden(fn($get) => $get('is_living') == 1),
                                             ]),
                                         FileUpload::make('image')
