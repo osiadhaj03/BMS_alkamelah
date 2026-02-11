@@ -20,6 +20,10 @@ class ListPageVisits extends ListRecords
     {
         return [
             \App\Filament\Widgets\VisitorStatsOverview::class,
+            \App\Filament\Widgets\VisitsLineChart::class,
+            \App\Filament\Widgets\HourlyVisitsChart::class,
+            \App\Filament\Widgets\TopPagesChart::class,
+            \App\Filament\Widgets\DeviceDistributionChart::class,
         ];
     }
 }

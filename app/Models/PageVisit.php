@@ -18,6 +18,9 @@ class PageVisit extends Model
         'bot_name',
         'referer',
         'user_agent',
+        'device_type',
+        'browser',
+        'os',
         'visited_at',
     ];
 

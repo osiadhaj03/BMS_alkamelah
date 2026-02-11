@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use App\Models\PageVisit;
+use App\Services\UserAgentParser;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -56,6 +57,7 @@ class TrackPageVisits
 
         try {
             [$isBot, $botName] = $this->detectBot($request);
+            $deviceInfo = UserAgentParser::parse($request->userAgent());
 
             $visit = PageVisit::create([
                 'session_id'  => session()->getId(),
@@ -67,6 +69,9 @@ class TrackPageVisits
                 'bot_name'    => $botName,
                 'referer'     => $this->truncate($request->header('referer'), 2048),
                 'user_agent'  => $this->truncate($request->userAgent(), 512),
+                'device_type' => $deviceInfo['device_type'],
+                'browser'     => $deviceInfo['browser'],
+                'os'          => $deviceInfo['os'],
                 'visited_at'  => now(),
             ]);
 

@@ -60,7 +60,7 @@
     <!-- Categories -->
     @forelse($categories as $category)
     <url>
-        <loc>{{ url('/category/' . $category->slug) }}</loc>
+        <loc>{{ url('/category/' . $category->id) }}</loc>
         <lastmod>{{ $category->updated_at->toAtomString() }}</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>

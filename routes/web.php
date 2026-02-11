@@ -35,7 +35,7 @@ Route::post('/visit-duration', function (\Illuminate\Http\Request $request) {
 Route::get('/sitemap.xml', function () {
     $articles = \App\Models\Article::select('slug', 'updated_at')->get();
     $news = \App\Models\News::select('slug', 'updated_at')->get();
-    $categories = \App\Models\Category::select('slug', 'updated_at')->get();
+    $categories = \App\Models\BookSection::select('id', 'name', 'updated_at')->get();
     $authors = \App\Models\Author::select('id', 'updated_at')->get();
     $books = \App\Models\Book::select('id', 'updated_at')->get();
     $chapters = \App\Models\Chapter::select('id', 'book_id', 'updated_at')->get();
