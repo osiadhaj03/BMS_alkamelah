@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Publishers\Pages;
 
 use App\Filament\Resources\Publishers\PublisherResource;
+use App\Filament\Resources\Publishers\Widgets\PublishersStatsWidget;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
@@ -14,6 +15,13 @@ class ListPublishers extends ListRecords
     {
         return [
             CreateAction::make(),
+        ];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            PublishersStatsWidget::class,
         ];
     }
 }

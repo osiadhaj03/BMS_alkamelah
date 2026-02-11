@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\NewsletterSubscribers\Pages;
 
 use App\Filament\Resources\NewsletterSubscribers\NewsletterSubscriberResource;
+use App\Filament\Resources\NewsletterSubscribers\Widgets\NewsletterSubscribersStatsWidget;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
@@ -14,6 +15,13 @@ class ListNewsletterSubscribers extends ListRecords
     {
         return [
             CreateAction::make(),
+        ];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            NewsletterSubscribersStatsWidget::class,
         ];
     }
 }

@@ -202,9 +202,31 @@ Route::prefix('api')->name('api.')->group(function () {
             $query->where('title', 'like', '%' . $request->search . '%');
         }
 
-        return $query->select('id', 'title')
+        $results = $query->select('id', 'title')
             ->orderBy('title')
             ->paginate(50);
+
+        // ===== تسجيل البحث =====
+        if ($request->filled('search')) {
+            try {
+                $ip = $request->ip();
+                $lastVisit = \App\Models\PageVisit::where('ip_address', $ip)
+                    ->latest('visited_at')
+                    ->first();
+
+                \App\Models\SearchLog::create([
+                    'query'         => $request->search,
+                    'search_type'   => 'books',
+                    'results_count' => $results->total(),
+                    'page_visit_id' => $lastVisit?->id,
+                    'ip_address'    => $ip,
+                ]);
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('SearchLog error (books): ' . $e->getMessage());
+            }
+        }
+
+        return $results;
     })->name('books');
 
     // Authors API for filter modal (with search & pagination)
@@ -237,6 +259,26 @@ Route::prefix('api')->name('api.')->group(function () {
                 ])))
             ];
         });
+
+        // ===== تسجيل البحث =====
+        if ($request->filled('search')) {
+            try {
+                $ip = $request->ip();
+                $lastVisit = \App\Models\PageVisit::where('ip_address', $ip)
+                    ->latest('visited_at')
+                    ->first();
+
+                \App\Models\SearchLog::create([
+                    'query'         => $request->search,
+                    'search_type'   => 'authors',
+                    'results_count' => $results->total(),
+                    'page_visit_id' => $lastVisit?->id,
+                    'ip_address'    => $ip,
+                ]);
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('SearchLog error (authors): ' . $e->getMessage());
+            }
+        }
 
         return $results;
     })->name('authors');
@@ -284,6 +326,35 @@ Route::prefix('api')->name('api.')->group(function () {
             }
 
             $results = $searchService->search($query, $filters, $page, $perPage);
+
+            // ===== تسجيل البحث في المحتوى =====
+            if (!empty($query)) {
+                try {
+                    $ip = $request->ip();
+                    $lastVisit = \App\Models\PageVisit::where('ip_address', $ip)
+                        ->latest('visited_at')
+                        ->first();
+
+                    $appliedFilters = [];
+                    if ($request->filled('book_id'))    $appliedFilters['book_id'] = $filters['book_id'];
+                    if ($request->filled('author_id'))  $appliedFilters['author_id'] = $filters['author_id'];
+                    if ($request->filled('section_id')) $appliedFilters['section_id'] = $filters['section_id'];
+
+                    \App\Models\SearchLog::create([
+                        'query'         => $query,
+                        'search_type'   => 'content',
+                        'search_mode'   => $filters['search_type'] ?? 'flexible_match',
+                        'word_order'    => $filters['word_order'] ?? null,
+                        'word_match'    => $filters['word_match'] ?? null,
+                        'results_count' => $results['total'] ?? 0,
+                        'page_visit_id' => $lastVisit?->id,
+                        'ip_address'    => $ip,
+                        'filters'       => !empty($appliedFilters) ? $appliedFilters : null,
+                    ]);
+                } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::error('SearchLog error (content): ' . $e->getMessage());
+                }
+            }
 
             // Transform to API response format
             return response()->json([
@@ -359,6 +430,35 @@ Route::prefix('api')->name('api.')->group(function () {
             }
 
             $results = $searchService->search($query, $filters, $page, $perPage);
+
+            // ===== تسجيل البحث في المحتوى =====
+            if (!empty($query)) {
+                try {
+                    $ip = $request->ip();
+                    $lastVisit = \App\Models\PageVisit::where('ip_address', $ip)
+                        ->latest('visited_at')
+                        ->first();
+
+                    $appliedFilters = [];
+                    if ($request->filled('book_id'))    $appliedFilters['book_id'] = $filters['book_id'];
+                    if ($request->filled('author_id'))  $appliedFilters['author_id'] = $filters['author_id'];
+                    if ($request->filled('section_id')) $appliedFilters['section_id'] = $filters['section_id'];
+
+                    \App\Models\SearchLog::create([
+                        'query'         => $query,
+                        'search_type'   => 'content',
+                        'search_mode'   => $filters['search_type'] ?? 'flexible_match',
+                        'word_order'    => $filters['word_order'] ?? null,
+                        'word_match'    => $filters['word_match'] ?? null,
+                        'results_count' => $results['total'] ?? 0,
+                        'page_visit_id' => $lastVisit?->id,
+                        'ip_address'    => $ip,
+                        'filters'       => !empty($appliedFilters) ? $appliedFilters : null,
+                    ]);
+                } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::error('SearchLog error (content): ' . $e->getMessage());
+                }
+            }
 
             // Transform to API response format
             return response()->json([

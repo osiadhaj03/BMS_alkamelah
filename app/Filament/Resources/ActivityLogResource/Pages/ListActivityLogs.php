@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ActivityLogResource\Pages;
 
 use App\Filament\Resources\ActivityLogResource;
+use App\Filament\Resources\ActivityLogResource\Widgets\ActivityLogStatsWidget;
 use Filament\Resources\Pages\ListRecords;
 
 class ListActivityLogs extends ListRecords
@@ -13,6 +14,13 @@ class ListActivityLogs extends ListRecords
     {
         return [
             //
+        ];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            ActivityLogStatsWidget::class,
         ];
     }
 }
