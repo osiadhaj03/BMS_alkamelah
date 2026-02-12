@@ -20,20 +20,44 @@ class GeoIPService
      */
     public function lookup(string $ip): array
     {
-        if (!$this->reader || $this->isPrivateIP($ip)) {
+        // 1. Check Private IP
+        if ($this->isPrivateIP($ip)) {
             return ['country' => null, 'city' => null, 'country_code' => null];
         }
 
-        try {
-            $record = $this->reader->city($ip);
-            return [
-                'country'      => $record->country->name ?? null,
-                'city'         => $record->city->name ?? null,
-                'country_code' => $record->country->isoCode ?? null,
-            ];
-        } catch (\Exception $e) {
-            return ['country' => null, 'city' => null, 'country_code' => null];
+        // 2. Try MaxMind DB (Fastest)
+        if ($this->reader) {
+            try {
+                $record = $this->reader->city($ip);
+                return [
+                    'country'      => $record->country->name ?? null,
+                    'city'         => $record->city->name ?? null,
+                    'country_code' => $record->country->isoCode ?? null,
+                ];
+            } catch(\Exception $e) {
+                // Fallback to API if DB lookup fails
+            }
         }
+
+        // 3. Fallback to API (Cached)
+        return \Illuminate\Support\Facades\Cache::remember("geoip_{$ip}", 86400 * 7, function () use ($ip) {
+            try {
+                $response = \Illuminate\Support\Facades\Http::timeout(2)
+                    ->get("http://ip-api.com/json/{$ip}?fields=status,country,city,countryCode");
+                
+                if ($response->successful() && $response->json('status') === 'success') {
+                    return [
+                        'country'      => $response->json('country'),
+                        'city'         => $response->json('city'),
+                        'country_code' => $response->json('countryCode'),
+                    ];
+                }
+            } catch (\Exception $e) {
+                // Fail silently
+            }
+
+            return ['country' => null, 'city' => null, 'country_code' => null];
+        });
     }
 
     protected function isPrivateIP(string $ip): bool
