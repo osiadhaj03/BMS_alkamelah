@@ -42,14 +42,16 @@ class PageVisitResource extends Resource
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('ip_address')
-                    ->label('عنوان IP')
+                    ->label('الموقع & IP')
                     ->searchable()
                     ->copyable()
                     ->copyMessage('تم النسخ!')
                     ->sortable()
                     ->weight('bold')
                     ->description(fn (PageVisit $record) => 
-                        $record->country ? ($record->country . ($record->city ? ' - ' . $record->city : '')) : null
+                        $record->country 
+                            ? ($record->city ? "{$record->country}، {$record->city}" : $record->country) 
+                            : null
                     ),
 
                 Tables\Columns\TextColumn::make('page_title')
