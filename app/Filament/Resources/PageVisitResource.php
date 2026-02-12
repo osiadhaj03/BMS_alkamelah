@@ -47,7 +47,10 @@ class PageVisitResource extends Resource
                     ->copyable()
                     ->copyMessage('تم النسخ!')
                     ->sortable()
-                    ->weight('bold'),
+                    ->weight('bold')
+                    ->description(fn (PageVisit $record) => 
+                        $record->country ? ($record->country . ($record->city ? ' - ' . $record->city : '')) : null
+                    ),
 
                 Tables\Columns\TextColumn::make('page_title')
                     ->label('الصفحة')
