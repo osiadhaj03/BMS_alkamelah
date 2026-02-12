@@ -9,8 +9,8 @@ use Filament\Resources\Pages\Page;
 class ViewVisitorJourney extends Page
 {
     protected static string $resource = PageVisitResource::class;
-    protected static string $view = 'filament.pages.visitor-journey';
-    protected static ?string $title = 'رحلة الزائر';
+    protected string $view = 'filament.pages.visitor-journey';
+    protected ?string $title = 'رحلة الزائر';
 
     public string $sessionId = '';
     public $visits = [];
