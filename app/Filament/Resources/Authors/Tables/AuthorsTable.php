@@ -105,7 +105,12 @@ class AuthorsTable
                         1 => 'نعم',
                         0 => 'لا',
                     ]),
-                   
+
+                Filter::make('full_name_empty')
+                    ->label('الاسم الكامل فارغ')
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->whereNull('full_name')->orWhere('full_name', '');
+                    }),
 
                 Filter::make('birth_date')
                     ->label('تاريخ الولادة')

@@ -665,6 +665,12 @@
                         } else {
                             this.authorFilters.push(id);
                         }
+                    } else if (type === 'book') {
+                        if (this.bookFilters.includes(id)) {
+                            this.bookFilters = this.bookFilters.filter(i => i !== id);
+                        } else {
+                            this.bookFilters.push(id);
+                        }
                     }
                 },
 
